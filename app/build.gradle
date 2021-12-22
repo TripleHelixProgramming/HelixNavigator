@@ -25,18 +25,18 @@ dependencies {
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:30.1.1-jre'
 
-    implementation 'com.github.jlbabilino:json:v0.1.0'
+    implementation 'com.github.jlbabilino:json:master-SNAPSHOT'
 }
 
 application {
     // Define the main class for the application.
-    mainClass = 'com.team2363.helixnavigator.App'
+    mainClass = 'org.team2363.helixnavigator.App'
 }
 
-// javafx {
-//     version = "17"
-//     modules = [ 'javafx.controls' ]
-// }
+javafx {
+    version = "17"
+    modules = [ 'javafx.controls' ]
+}
 
 tasks.named('test') {
     // Use JUnit Platform for unit tests.

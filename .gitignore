@@ -7,3 +7,6 @@ build
 # Ignore vscode stuff
 .vscode
 .settings
+
+# Ignore mac stuff
+.DS_Store
