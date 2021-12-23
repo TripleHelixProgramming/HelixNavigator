@@ -17,15 +17,12 @@
 package org.team2363.helixnavigator.document;
 
 import java.io.File;
-import java.io.PrintWriter;
 import java.util.List;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.DeserializedJSONTarget;
-import com.jlbabilino.json.JSON;
 import com.jlbabilino.json.JSONSerializable;
-import com.jlbabilino.json.JSONSerializer;
 import com.jlbabilino.json.SerializedJSONObjectValue;
 
 import org.team2363.helixnavigator.document.field.HField;
@@ -78,20 +75,6 @@ public class HDocument {
     public HDocument() {
     }
 
-    public final void save() {
-        if (!isSaved()) {
-            try {
-                JSON json = JSONSerializer.serializeJSON(this);
-                PrintWriter writer = new PrintWriter(getSaveLocation());
-                writer.write(json.exportJSON());
-                writer.close();
-                setSaved(true);
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-        }
-    }
-
     @SerializedJSONObjectValue(key = "field")
     public final HField getField() {
         return field;
@@ -135,6 +118,10 @@ public class HDocument {
 
     public File getSaveLocation() {
         return saveLocation.get();
+    }
+
+    public boolean isSaveLocationSet() {
+        return getSaveLocation() != null;
     }
 
     public BooleanProperty savedProperty() {

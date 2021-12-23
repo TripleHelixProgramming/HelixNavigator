@@ -13,7 +13,7 @@ public class MainStage {
 
     public MainStage(Stage stage) {
         this.stage = stage;
-        documentManager = new DocumentManager();
+        documentManager = new DocumentManager(this.stage);
         mainScene = new MainScene(documentManager);
         this.stage.setTitle("Helix Navigator");
         this.stage.setHeight(600);
@@ -27,7 +27,7 @@ public class MainStage {
     }
 
     private void onWindowCloseRequest(WindowEvent event) {
-        if (!documentManager.requestDocumentClose()) { // if document NOT closed, don't close window
+        if (!documentManager.requestCloseDocument()) { // if document NOT closed, don't close window
             event.consume();
         }
     }

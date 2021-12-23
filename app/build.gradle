@@ -30,7 +30,7 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = 'org.team2363.helixnavigator.App'
+    mainClass = 'org.team2363.helixnavigator.Main'
 }
 
 javafx {

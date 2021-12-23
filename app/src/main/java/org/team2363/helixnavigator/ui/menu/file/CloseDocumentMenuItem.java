@@ -1,4 +1,4 @@
-package org.team2363.helixnavigator.ui.menu.edit;
+package org.team2363.helixnavigator.ui.menu.file;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 
@@ -6,18 +6,18 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCombination;
 
-public class UndoMenuItem extends MenuItem {
+public class CloseDocumentMenuItem extends MenuItem {
 
     private final DocumentManager documentManager;
 
-    public UndoMenuItem(DocumentManager documentManager) {
+    public CloseDocumentMenuItem(DocumentManager documentManager) {
         this.documentManager = documentManager;
-        setText("Undo");
-        setAccelerator(KeyCombination.keyCombination("shortcut+Z"));
+        setText("Close Document");
+        setAccelerator(KeyCombination.keyCombination("shortcut+W"));
         setOnAction(this::action);
     }
 
     public void action(ActionEvent event) {
-        System.out.println("Undoing");
+        documentManager.requestCloseDocument();
     }
 }
