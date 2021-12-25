@@ -49,7 +49,7 @@ public class HDocument {
      * the paths. This is not defined as a property because <code>HField</code> is
      * designed to be a mutable type that should never be reassigned.
      */
-    private final HField field = new HField();
+    private final HField field = null;
     /**
      * The list of paths in this document. A path can be selected to be displayed in
      * the Editor pane.

@@ -27,21 +27,24 @@ import com.jlbabilino.json.SerializedJSONObjectValue;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.image.Image;
 
 @JSONSerializable
 public class HField {
 
     private final StringProperty name = new SimpleStringProperty(this, "name", "");
-    private final DoubleProperty imageRes = new SimpleDoubleProperty(this, "imageRes", 0.0);
-    private final DoubleProperty imageCenterX = new SimpleDoubleProperty(this, "imageCenterX", 0.0);
-    private final DoubleProperty imageCenterY = new SimpleDoubleProperty(this, "imageCenterY", 0.0);
-    private final StringProperty imageB64 = new SimpleStringProperty(this, "imageB64", "");
+    private final ObjectProperty<HFieldImage> fieldImage = new SimpleObjectProperty<>(this, "field", null);
+    private final DoubleProperty fieldImageRes = new SimpleDoubleProperty(this, "imageRes", 0.0);
+    private final DoubleProperty fieldImageCenterX = new SimpleDoubleProperty(this, "imageCenterX", 0.0);
+    private final DoubleProperty fieldImageCenterY = new SimpleDoubleProperty(this, "imageCenterY", 0.0);
     private final BooleanProperty imageShown = new SimpleBooleanProperty(this, "imageShown", true);
     private final ObservableList<HObstacle> obstacles = FXCollections.<HObstacle>observableArrayList();
 
@@ -102,20 +105,6 @@ public class HField {
     @SerializedJSONObjectValue(key = "image_center_y")
     public final double getImageCenterY() {
         return imageCenterY.get();
-    }
-
-    public final StringProperty imageB64Property() {
-        return imageB64;
-    }
-
-    @DeserializedJSONTarget
-    public final void setImageB64(@DeserializedJSONObjectValue(key = "image_b64") String value) {
-        imageB64.set(value);
-    }
-
-    @SerializedJSONObjectValue(key = "image_b64")
-    public final String getFieldImageB64() {
-        return imageB64.getValue();
     }
 
     public final BooleanProperty fieldImageShownProperty() {
