@@ -1,49 +1,77 @@
-// package com.team2363.helixnavigator.ui.document;
+package org.team2363.helixnavigator.ui.document;
 
-// import java.util.List;
+import java.util.List;
 
-// import com.team2363.helixnavigator.document.waypoint.HAbstractWaypoint;
-// import com.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
-// import com.team2363.lib.json.JSONSerializer;
+import com.jlbabilino.json.JSONDeserializer;
+import com.jlbabilino.json.JSONDeserializerException;
+import com.jlbabilino.json.JSONEntry;
+import com.jlbabilino.json.JSONParser;
+import com.jlbabilino.json.JSONParserException;
+import com.jlbabilino.json.JSONSerializer;
+import com.jlbabilino.json.TypeMarker;
 
-// import javafx.scene.control.ListCell;
-// import javafx.scene.control.ListView;
-// import javafx.scene.input.Clipboard;
-// import javafx.scene.input.ClipboardContent;
-// import javafx.scene.input.Dragboard;
-// import javafx.scene.input.TransferMode;
-// import javafx.util.Callback;
+import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+import org.team2363.lib.ui.OrderableListCell;
 
-// // remember to credit code
-// public class WaypointListCell extends ListCell<HAbstractWaypoint> {
+import javafx.collections.ObservableList;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
+import javafx.util.Callback;
 
-//     @Override
-//     protected void updateItem(HAbstractWaypoint item, boolean empty) {
-//         super.updateItem(item, empty);
-//         if (item == null) {
-//             setText("");
-//         } else {
-//             String waypointTypeString = item instanceof HSoftWaypoint ? "Soft Waypoint" : "Hard Waypoint";
-//             String name = item.getName();
-//             setText(waypointTypeString + " " + name);
-//         }
-//     }
+public class WaypointListCell extends OrderableListCell<HWaypoint> {
 
-//     // try lambda
-//     public static final Callback<ListView<HAbstractWaypoint>, ListCell<HAbstractWaypoint>> waypointCellFactory = new Callback<ListView<HAbstractWaypoint>, ListCell<HAbstractWaypoint>>() {
-//         @Override
-//         public ListCell<HAbstractWaypoint> call(ListView<HAbstractWaypoint> listView) {
-//             return new WaypointListCell();
-//         }
-//     };
+    private static final Image DRAG_ICON = new Image("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Parentesi_Graffe.svg/150px-Parentesi_Graffe.svg.png");
 
-//     public WaypointListCell() {
-//         setOnDragDetected(event -> {
-//             Dragboard dragboard = startDragAndDrop(TransferMode.MOVE);
-//             ClipboardContent clipboard = new ClipboardContent();
-//             List<HAbstractWaypoint> waypoints = getListView().getSelectionModel().getSelectedItems();
-//             String jsonString = JSONSerializer.serializeJSON(waypoints)
-//             clipboard.putString(JSONSerializer.serializeJSON
-//         });
-//     }
-// }
+    public static final Callback<ListView<HWaypoint>, ListCell<HWaypoint>> waypointCellFactory = new Callback<ListView<HWaypoint>, ListCell<HWaypoint>>() {
+        @Override
+        public ListCell<HWaypoint> call(ListView<HWaypoint> listView) {
+            return new WaypointListCell();
+        }
+    };
+
+    public WaypointListCell() {
+    }
+
+    @Override
+    protected void updateItem(HWaypoint item, boolean empty) {
+        super.updateItem(item, empty);
+        if (item == null) {
+            setText("");
+        } else {
+            setText(item.getWaypointType().toString() + " waypoint " + item.getName());
+        }
+    }
+    @Override
+    protected Image dragView(int selectionSize) {
+        return DRAG_ICON;
+    }
+
+    @Override
+    protected String fileName() {
+        return getItem().getName() + ".json";
+    }
+
+    @Override
+    protected String fileString() {
+        ObservableList<HWaypoint> selectedItems = getListView().getSelectionModel().getSelectedItems();
+        if (selectedItems.size() == 1) {
+            return JSONSerializer.serializeJSON(getListView().getSelectionModel().getSelectedItem()).exportJSON();
+        } else if (selectedItems.size() > 1) {
+            return JSONSerializer.serializeJSON(getListView().getSelectionModel().getSelectedItems()).exportJSON();
+        } else {
+            return "";
+        }
+    }
+
+    @Override
+    protected List<HWaypoint> newItems(String fileString) throws IllegalArgumentException {
+        try {
+            JSONEntry jsonEntry = JSONParser.parseStringAsJSONEntry(fileString);
+            return JSONDeserializer.deserializeJSONEntry(jsonEntry, new TypeMarker<List<HWaypoint>>() {});
+        } catch (JSONParserException | JSONDeserializerException e) {
+            throw new IllegalArgumentException();
+        }
+    }
+    
+}

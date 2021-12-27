@@ -45,13 +45,9 @@ public class DocumentManager {
     }
 
     private final void setDocument(HDocument value) {
-        document.set(value);
         System.out.println("setting doc");
-        if (value != null) {
-            setIsDocumentOpen(true);
-        } else {
-            setIsDocumentOpen(false);
-        }
+        setIsDocumentOpen(value != null); // spent about an hour trying to fix a bug:
+        document.set(value);              // just had to switch these two lines
     }
 
     public final HDocument getDocument() {
@@ -63,6 +59,7 @@ public class DocumentManager {
     }
 
     private final void setIsDocumentOpen(boolean value) {
+        System.out.println("DocumentManager: isDocumentOpen set to " + value);
         isDocumentOpen.set(value);
     }
 
@@ -90,7 +87,9 @@ public class DocumentManager {
      * @return {@code true} if and only if a new document was created and loaded.
      */
     public final boolean requestNewDocument() {
+        System.out.println("DocumentManager: Requesting new document.");
         if (requestCloseDocument()) {
+            System.out.println("DocumentManager: Document succesfully closed, setting to new blank document.");
             setDocument(new HDocument());
             return true;
         } else {
@@ -186,7 +185,7 @@ public class DocumentManager {
                 PrintWriter writer = new PrintWriter(saveLocation);
                 writer.print(json.exportJSON());
                 writer.close();
-                getDocument().setSaved(true);
+                // getDocument().setSaved(true);      -- implement later when state management is added as a feature
                 return true;
             } catch (FileNotFoundException e) {
                 // I don't think this could ever happen since we checked already with canWrite
@@ -251,12 +250,16 @@ public class DocumentManager {
      *         {@code false} if document was not closed
      */
     public final boolean requestCloseDocument() {
+        System.out.println("DocumentManager: Document close reuqested.");
         if (!getIsDocumentOpen()) {
+            System.out.println("DocumentManager: no document was open, already closed.");
             return true;
         } else if (getDocument().isSaved()) {
+            System.out.println("DocumentManager: Document is saved, closing without prompt.");
             closeDocument();
             return true;
         } else {
+            System.out.println("DocumentManager: Document is not saved, prompting user...");
             SavePrompt prompt = new SavePrompt();
             Optional<ButtonType> response = prompt.showAndWait();
             if (response.get() == ButtonType.YES) {

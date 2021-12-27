@@ -1,5 +1,6 @@
 package org.team2363.helixnavigator.ui.document;
 // downloaded from https://gist.github.com/jewelsea/7821196 thanks for the test code!!
+// It's difficult to figure out who made this originally, it's all over the internet.
 import javafx.application.Application;
 import javafx.collections.*;
 import javafx.geometry.*;
@@ -105,6 +106,7 @@ public class ListOrganizer extends Application {
             });
 
             setOnDragDropped(event -> {
+                System.out.println("Entering drop.");
                 if (getItem() == null) {
                     return;
                 }

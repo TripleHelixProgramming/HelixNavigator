@@ -97,4 +97,9 @@ public abstract class HWaypoint extends HPathElement {
                 throw new JSONDeserializerException("Unrecognized waypoint type string.");
         }
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

@@ -25,7 +25,7 @@ import com.jlbabilino.json.DeserializedJSONTarget;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONObjectValue;
 
-import org.team2363.helixnavigator.document.field.HField;
+// import org.team2363.helixnavigator.document.field.HField;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -34,6 +34,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 /**
@@ -49,7 +50,7 @@ public class HDocument {
      * the paths. This is not defined as a property because <code>HField</code> is
      * designed to be a mutable type that should never be reassigned.
      */
-    private final HField field = null;
+    // private final HField field = null;
     /**
      * The list of paths in this document. A path can be selected to be displayed in
      * the Editor pane.
@@ -57,8 +58,9 @@ public class HDocument {
     private final ObservableList<HPath> paths = FXCollections.<HPath>observableArrayList();
     /**
      * The property containing the currently selected path index. If this value is
-     * set to <code>-1</code>, then no path is selected. The currently selected path
-     * will be displayed and editable in the Editor pane.
+     * set to <code>-1</code>, then no path is selected, and there are no paths in
+     * the document. The currently selected path will be displayed and editable in
+     * the Editor pane.
      */
     private final IntegerProperty selectedPathIndex = new SimpleIntegerProperty(this, "selectedPathIndex", -1);
     /**
@@ -69,16 +71,21 @@ public class HDocument {
      * the property representing whether or not this document has been saved in its
      * entirety to a file
      */
-    private final BooleanProperty savedProperty = new SimpleBooleanProperty(this, "saved", true);
+    private final BooleanProperty savedProperty = new SimpleBooleanProperty(this, "saved", false); // change to true later when state management is added
 
     @DeserializedJSONConstructor
     public HDocument() {
+        paths.addListener((ListChangeListener.Change<? extends HPath> change) -> {
+            if (paths.size() > 0) {
+                setSelectedPathIndex(0);
+            }
+        });
     }
 
-    @SerializedJSONObjectValue(key = "field")
-    public final HField getField() {
-        return field;
-    }
+    // @SerializedJSONObjectValue(key = "field")
+    // public final HField getField() {
+    //     return field;
+    // }
 
     @DeserializedJSONTarget
     public final void setPaths(@DeserializedJSONObjectValue(key = "paths") List<? extends HPath> newPaths) {
@@ -102,6 +109,10 @@ public class HDocument {
     @SerializedJSONObjectValue(key = "selected_path_index")
     public final int getSelectedPathIndex() {
         return selectedPathIndex.get();
+    }
+
+    public final boolean isPathSelected() {
+        return getSelectedPathIndex() >= 0;
     }
 
     public final HPath getSelectedPath() {
