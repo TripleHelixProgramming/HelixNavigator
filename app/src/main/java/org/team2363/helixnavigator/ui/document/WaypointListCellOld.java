@@ -134,12 +134,12 @@ public class WaypointListCellOld extends ListCell<HWaypoint> {
                     break dropAttempt;
                 }
                 try {
-                    JSONEntry jsonEntry = JSONParser.parseStringAsJSONEntry(jsonString);
+                    JSONEntry jsonEntry = JSONParser.parseJSONEntry(jsonString);
                     if (jsonEntry.isArray()) {
-                        List<HWaypoint> newWaypoints = JSONDeserializer.deserializeJSONEntry(jsonEntry, new TypeMarker<List<HWaypoint>>() {});
+                        List<HWaypoint> newWaypoints = JSONDeserializer.deserialize(jsonEntry, new TypeMarker<List<HWaypoint>>() {});
                         items.addAll(index, newWaypoints);
                     } else { // should be object
-                        HWaypoint newWaypoint = JSONDeserializer.deserializeJSONEntry(jsonEntry, HWaypoint.class);
+                        HWaypoint newWaypoint = JSONDeserializer.deserialize(jsonEntry, HWaypoint.class);
                         items.add(index, newWaypoint);
                     }
                     System.out.println("WaypointListCell: Successfully dropped new waypoint(s).");

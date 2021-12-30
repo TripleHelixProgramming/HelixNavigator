@@ -21,8 +21,11 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.layout.Region;
 
 public class WaypointListView extends ListView<HWaypoint> {
+
+    private static final ObservableList<HWaypoint> BLANK = FXCollections.<HWaypoint>observableArrayList();
 
     private final DocumentManager documentManager;
 
@@ -60,6 +63,8 @@ public class WaypointListView extends ListView<HWaypoint> {
         singleSelectedContextMenu.setAutoHide(true);
         multipleSelectedContextMenu.setAutoHide(true);
 
+        setEditable(true);
+        setMinHeight(USE_COMPUTED_SIZE);
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         getSelectionModel().getSelectedIndices().addListener(this::selectedIndicesChanged);
         setCellFactory(WaypointListCell.waypointCellFactory);
@@ -145,13 +150,19 @@ public class WaypointListView extends ListView<HWaypoint> {
         if (documentManager.getIsDocumentOpen()) {
             if (documentManager.getDocument().getSelectedPathIndex() >= 0) {
                 setItems(documentManager.getDocument().getSelectedPath().getWaypoints()); // initial set, then check for changes
+            } else {
+                setItems(BLANK); // if newly opened document has zero paths
             }
             documentManager.getDocument().selectedPathIndexProperty().addListener((currentVal, oldVal, newVal) -> {
                 System.out.println("WaypointListView: Selected Path changed.");
                 if (newVal.intValue() >= 0) {
                     setItems(documentManager.getDocument().getSelectedPath().getWaypoints());
+                } else {
+                    setItems(BLANK); // if document had multiple paths but all were deleted
                 }
             });
+        } else {
+            setItems(BLANK); // if no document open
         }
     }
 }

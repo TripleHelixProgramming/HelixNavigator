@@ -1,14 +1,28 @@
-// package com.team2363.helixnavigator.ui.editor;
+package org.team2363.helixnavigator.ui.editor;
 
-// import javafx.scene.layout.Pane;
-// import javafx.scene.layout.StackPane;
+import org.team2363.helixnavigator.document.DocumentManager;
 
-// public class PathPane extends StackPane {
-//     private final Pane pane = new Pane();
-//     private final FieldImageView fieldImageView = new FieldImageView();
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+
+public class PathPane extends Pane {
+
+    private final DocumentManager documentManager;
+
+    private final FieldImageView fieldImageView;
     
-//     public PathPane() {
+    public PathPane(DocumentManager documentManager) {
+        this.documentManager = documentManager;
 
-//         getChildren().add(pane);
-//     }
-// }
+        fieldImageView = new FieldImageView(this.documentManager);
+        getChildren().add(fieldImageView);
+
+        setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, null, null)));
+    }
+}

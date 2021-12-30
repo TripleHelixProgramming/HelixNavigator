@@ -1,36 +1,81 @@
-// package com.team2363.helixnavigator.ui.editor;
+package org.team2363.helixnavigator.ui.editor;
 
-// import java.io.InputStream;
+import org.team2363.helixnavigator.document.DocumentManager;
+import org.team2363.helixnavigator.document.HDocument;
+import org.team2363.helixnavigator.document.HPath;
+import org.team2363.helixnavigator.document.field.image.HFieldImage;
 
-// import com.team2363.helixnavigator.document.HDocument;
-// import com.team2363.lib.base64.Base64Decoder;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.image.ImageView;
 
-// import javafx.scene.image.Image;
-// import javafx.scene.image.ImageView;
+public class FieldImageView extends ImageView {
 
-// public class FieldImageView extends ImageView {
-//     private HDocument document;
-//     private Image image;
-//     public FieldImageView() {
-        
-//     }
-//     public void loadDocument(HDocument document) {
-//         this.document = document;
-//         image = b64ToImage(this.document.getField().getFieldImageB64()); // NOTE: Try removing these line and see if it affects program
-//         setImage(image);                                                 // including this one
-//         this.document.getField().fieldImageB64Property().addListener((currentVal, oldVal, newVal) -> {
-//             image = b64ToImage(newVal);
-//             setImage(image);
-//         });
-//         // translateXProperty().bind(document.getSelectedPath().zoomXOffsetProperty());
-//         // translateYProperty().bind(document.getSelectedPath().zoomYOffsetProperty());
-//         // scaleXProperty().bind(document.getSelectedPath().zoomScaleProperty());
-//         // scaleYProperty().bind(document.getSelectedPath().zoomScaleProperty());
-//     }
+    private final DocumentManager documentManager;
 
-//     public static Image b64ToImage(String b64String) {
-//         Base64Decoder decoder = new Base64Decoder(b64String);
-//         InputStream decodedStream = decoder.getDecodedInputStream();
-//         return new Image(decodedStream);
-//     }
-// }
+    public FieldImageView(DocumentManager documentManager) {
+        System.out.println(getOnScroll());
+        this.documentManager = documentManager;
+        documentManager.documentProperty().addListener(this::documentChanged);
+    }
+
+    private void documentChanged(ObservableValue<? extends HDocument> currentDocument, HDocument oldDocument, HDocument newDocument) {
+        unloadDocument(oldDocument);
+        loadDocument(newDocument);
+    }
+
+    private void unloadDocument(HDocument oldDocument) {
+        if (oldDocument != null) {
+            unloadFieldImage(oldDocument.getFieldImage());
+            unloadSelectedPath(oldDocument.getSelectedPath());
+            oldDocument.fieldImageProperty().removeListener(this::fieldImageChanged);
+            oldDocument.selectedPathProperty().removeListener(this::selectedPathChanged);
+        }
+    }
+
+    private void loadDocument(HDocument newDocument) {
+        if (newDocument != null) {
+            loadFieldImage(newDocument.getFieldImage());
+            loadSelectedPath(newDocument.getSelectedPath());
+            newDocument.fieldImageProperty().addListener(this::fieldImageChanged);
+            newDocument.selectedPathProperty().addListener(this::selectedPathChanged);
+        }
+    }
+
+    private void fieldImageChanged(ObservableValue<? extends HFieldImage> currentFieldImage, HFieldImage oldFieldImage, HFieldImage newFieldImage) {
+        unloadFieldImage(oldFieldImage);
+        loadFieldImage(newFieldImage);
+    }
+
+    private void unloadFieldImage(HFieldImage fieldImage) {
+        if (fieldImage != null) {
+            setImage(null);
+        }
+    }
+
+    private void loadFieldImage(HFieldImage fieldImage) {
+        if (fieldImage != null) {
+            setImage(fieldImage.getImage());
+        }
+    }
+
+    private void selectedPathChanged(ObservableValue<? extends HPath> currentPath, HPath oldPath, HPath newPath) {
+        unloadSelectedPath(oldPath);
+        loadSelectedPath(newPath);
+    }
+
+    private void unloadSelectedPath(HPath oldPath) {
+        if (oldPath != null) {
+            xProperty().unbind();
+            yProperty().unbind();
+            setOnScroll(null);
+        }
+    }
+
+    private void loadSelectedPath(HPath newPath) {
+        if (newPath != null) {
+            xProperty().bind(newPath.zoomXOffsetProperty());
+            yProperty().bind(newPath.zoomYOffsetProperty());
+            setOnScroll(newPath::handleScroll);
+        }
+    }
+}

@@ -16,8 +16,10 @@ public class MainStage {
         documentManager = new DocumentManager(this.stage);
         mainScene = new MainScene(documentManager);
         this.stage.setTitle("Helix Navigator");
-        this.stage.setHeight(600);
-        this.stage.setWidth(800);
+        this.stage.setHeight(700);
+        this.stage.setWidth(1200);
+        this.stage.setMinWidth(400);
+        this.stage.setMinHeight(100);
         this.stage.setOnCloseRequest(this::onWindowCloseRequest);
         this.stage.setScene(mainScene.getScene());
     }

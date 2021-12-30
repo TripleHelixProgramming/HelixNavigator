@@ -16,7 +16,8 @@ public class SelectionModelTest {
         ObservableList<HPolygonPoint> list = FXCollections.<HPolygonPoint>observableArrayList(points);
         
         HSelectionModel<HPolygonPoint> selectionModel = new HSelectionModel<>(list);
-        selectionModel.selectAll();
+        selectionModel.select(5);
+        selectionModel.select(5);
         System.out.println(selectionModel.getSelectedIndices());
         System.out.println(selectionModel.getSelectedItems());
 

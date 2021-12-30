@@ -25,14 +25,18 @@ import com.jlbabilino.json.DeserializedJSONTarget;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONObjectValue;
 
-// import org.team2363.helixnavigator.document.field.HField;
+import org.team2363.helixnavigator.document.field.image.HFieldImage;
+import org.team2363.helixnavigator.global.Standards;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -43,14 +47,13 @@ import javafx.collections.ObservableList;
  * @author Justin Babilino
  */
 @JSONSerializable
-public class HDocument {
+public class HDocument { // TODO: work on encapsulation of fields
 
     /**
      * The field that contains the image that the Editor pane will display behind
-     * the paths. This is not defined as a property because <code>HField</code> is
-     * designed to be a mutable type that should never be reassigned.
+     * the path editor.
      */
-    // private final HField field = null;
+    private final ObjectProperty<HFieldImage> fieldImage = new SimpleObjectProperty<>(this, "fieldImage", Standards.DEFAULT_FIELD_IMAGE);
     /**
      * The list of paths in this document. A path can be selected to be displayed in
      * the Editor pane.
@@ -63,6 +66,7 @@ public class HDocument {
      * the Editor pane.
      */
     private final IntegerProperty selectedPathIndex = new SimpleIntegerProperty(this, "selectedPathIndex", -1);
+    private final ReadOnlyObjectWrapper<HPath> selectedPath = new ReadOnlyObjectWrapper<>(this, "selectedPath", null);
     /**
      * The file path that this document should be saved to
      */
@@ -76,16 +80,32 @@ public class HDocument {
     @DeserializedJSONConstructor
     public HDocument() {
         paths.addListener((ListChangeListener.Change<? extends HPath> change) -> {
-            if (paths.size() > 0) {
-                setSelectedPathIndex(0);
+            if (paths.size() == 0) {
+                setSelectedPathIndex(-1);
+            }
+        });
+        selectedPathIndex.addListener((currentIndex, oldIndex, newIndex) -> {
+            if (newIndex.intValue() >= 0 && newIndex.intValue() < paths.size()) {
+                setSelectedPath(paths.get(newIndex.intValue()));
+            } else {
+                setSelectedPath(null);
             }
         });
     }
 
-    // @SerializedJSONObjectValue(key = "field")
-    // public final HField getField() {
-    //     return field;
-    // }
+    public final ObjectProperty<HFieldImage> fieldImageProperty() {
+        return fieldImage;
+    }
+
+    @DeserializedJSONTarget
+    public final void setFieldImage(@DeserializedJSONObjectValue(key = "field_image") HFieldImage value) {
+        fieldImage.set(value);
+    }
+
+    @SerializedJSONObjectValue(key = "field_image")
+    public final HFieldImage getFieldImage() {
+        return fieldImage.get();
+    }
 
     @DeserializedJSONTarget
     public final void setPaths(@DeserializedJSONObjectValue(key = "paths") List<? extends HPath> newPaths) {
@@ -111,12 +131,20 @@ public class HDocument {
         return selectedPathIndex.get();
     }
 
-    public final boolean isPathSelected() {
-        return getSelectedPathIndex() >= 0;
+    public final ReadOnlyObjectProperty<HPath> selectedPathProperty() {
+        return selectedPath.getReadOnlyProperty();
+    }
+
+    private final void setSelectedPath(HPath value) {
+        selectedPath.set(value);
     }
 
     public final HPath getSelectedPath() {
-        return paths.get(getSelectedPathIndex());
+        return selectedPath.get();
+    }
+
+    public final boolean isPathSelected() {
+        return getSelectedPathIndex() >= 0;
     }
 
     public final ObjectProperty<File> saveLocationProperty() {

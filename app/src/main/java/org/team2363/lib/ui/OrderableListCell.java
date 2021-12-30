@@ -36,9 +36,11 @@ public abstract class OrderableListCell<E> extends ListCell<E> {
             if (getItem() == null) {
                 return;
             }
-            Dragboard dragboard = startDragAndDrop(TransferMode.MOVE); //TODO: experiment with this
+            Dragboard dragboard = startDragAndDrop(TransferMode.COPY_OR_MOVE); //TODO: experiment with this
             List<E> selectedItems = getListView().getSelectionModel().getSelectedItems();
             dragboard.setDragView(dragView(selectedItems.size()));
+            dragboard.setDragViewOffsetX(50.0);
+            dragboard.setDragViewOffsetY(50.0);
             ClipboardContent clipboard = new ClipboardContent();
             File tempFile;
             try {
@@ -63,7 +65,7 @@ public abstract class OrderableListCell<E> extends ListCell<E> {
         });
         setOnDragOver(event -> {
             if (event.getDragboard().hasString() || event.getDragboard().hasFiles()) {
-                event.acceptTransferModes(TransferMode.ANY);
+                event.acceptTransferModes(TransferMode.MOVE);
             }
             if (event.getGestureSource() != this) {
                 double mouseY = event.getY();

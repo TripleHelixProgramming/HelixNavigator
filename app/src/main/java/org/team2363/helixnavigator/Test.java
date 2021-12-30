@@ -1,35 +1,27 @@
 package org.team2363.helixnavigator;
 
-import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HWaypoint;
-import org.team2363.helixnavigator.ui.MainStage;
-import org.team2363.helixnavigator.ui.document.WaypointListCell;
+import org.team2363.helixnavigator.document.field.image.HFieldImage;
+import org.team2363.helixnavigator.document.field.image.HReferenceFieldImage;
+import org.team2363.helixnavigator.global.DefaultFieldImages;
 
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.Scene;
-import javafx.scene.control.ListView;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class Test extends Application {
 
-    public static void main(String[] args) {
-        launch(args);
-    }
-
-    private MainStage mainStage;
-
     @Override
     public void start(Stage primaryStage) {
-        ObservableList<HWaypoint> items = FXCollections.<HWaypoint>observableArrayList(new HSoftWaypoint(), new HHardWaypoint());
-        ListView<HWaypoint> listView = new ListView<>(items);
-        listView.setCellFactory(list -> new WaypointListCell());
-        Pane pane = new Pane(listView);
-        Scene scene = new Scene(pane);
-        primaryStage.setScene(scene);
+        System.out.println(DefaultFieldImages.listNames());
+        HFieldImage fieldReference = new HReferenceFieldImage("2020: Infinite Recharge");
+        ImageView imageView = new ImageView(fieldReference.getImage());
+        primaryStage.setScene(new Scene(new Pane(imageView)));
         primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }

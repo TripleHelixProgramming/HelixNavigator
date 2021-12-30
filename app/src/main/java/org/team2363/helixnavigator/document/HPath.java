@@ -25,6 +25,7 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.input.ScrollEvent;
 
 @JSONSerializable
 public class HPath {
@@ -61,6 +62,11 @@ public class HPath {
                 setInPolygonPointModeProperty(false);
             }
         });
+    }
+
+    public void handleScroll(ScrollEvent event) {
+        setZoomXOffset(getZoomXOffset() - event.getDeltaX());
+        setZoomYOffset(getZoomYOffset() - event.getDeltaY());
     }
 
     public final StringProperty nameProperty() {

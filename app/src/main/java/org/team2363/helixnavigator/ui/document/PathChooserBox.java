@@ -63,6 +63,7 @@ public class PathChooserBox extends HBox {
         HBox.setHgrow(pathChooser, Priority.ALWAYS);
         plusButton.setOnAction(this::plusButtonPressed);
         minusButton.setOnAction(this::minusButtonPressed);
+        setMinHeight(USE_COMPUTED_SIZE);
         setSpacing(10.0);
         getChildren().addAll(pathChooser, plusButton, minusButton);
     }

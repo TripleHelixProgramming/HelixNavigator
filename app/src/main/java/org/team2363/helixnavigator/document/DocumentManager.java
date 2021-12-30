@@ -15,6 +15,7 @@ import com.jlbabilino.json.JSONParser;
 import com.jlbabilino.json.JSONParserException;
 import com.jlbabilino.json.JSONSerializer;
 
+import org.team2363.helixnavigator.global.Standards;
 import org.team2363.helixnavigator.ui.prompts.SavePrompt;
 
 import javafx.beans.property.ReadOnlyBooleanProperty;
@@ -45,9 +46,26 @@ public class DocumentManager {
     }
 
     private final void setDocument(HDocument value) {
-        System.out.println("setting doc");
+        System.out.println("DocumentManager: Setting document");
         setIsDocumentOpen(value != null); // spent about an hour trying to fix a bug:
         document.set(value);              // just had to switch these two lines
+        updateStageTitle();
+    }
+
+    private final void updateStageTitle() {
+        String title;
+        if (getIsDocumentOpen()) {
+            String docName;
+            if (getDocument().getSaveLocation() != null) {
+                docName = getDocument().getSaveLocation().getName();
+            } else {
+                docName = "New Document";
+            }
+            title = Standards.APPLICATION_NAME + "\u2014" + docName;
+        } else {
+            title = Standards.APPLICATION_NAME;
+        }
+        stage.setTitle(title);
     }
 
     public final HDocument getDocument() {
@@ -107,9 +125,8 @@ public class DocumentManager {
     private final boolean openDocument(File file) {
         try {
             System.out.println("Opening doc");
-            String jsonString = Files.readString(Path.of(file.getAbsolutePath()));
-            JSON parsedJSON = JSONParser.parseStringAsJSON(jsonString);
-            HDocument openedDocument = JSONDeserializer.deserializeJSON(parsedJSON, HDocument.class);
+            HDocument openedDocument = JSONDeserializer.deserialize(file, HDocument.class);
+            openedDocument.setSaveLocation(file);
             setDocument(openedDocument);
             return true;
         } catch (IOException e) {
@@ -179,19 +196,10 @@ public class DocumentManager {
      */
     private final boolean saveDocument() {
         File saveLocation = getDocument().getSaveLocation();
-        if (saveLocation.getParentFile().canWrite()) {
-            JSON json = JSONSerializer.serializeJSON(getDocument());
-            try {
-                PrintWriter writer = new PrintWriter(saveLocation);
-                writer.print(json.exportJSON());
-                writer.close();
-                // getDocument().setSaved(true);      -- implement later when state management is added as a feature
-                return true;
-            } catch (FileNotFoundException e) {
-                // I don't think this could ever happen since we checked already with canWrite
-                return false;
-            }
-        } else {
+        try {
+            JSONSerializer.serializeFile(getDocument(), saveLocation);
+            return true;
+        } catch (IOException e) {
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("File Error");
             alert.setContentText("Could not write to save location: " + saveLocation.getAbsolutePath()
@@ -233,6 +241,7 @@ public class DocumentManager {
             File saveLocation = fileChooser.showSaveDialog(stage);
             if (saveLocation != null) {
                 getDocument().setSaveLocation(saveLocation);
+                updateStageTitle();
                 return saveDocument();
             } else {
                 return false;
