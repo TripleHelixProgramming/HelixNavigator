@@ -18,8 +18,8 @@ import javafx.beans.property.SimpleDoubleProperty;
 
 public abstract class HWaypoint extends HPathElement {
 
-    public static final Pattern VALID_PATH_NAME = Pattern.compile("[a-z0-9 _\\-]+", Pattern.CASE_INSENSITIVE);
-    public static final int MAX_PATH_NAME_LENGTH = 50;
+    public static final Pattern VALID_WAYPOINT_NAME = Pattern.compile("[a-z0-9 _\\-]+", Pattern.CASE_INSENSITIVE);
+    public static final int MAX_WAYPOINT_NAME_LENGTH = 50;
     
     private static final TypeMarker<HSoftWaypoint> softType = new TypeMarker<HSoftWaypoint>() {};
     private static final TypeMarker<HHardWaypoint> hardType = new TypeMarker<HHardWaypoint>() {};
