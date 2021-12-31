@@ -12,9 +12,13 @@ import com.jlbabilino.json.JSONSerializer;
 import com.jlbabilino.json.TypeMarker;
 
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
-import org.team2363.helixnavigator.ui.prompts.FilteredTextField;
+import org.team2363.helixnavigator.document.waypoint.HWaypoint.WaypointType;
 import org.team2363.lib.ui.OrderableListCell;
+import org.team2363.lib.ui.prompts.FilteredTextField;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ListCell;
@@ -56,6 +60,8 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
         FOUR_DRAGGED = new Image(stream4);
     }
 
+    private final ObjectProperty<WaypointType> waypointType = new SimpleObjectProperty<>(this, "waypointType", WaypointType.SOFT);
+
     private final ImageView softView = new ImageView(SOFT);
     private final ImageView hardView = new ImageView(HARD);
     private final TextField textField = new FilteredTextField(HWaypoint.MAX_WAYPOINT_NAME_LENGTH, HWaypoint.VALID_WAYPOINT_NAME);
@@ -80,26 +86,37 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
                 cancelEdit();
             }
         });
+        waypointType.addListener(this::waypointTypeChanged);
     }
 
     @Override
     public void updateItem(HWaypoint item, boolean empty) {
         super.updateItem(item, empty);
-        if (item == null) {
-            textProperty().unbind();
+        textProperty().unbind();
+        waypointType.unbind();
+        if (empty || item == null) {
             setText("");
             setGraphic(null);
         } else {
+            updateWaypointType(item.getWaypointType());
+            waypointType.bind(item.waypointTypeProperty());
             textProperty().bind(item.nameProperty());
             setGraphic(graphicBox);
-            switch (item.getWaypointType()) {
-                case SOFT:
-                    graphicBox.getChildren().set(0, softView);
-                    break;
-                case HARD:
-                    graphicBox.getChildren().set(0, hardView);
-                    break;
-            }
+        }
+    }
+
+    private void waypointTypeChanged(ObservableValue<? extends WaypointType> currentType, WaypointType oldType, WaypointType newType) {
+        updateWaypointType(newType);
+    }
+
+    private void updateWaypointType(WaypointType newType) {
+        switch (newType) {
+            case SOFT:
+                graphicBox.getChildren().set(0, softView);
+                break;
+            case HARD:
+                graphicBox.getChildren().set(0, hardView);
+                break;
         }
     }
 

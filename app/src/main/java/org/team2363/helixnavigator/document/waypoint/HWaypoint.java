@@ -1,28 +1,22 @@
 package org.team2363.helixnavigator.document.waypoint;
 
-import org.team2363.helixnavigator.document.HPathElement;
-
 import java.util.regex.Pattern;
 
-import com.jlbabilino.json.DeserializedJSONDeterminer;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.DeserializedJSONTarget;
-import com.jlbabilino.json.JSONDeserializerException;
-import com.jlbabilino.json.JSONObject;
-import com.jlbabilino.json.JSONString;
 import com.jlbabilino.json.SerializedJSONObjectValue;
-import com.jlbabilino.json.TypeMarker;
+
+import org.team2363.helixnavigator.document.HPathElement;
 
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
-public abstract class HWaypoint extends HPathElement {
+public class HWaypoint extends HPathElement {
 
     public static final Pattern VALID_WAYPOINT_NAME = Pattern.compile("[a-z0-9 _\\-]+", Pattern.CASE_INSENSITIVE);
     public static final int MAX_WAYPOINT_NAME_LENGTH = 50;
-    
-    private static final TypeMarker<HSoftWaypoint> softType = new TypeMarker<HSoftWaypoint>() {};
-    private static final TypeMarker<HHardWaypoint> hardType = new TypeMarker<HHardWaypoint>() {};
 
     public static enum WaypointType {
         SOFT, HARD;
@@ -33,20 +27,48 @@ public abstract class HWaypoint extends HPathElement {
         }
     }
 
+    private final ObjectProperty<WaypointType> waypointType = new SimpleObjectProperty<>(this, "waypoint", WaypointType.SOFT);
     private final DoubleProperty x = new SimpleDoubleProperty(this, "x", 0.0);
     private final DoubleProperty y = new SimpleDoubleProperty(this, "y", 0.0);
+    private final DoubleProperty heading = new SimpleDoubleProperty(this, "x", 0.0);
 
-    protected HWaypoint() {
+    public HWaypoint() {
     }
-    
+
+    public HWaypoint(WaypointType waypointType) {
+        setWaypointType(waypointType);
+    }
+
+    public boolean isSoft() {
+        return getWaypointType() == WaypointType.SOFT;
+    }
+
+    public boolean isHard() {
+        return getWaypointType() == WaypointType.HARD;
+    }
+
     @Override
     public void translateRelativeX(double x) {
         setX(getX() + x);
     }
-    
+
     @Override
     public void translateRelativeY(double y) {
         setY(getY() + y);
+    }
+
+    public final ObjectProperty<WaypointType> waypointTypeProperty() {
+        return waypointType;
+    }
+
+    @DeserializedJSONTarget
+    public final void setWaypointType(@DeserializedJSONObjectValue(key = "waypoint_type") WaypointType value) {
+        waypointType.set(value); // TODO: null check, part of encapsulation work
+    }
+
+    @SerializedJSONObjectValue(key = "waypoint_type")
+    public final WaypointType getWaypointType() {
+        return waypointType.get();
     }
 
     public final DoubleProperty xProperty() {
@@ -77,30 +99,18 @@ public abstract class HWaypoint extends HPathElement {
         return y.get();
     }
 
-    public abstract WaypointType getWaypointType();
-
-    public boolean isSoft() {
-        return false;
+    public final DoubleProperty headingProperty() {
+        return heading;
     }
 
-    public boolean isHard() {
-        return false;
+    @DeserializedJSONTarget
+    public final void setHeading(@DeserializedJSONObjectValue(key = "heading") double value) {
+        heading.set(value);
     }
 
-    @DeserializedJSONDeterminer
-    public static final TypeMarker<? extends HWaypoint> abstractDeterminer(JSONObject jsonEntry) throws JSONDeserializerException {
-        if (!jsonEntry.containsKey("type")) {
-            throw new JSONDeserializerException("Unable to determine which type of waypoint to deserialize to since the key \"type\" is missing in the JSONObject.");
-        }
-        String waypointTypeString = ((JSONString) jsonEntry.get("type")).getString();
-        switch (waypointTypeString) {
-            case "soft":
-                return softType;
-            case "hard":
-                return hardType;
-            default:
-                throw new JSONDeserializerException("Unrecognized waypoint type string.");
-        }
+    @SerializedJSONObjectValue(key = "heading")
+    public final double getHeading() {
+        return heading.get();
     }
 
     @Override

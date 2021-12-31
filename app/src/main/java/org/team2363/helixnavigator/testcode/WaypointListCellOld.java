@@ -17,7 +17,6 @@ import com.jlbabilino.json.JSONParserException;
 import com.jlbabilino.json.JSONSerializer;
 import com.jlbabilino.json.TypeMarker;
 
-import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 
 import javafx.collections.ObservableList;
@@ -40,7 +39,7 @@ public class WaypointListCellOld extends ListCell<HWaypoint> {
         if (item == null) {
             setText("");
         } else {
-            String waypointTypeString = item instanceof HSoftWaypoint ? "Soft Waypoint" : "Hard Waypoint";
+            String waypointTypeString = item.getWaypointType().toString();
             String name = item.getName();
             setText(waypointTypeString + " " + name);
         }

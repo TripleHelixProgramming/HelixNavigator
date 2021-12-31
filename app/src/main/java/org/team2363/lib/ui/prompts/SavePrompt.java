@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.team2363.helixnavigator.ui.prompts;
+package org.team2363.lib.ui.prompts;
 
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;

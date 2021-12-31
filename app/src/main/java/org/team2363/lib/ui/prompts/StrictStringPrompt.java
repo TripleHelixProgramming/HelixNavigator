@@ -1,4 +1,4 @@
-package org.team2363.helixnavigator.ui.prompts;
+package org.team2363.lib.ui.prompts;
 
 import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;

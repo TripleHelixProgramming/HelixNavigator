@@ -19,7 +19,7 @@ package org.team2363.helixnavigator.ui.document;
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
-import org.team2363.helixnavigator.ui.prompts.StrictStringPrompt;
+import org.team2363.lib.ui.prompts.StrictStringPrompt;
 
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;

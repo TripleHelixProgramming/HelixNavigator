@@ -16,7 +16,7 @@ import com.jlbabilino.json.JSONParserException;
 import com.jlbabilino.json.JSONSerializer;
 
 import org.team2363.helixnavigator.global.Standards;
-import org.team2363.helixnavigator.ui.prompts.SavePrompt;
+import org.team2363.lib.ui.prompts.SavePrompt;
 
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;

@@ -4,9 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.team2363.helixnavigator.document.DocumentManager;
-import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+import org.team2363.helixnavigator.document.waypoint.HWaypoint.WaypointType;
+import org.team2363.helixnavigator.ui.prompts.WaypointEditDialog;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -98,40 +98,42 @@ public class WaypointListView extends ListView<HWaypoint> {
     }
 
     private void edit(ActionEvent event) {
-        
+        HWaypoint selectedWaypoint = documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().getSelectedItems().get(0);
+        WaypointEditDialog dialog = new WaypointEditDialog(selectedWaypoint);
+        dialog.show();
     }
 
     private void newSoftWaypoint(ActionEvent event) {
-        HSoftWaypoint newWaypoint = new HSoftWaypoint();
+        HWaypoint newWaypoint = new HWaypoint(WaypointType.SOFT);
         newWaypoint.setName(String.valueOf(documentManager.getDocument().getSelectedPath().getWaypoints().size()));
         documentManager.getDocument().getSelectedPath().getWaypoints().add(newWaypoint);
     }
     private void newHardWaypoint(ActionEvent event) {
-        HHardWaypoint newWaypoint = new HHardWaypoint();
+        HWaypoint newWaypoint = new HWaypoint(WaypointType.HARD);
         newWaypoint.setName(String.valueOf(documentManager.getDocument().getSelectedPath().getWaypoints().size()));
         documentManager.getDocument().getSelectedPath().getWaypoints().add(newWaypoint);
     }
     private void insertNewSoftWaypointBefore(ActionEvent event) {
         int selectedWaypointIndex = getSelectionModel().getSelectedIndex();
-        HSoftWaypoint newWaypoint = new HSoftWaypoint();
+        HWaypoint newWaypoint = new HWaypoint(WaypointType.SOFT);
         newWaypoint.setName(String.valueOf(selectedWaypointIndex));
         documentManager.getDocument().getSelectedPath().getWaypoints().add(selectedWaypointIndex, newWaypoint);
     }
     private void insertNewHardWaypointBefore(ActionEvent event) {
         int selectedWaypointIndex = getSelectionModel().getSelectedIndex();
-        HHardWaypoint newWaypoint = new HHardWaypoint();
+        HWaypoint newWaypoint = new HWaypoint(WaypointType.HARD);
         newWaypoint.setName(String.valueOf(selectedWaypointIndex));
         documentManager.getDocument().getSelectedPath().getWaypoints().add(selectedWaypointIndex, newWaypoint);
     }
     private void insertNewSoftWaypointAfter(ActionEvent event) {
         int selectedWaypointIndex = getSelectionModel().getSelectedIndex();
-        HSoftWaypoint newWaypoint = new HSoftWaypoint();
+        HWaypoint newWaypoint = new HWaypoint(WaypointType.SOFT);
         newWaypoint.setName(String.valueOf(selectedWaypointIndex + 1));
         documentManager.getDocument().getSelectedPath().getWaypoints().add(selectedWaypointIndex + 1, newWaypoint);
     }
     private void insertNewHardWaypointAfter(ActionEvent event) {
         int selectedWaypointIndex = getSelectionModel().getSelectedIndex();
-        HHardWaypoint newWaypoint = new HHardWaypoint();
+        HWaypoint newWaypoint = new HWaypoint(WaypointType.HARD);
         newWaypoint.setName(String.valueOf(selectedWaypointIndex + 1));
         documentManager.getDocument().getSelectedPath().getWaypoints().add(selectedWaypointIndex + 1, newWaypoint);
     }

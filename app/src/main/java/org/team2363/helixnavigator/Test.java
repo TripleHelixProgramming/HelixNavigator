@@ -1,7 +1,12 @@
 package org.team2363.helixnavigator;
 
+import com.jlbabilino.json.JSONSerializer;
+
 import org.team2363.helixnavigator.document.HPath;
-import org.team2363.helixnavigator.ui.prompts.FilteredTextField;
+import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+import org.team2363.helixnavigator.document.waypoint.HWaypoint.WaypointType;
+import org.team2363.helixnavigator.ui.prompts.WaypointEditDialog;
+import org.team2363.lib.ui.prompts.FilteredTextField;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -12,8 +17,11 @@ public class Test extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        FilteredTextField textField = new FilteredTextField(5, HPath.VALID_PATH_NAME);
-        primaryStage.setScene(new Scene(new Pane(textField)));
+        HWaypoint waypoint = new HWaypoint(WaypointType.SOFT);
+        System.out.println(JSONSerializer.serializeString(waypoint));
+        WaypointEditDialog dialog = new WaypointEditDialog(waypoint);
+        dialog.showAndWait();
+        System.out.println(JSONSerializer.serializeString(waypoint));
         // HardWaypointView view1 = new HardWaypointView();
         // view1.setX(100);
         // view1.setY(100);
@@ -30,9 +38,9 @@ public class Test extends Application {
         // view4.setSelected(true);
 
         // primaryStage.setScene(new Scene(new Pane(view1, view2, view3, view4)));
-        primaryStage.setWidth(1000);
-        primaryStage.setHeight(1000);
-        primaryStage.show();
+        // primaryStage.setWidth(1000);
+        // primaryStage.setHeight(1000);
+        // primaryStage.show();
     }
 
     public static void main(String[] args) {
