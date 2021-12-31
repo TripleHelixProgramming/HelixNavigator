@@ -1,4 +1,4 @@
-package org.team2363.helixnavigator.ui.document;
+package org.team2363.helixnavigator.testcode;
 // downloaded from https://gist.github.com/jewelsea/7821196 thanks for the test code!!
 // It's difficult to figure out who made this originally, it's all over the internet.
 import javafx.application.Application;

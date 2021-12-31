@@ -1,6 +1,7 @@
 package org.team2363.helixnavigator.ui.editor;
 
 import org.team2363.helixnavigator.document.DocumentManager;
+import org.team2363.helixnavigator.ui.editor.field.FieldImageView;
 
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;

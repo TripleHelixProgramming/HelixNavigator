@@ -1,4 +1,4 @@
-package org.team2363.helixnavigator.ui.editor;
+package org.team2363.helixnavigator.ui.editor.field;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
@@ -13,7 +13,6 @@ public class FieldImageView extends ImageView {
     private final DocumentManager documentManager;
 
     public FieldImageView(DocumentManager documentManager) {
-        System.out.println(getOnScroll());
         this.documentManager = documentManager;
         documentManager.documentProperty().addListener(this::documentChanged);
     }

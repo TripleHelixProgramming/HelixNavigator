@@ -36,7 +36,6 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -66,6 +65,10 @@ public class HDocument { // TODO: work on encapsulation of fields
      * the Editor pane.
      */
     private final IntegerProperty selectedPathIndex = new SimpleIntegerProperty(this, "selectedPathIndex", -1);
+    /**
+     * The currently selected path that aligns with the currently selected index.
+     * This property is read only.
+     */
     private final ReadOnlyObjectWrapper<HPath> selectedPath = new ReadOnlyObjectWrapper<>(this, "selectedPath", null);
     /**
      * The file path that this document should be saved to
@@ -80,17 +83,29 @@ public class HDocument { // TODO: work on encapsulation of fields
     @DeserializedJSONConstructor
     public HDocument() {
         paths.addListener((ListChangeListener.Change<? extends HPath> change) -> {
-            if (paths.size() == 0) {
+            if (!hasPaths()) {
                 setSelectedPathIndex(-1);
             }
         });
         selectedPathIndex.addListener((currentIndex, oldIndex, newIndex) -> {
-            if (newIndex.intValue() >= 0 && newIndex.intValue() < paths.size()) {
+            if (isPathSelected()) {
                 setSelectedPath(paths.get(newIndex.intValue()));
             } else {
                 setSelectedPath(null);
             }
         });
+    }
+
+    public final boolean hasPaths() {
+        return !getPaths().isEmpty();
+    }
+
+    public final boolean isPathSelected() {
+        return getSelectedPathIndex() >= 0 && getSelectedPathIndex() < getPaths().size();
+    }
+
+    public boolean isSaveLocationSet() {
+        return getSaveLocation() != null;
     }
 
     public final ObjectProperty<HFieldImage> fieldImageProperty() {
@@ -143,10 +158,6 @@ public class HDocument { // TODO: work on encapsulation of fields
         return selectedPath.get();
     }
 
-    public final boolean isPathSelected() {
-        return getSelectedPathIndex() >= 0;
-    }
-
     public final ObjectProperty<File> saveLocationProperty() {
         return saveLocation;
     }
@@ -157,10 +168,6 @@ public class HDocument { // TODO: work on encapsulation of fields
 
     public File getSaveLocation() {
         return saveLocation.get();
-    }
-
-    public boolean isSaveLocationSet() {
-        return getSaveLocation() != null;
     }
 
     public BooleanProperty savedProperty() {

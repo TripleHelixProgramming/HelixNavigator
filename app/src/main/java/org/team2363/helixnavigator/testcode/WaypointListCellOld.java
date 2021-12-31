@@ -1,4 +1,4 @@
-package org.team2363.helixnavigator.ui.document;
+package org.team2363.helixnavigator.testcode;
 
 import java.io.File;
 import java.io.FileNotFoundException;

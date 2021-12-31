@@ -12,6 +12,7 @@ import com.jlbabilino.json.JSONSerializer;
 import com.jlbabilino.json.TypeMarker;
 
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+import org.team2363.helixnavigator.ui.prompts.FilteredTextField;
 import org.team2363.lib.ui.OrderableListCell;
 
 import javafx.collections.ObservableList;
@@ -21,10 +22,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
-import javafx.scene.text.Text;
 import javafx.util.Callback;
 
 public class WaypointListCell extends OrderableListCell<HWaypoint> {
@@ -60,7 +58,7 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
 
     private final ImageView softView = new ImageView(SOFT);
     private final ImageView hardView = new ImageView(HARD);
-    private final TextField textField = new TextField();
+    private final TextField textField = new FilteredTextField(HWaypoint.MAX_WAYPOINT_NAME_LENGTH, HWaypoint.VALID_WAYPOINT_NAME);
     private final HBox graphicBox = new HBox();
 
     public WaypointListCell() {
@@ -68,8 +66,9 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
         softView.setFitHeight(20);
         hardView.setPreserveRatio(true);
         hardView.setFitHeight(20);
-        graphicBox.getChildren().add(softView); // have to use one image here
+        graphicBox.getChildren().add(softView); // have to use one image here even though we don't know which it is yet
         setEditable(true);
+        // cancel edit if clicked off of or ENTER is pressed:
         textField.setOnAction(event -> {
             if (isEditing()) {
                 cancelEdit();
@@ -106,7 +105,6 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
 
     @Override
     public void startEdit() {
-        System.out.println("Starting edit...");
         super.startEdit();
         setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         graphicBox.getChildren().add(1, textField);
@@ -117,11 +115,9 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
 
     @Override
     public void cancelEdit() {
-        System.out.println("Cancelling edit...");
         super.cancelEdit();
-        setContentDisplay(ContentDisplay.LEFT);
-        System.out.println("Removing text field...");
-        System.out.println(graphicBox.getChildren().remove(1) instanceof TextField);
+        setContentDisplay(ContentDisplay.LEFT); // sets both graphic and text to display
+        graphicBox.getChildren().remove(1);
         String newName = textField.getText();
         getItem().setName(newName);
     }

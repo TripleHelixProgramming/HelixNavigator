@@ -22,7 +22,7 @@ import javafx.scene.control.Dialog;
 
 public class SavePrompt extends Dialog<ButtonType> {
     public SavePrompt() {
-        setHeaderText("Do you want to save the current Document?");
+        setHeaderText("Do you want to save the current document?");
         getDialogPane().getButtonTypes().addAll(ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
     }
 }

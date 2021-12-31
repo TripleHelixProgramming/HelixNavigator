@@ -17,10 +17,13 @@
 package org.team2363.helixnavigator.ui.document;
 
 import org.team2363.helixnavigator.document.DocumentManager;
+import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
 import org.team2363.helixnavigator.ui.prompts.StrictStringPrompt;
 
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -32,6 +35,8 @@ import javafx.scene.layout.Priority;
 import javafx.util.StringConverter;
 
 public class PathChooserBox extends HBox {
+
+    private static final ObservableList<HPath> BLANK = FXCollections.<HPath>observableArrayList();
 
     private static final StringConverter<HPath> stringConverter = new StringConverter<HPath>() {
         @Override
@@ -56,21 +61,26 @@ public class PathChooserBox extends HBox {
 
     public PathChooserBox(DocumentManager documentManager) {
         this.documentManager = documentManager;
-        this.documentManager.documentProperty().addListener((currentVal, oldVal, newVal) -> refreshDocument());
+        loadDocument(this.documentManager.getDocument());
+        this.documentManager.documentProperty().addListener(this::documentChanged);
         pathChooser.setOnAction(this::pathSelected);
         pathChooser.setConverter(stringConverter);
         pathChooser.setMaxWidth(200);
         HBox.setHgrow(pathChooser, Priority.ALWAYS);
         plusButton.setOnAction(this::plusButtonPressed);
         minusButton.setOnAction(this::minusButtonPressed);
-        setMinHeight(USE_COMPUTED_SIZE);
         setSpacing(10.0);
         getChildren().addAll(pathChooser, plusButton, minusButton);
     }
 
     private void pathSelected(ActionEvent e) {
-        if (documentManager.getIsDocumentOpen()) {
-            documentManager.getDocument().setSelectedPathIndex(pathChooser.getSelectionModel().getSelectedIndex());
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().hasPaths()) {
+            int newIndex = pathChooser.getSelectionModel().getSelectedIndex();
+            if (newIndex < 0) {
+                newIndex = 0;
+                pathChooser.getSelectionModel().select(newIndex);
+            }
+            documentManager.getDocument().setSelectedPathIndex(newIndex);
         }
     }
 
@@ -82,39 +92,47 @@ public class PathChooserBox extends HBox {
                 HPath path = new HPath();
                 path.setName(response);
                 int newPathIndex = documentManager.getDocument().getPaths().size();
-                documentManager.getDocument().getPaths().add(newPathIndex, path);
-                System.out.println(documentManager.getDocument().getPaths());
-                System.out.println(pathChooser.getItems());
+                documentManager.getDocument().getPaths().add(path);
                 documentManager.getDocument().setSelectedPathIndex(newPathIndex);
             });
         }
     }
 
     private void minusButtonPressed(ActionEvent e) {
-        if (documentManager.getIsDocumentOpen() && !documentManager.getDocument().getPaths().isEmpty()) {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
             Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this path \""
                     + pathChooser.getValue().getName() + "\"?");
             alert.showAndWait().filter(result -> result == ButtonType.OK).ifPresent(result -> {
                 documentManager.getDocument().getPaths().remove(documentManager.getDocument().getSelectedPathIndex());
-                if (documentManager.getDocument().getSelectedPathIndex() < 0
-                        && !documentManager.getDocument().getPaths().isEmpty()) {
-                    documentManager.getDocument().setSelectedPathIndex(0);
-                }
             });
         }
     }
 
-    private void refreshDocument() {
-        System.out.println("PathChooserBox: Refreshing Document.");
-        if (documentManager.getIsDocumentOpen()) {
-            System.out.println("PathChooserBox: new document loaded");
-            pathChooser.setItems(documentManager.getDocument().getPaths());
-            pathChooser.getSelectionModel().select(documentManager.getDocument().getSelectedPathIndex());
-            documentManager.getDocument().selectedPathIndexProperty().addListener((currentVal, oldVal, newVal) -> {
-                pathChooser.getSelectionModel().select(newVal.intValue());
-            });
-        } else {
-            pathChooser.setItems(FXCollections.<HPath>observableArrayList());
+    private void documentChanged(ObservableValue<? extends HDocument> currentDocument, HDocument oldDocument, HDocument newDocument) {
+        unloadDocument(oldDocument);
+        loadDocument(newDocument);
+    }
+
+    private void unloadDocument(HDocument oldDocument) {
+        if (oldDocument != null) {
+            pathChooser.setItems(BLANK);
+            oldDocument.selectedPathIndexProperty().removeListener(this::selectedPathIndexChanged);
         }
+    }
+
+    private void loadDocument(HDocument newDocument) {
+        if (newDocument != null) {
+            pathChooser.setItems(newDocument.getPaths());
+            loadSelectedPathIndex(newDocument.getSelectedPathIndex());
+            newDocument.selectedPathIndexProperty().addListener(this::selectedPathIndexChanged);
+        }
+    }
+
+    private void selectedPathIndexChanged(ObservableValue<? extends Number> currentIndex, Number oldIndex, Number newIndex) {
+        loadSelectedPathIndex(newIndex);
+    }
+
+    private void loadSelectedPathIndex(Number newIndex) {
+        pathChooser.getSelectionModel().select(newIndex.intValue());
     }
 }

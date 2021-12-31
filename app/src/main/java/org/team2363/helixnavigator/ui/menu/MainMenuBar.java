@@ -23,8 +23,8 @@ public class MainMenuBar extends MenuBar {
             useSystemMenuBarProperty().set(true);
         }
 
-        fileMenu = new FileMenu(documentManager);
-        editMenu = new EditMenu(documentManager);
+        fileMenu = new FileMenu(this.documentManager);
+        editMenu = new EditMenu(this.documentManager);
         viewMenu = new ViewMenu();
 
         getMenus().add(fileMenu);
