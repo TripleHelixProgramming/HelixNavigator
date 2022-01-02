@@ -68,33 +68,33 @@ public class HPath {
         });
     }
 
-    private double startX;
-    private double startY;
+    private double dragInitialX;
+    private double dragInitialY;
+    private double zoomOffsetInitialX;
+    private double zoomOffsetInitialY;
     public void handleMousePressed(MouseEvent event) {
-        System.out.println("Drag beginning");
         if (event.getButton() == MouseButton.MIDDLE) {
-            startX = event.getX();
-            startY = event.getY();
+            dragInitialX = event.getX();
+            dragInitialY = event.getY();
+            zoomOffsetInitialX = getZoomXOffset();
+            zoomOffsetInitialY = getZoomYOffset();
         }
     }
     public void handleMouseDragged(MouseEvent event) {
-        System.out.println("Mouse dragged");
         if (event.getButton() == MouseButton.MIDDLE) {
-            pan(startX - event.getX(), startY - event.getY());
-            startX = event.getX();
-            startY = event.getY();
+            setZoomXOffset(zoomOffsetInitialX + (event.getX() - dragInitialX));
+            setZoomYOffset(zoomOffsetInitialY + (event.getY() - dragInitialY));
         }
-    }
-    public void handleMouseReleased(MouseEvent event) {
     }
 
     public void handleScroll(ScrollEvent event) {
-        int pixels = (int) (-10.0 * event.getDeltaY());
+        int pixels = (int) (-event.getDeltaY());
+        System.out.println(pixels);
         double factor;
         if (pixels >= 0) {
-            factor = 0.999;
+            factor = 0.995;
         } else {
-            factor = 1.001;
+            factor = 1.005;
             pixels = -pixels;
         }
         double pivotX = event.getX();

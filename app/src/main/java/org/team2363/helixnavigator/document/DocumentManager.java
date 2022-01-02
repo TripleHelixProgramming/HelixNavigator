@@ -294,4 +294,8 @@ public class DocumentManager {
             }
         }
     }
+
+    public Stage getStage() {
+        return stage;
+    }
 }

@@ -7,6 +7,8 @@ import org.team2363.helixnavigator.ui.editor.field.FieldImageView;
 import org.team2363.helixnavigator.ui.editor.waypoint.WaypointsLayer;
 
 import javafx.beans.value.ObservableValue;
+import javafx.scene.Cursor;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
@@ -28,6 +30,9 @@ public class PathPane extends Pane {
 
         setOnMousePressed(event -> {
             if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
+                if (event.getButton() == MouseButton.MIDDLE) {
+                    this.documentManager.getStage().getScene().setCursor(Cursor.CLOSED_HAND);
+                }
                 this.documentManager.getDocument().getSelectedPath().handleMousePressed(event);
             }
         });
@@ -38,7 +43,7 @@ public class PathPane extends Pane {
         });
         setOnMouseReleased(event -> {
             if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
-                this.documentManager.getDocument().getSelectedPath().handleMouseReleased(event);
+                this.documentManager.getStage().getScene().setCursor(Cursor.DEFAULT);
             }
         });
         setOnScroll(event -> {
