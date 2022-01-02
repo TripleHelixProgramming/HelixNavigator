@@ -1,4 +1,4 @@
-package org.team2363.helixnavigator.document.waypoint;
+package org.team2363.helixnavigator.testcode;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

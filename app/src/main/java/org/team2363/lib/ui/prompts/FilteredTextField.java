@@ -8,6 +8,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 
@@ -19,14 +20,7 @@ public class FilteredTextField extends TextField {
     protected final UnaryOperator<TextFormatter.Change> filter;
 
     public FilteredTextField() {
-        filter = input -> {
-            String newText = input.getControlNewText();
-            Matcher matcher = getValidator().matcher(newText);
-            if (!matcher.matches() || newText.length() > getMaxChars()) {
-                input.setText("");
-            }
-            return input;
-        };
+        filter = filterFor(maxChars, validator);
         setTextFormatter(new TextFormatter<TextFormatter.Change>(filter));
         maxChars.addListener((currentVal, oldVal, newVal) -> {
             if (getText().length() > newVal.intValue()) {
@@ -63,5 +57,27 @@ public class FilteredTextField extends TextField {
 
     public final Pattern getValidator() {
         return validator.get();
+    }
+
+    public static UnaryOperator<TextFormatter.Change> filterFor(int maxChars, Pattern validator) {
+        return input -> {
+            String newText = input.getControlNewText();
+            Matcher matcher = validator.matcher(newText);
+            if (!matcher.matches() || newText.length() > maxChars) {
+                input.setText("");
+            }
+            return input;
+        };
+    }
+
+    public static UnaryOperator<TextFormatter.Change> filterFor(ObservableValue<Number> maxChars, ObservableValue<Pattern> validator) {
+        return input -> {
+            String newText = input.getControlNewText();
+            Matcher matcher = validator.getValue().matcher(newText);
+            if (!matcher.matches() || newText.length() > maxChars.getValue().intValue()) {
+                input.setText("");
+            }
+            return input;
+        };
     }
 }

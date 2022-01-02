@@ -22,7 +22,6 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 
-// TODO: remember to credit code
 public abstract class OrderableListCell<E> extends ListCell<E> {
 
     private static final Border NO_BORDER = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0.0, 0.0, 0.0, 0.0)));
@@ -82,7 +81,6 @@ public abstract class OrderableListCell<E> extends ListCell<E> {
         setOnDragEntered(event -> {
         });
         setOnDragExited(event -> {
-            System.out.println("OrderableListCell: Drag exited.");
             setNoBorder();
         });
         setOnDragDropped(event -> {
@@ -90,7 +88,6 @@ public abstract class OrderableListCell<E> extends ListCell<E> {
             if (gestureSource == this) {
                 return;
             }
-            System.out.println("OrderableListCell: Drop gesture initiated.");
             Dragboard dragboard = event.getDragboard();
             ObservableList<E> items = getListView().getItems();
             boolean inItems = false;
@@ -104,7 +101,6 @@ public abstract class OrderableListCell<E> extends ListCell<E> {
             boolean success;
             dropAttempt: {
                 if (inItems) {
-                    System.out.println("OrderableListCell: Item found in list, swapping...");
                     ObservableList<Integer> selectedIndicies = getListView().getSelectionModel().getSelectedIndices();
                     List<E> selectedItems = new ArrayList<>(); // have to use this to avoid automatic updating
                     selectedItems.addAll(getListView().getSelectionModel().getSelectedItems());
@@ -114,19 +110,13 @@ public abstract class OrderableListCell<E> extends ListCell<E> {
                             numSelectedLessThanIndex++;
                         }
                     }
-                    System.out.println("Initial: " + items);
-                    System.out.println("Removing: " + selectedItems);
                     items.removeAll(selectedItems);
-                    System.out.println("After removing: " + items);
-                    System.out.println("OrderableListCell: " + numSelectedLessThanIndex + " items found selected before.");
                     index -= numSelectedLessThanIndex;
                     items.addAll(index, selectedItems);
                     getListView().getSelectionModel().clearSelection();
                     getListView().getSelectionModel().selectRange(index, index + selectedItems.size());
-                    System.out.println("Final: " + items);
                     success = true;
                 } else {
-                    System.out.println("OrderableListCell: Item NOT found in list, parsing...");
                     String string;
                     if (dragboard.hasString()) {
                         string = dragboard.getString();

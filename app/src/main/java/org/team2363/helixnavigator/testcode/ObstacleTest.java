@@ -1,8 +1,11 @@
-package org.team2363.helixnavigator.document.obstacle;
+package org.team2363.helixnavigator.testcode;
 
 import com.jlbabilino.json.JSON;
 import com.jlbabilino.json.JSONDeserializer;
 import com.jlbabilino.json.JSONSerializer;
+
+import org.team2363.helixnavigator.document.obstacle.HCircleObstacle;
+import org.team2363.helixnavigator.document.obstacle.HObstacle;
 
 public class ObstacleTest {
     public static void main(String[] args) throws Exception {

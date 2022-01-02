@@ -1,26 +1,11 @@
-/*
- * Copyright (C) 2021 Justin Babilino
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package org.team2363.helixnavigator.ui.document;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
-import org.team2363.lib.ui.prompts.StrictStringPrompt;
+import org.team2363.lib.ui.prompts.FilteredTextInputDialog;
 
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -38,7 +23,7 @@ public class PathChooserBox extends HBox {
 
     private static final ObservableList<HPath> BLANK = FXCollections.<HPath>observableArrayList();
 
-    private static final StringConverter<HPath> stringConverter = new StringConverter<HPath>() {
+    private static final StringConverter<HPath> PATH_CONVERTER = new StringConverter<HPath>() {
         @Override
         public String toString(HPath object) {
             if (object == null) {
@@ -59,12 +44,19 @@ public class PathChooserBox extends HBox {
     private final Button plusButton = new Button("+");
     private final Button minusButton = new Button("-");
 
+    private final ChangeListener<? super Number> onSelectedPathIndexChanged = this::selectedPathIndexChanged;
+
     public PathChooserBox(DocumentManager documentManager) {
         this.documentManager = documentManager;
+
         loadDocument(this.documentManager.getDocument());
         this.documentManager.documentProperty().addListener(this::documentChanged);
+
         pathChooser.setOnAction(this::pathSelected);
-        pathChooser.setConverter(stringConverter);
+        // Note that it is not necessary to check if the selected path changes in the document since
+        // the path chooser box has exclusive control over the selected path, no other ui elements
+        // should change it.
+        pathChooser.setConverter(PATH_CONVERTER);
         pathChooser.setMaxWidth(200);
         HBox.setHgrow(pathChooser, Priority.ALWAYS);
         plusButton.setOnAction(this::plusButtonPressed);
@@ -73,21 +65,26 @@ public class PathChooserBox extends HBox {
         getChildren().addAll(pathChooser, plusButton, minusButton);
     }
 
-    private void pathSelected(ActionEvent e) {
+    private void pathSelected(ActionEvent event) {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().hasPaths()) {
             int newIndex = pathChooser.getSelectionModel().getSelectedIndex();
             if (newIndex < 0) {
-                newIndex = 0;
+                newIndex = 0; // this fixes a bug in ComboBox where
+                              // deleting the first item in the list
+                              // causes the selected index to go to -1
                 pathChooser.getSelectionModel().select(newIndex);
             }
             documentManager.getDocument().setSelectedPathIndex(newIndex);
         }
     }
 
-    private void plusButtonPressed(ActionEvent e) {
+    private void plusButtonPressed(ActionEvent event) {
         if (documentManager.getIsDocumentOpen()) {
-            StrictStringPrompt prompt = new StrictStringPrompt("Enter a valid path name", "Path name",
-                    HPath.MAX_PATH_NAME_LENGTH, HPath.VALID_PATH_NAME);
+            FilteredTextInputDialog prompt = new FilteredTextInputDialog();
+            prompt.setHeaderText("Enter a valid path name");
+            prompt.getEditor().setPromptText("Path name");
+            prompt.setMaxChars(HPath.MAX_PATH_NAME_LENGTH);
+            prompt.setValidator(HPath.VALID_PATH_NAME);
             prompt.showAndWait().ifPresent(response -> {
                 HPath path = new HPath();
                 path.setName(response);
@@ -98,12 +95,13 @@ public class PathChooserBox extends HBox {
         }
     }
 
-    private void minusButtonPressed(ActionEvent e) {
+    private void minusButtonPressed(ActionEvent event) {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
             Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this path \""
                     + pathChooser.getValue().getName() + "\"?");
             alert.showAndWait().filter(result -> result == ButtonType.OK).ifPresent(result -> {
                 documentManager.getDocument().getPaths().remove(documentManager.getDocument().getSelectedPathIndex());
+                // this will trigger pathSelected()
             });
         }
     }
@@ -116,7 +114,7 @@ public class PathChooserBox extends HBox {
     private void unloadDocument(HDocument oldDocument) {
         if (oldDocument != null) {
             pathChooser.setItems(BLANK);
-            oldDocument.selectedPathIndexProperty().removeListener(this::selectedPathIndexChanged);
+            oldDocument.selectedPathIndexProperty().removeListener(onSelectedPathIndexChanged);
         }
     }
 
@@ -124,7 +122,7 @@ public class PathChooserBox extends HBox {
         if (newDocument != null) {
             pathChooser.setItems(newDocument.getPaths());
             loadSelectedPathIndex(newDocument.getSelectedPathIndex());
-            newDocument.selectedPathIndexProperty().addListener(this::selectedPathIndexChanged);
+            newDocument.selectedPathIndexProperty().addListener(onSelectedPathIndexChanged);
         }
     }
 

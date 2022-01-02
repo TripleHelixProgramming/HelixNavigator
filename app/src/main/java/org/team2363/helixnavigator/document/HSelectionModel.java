@@ -6,26 +6,24 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
-public class HSelectionModel<T extends HPathElement> {
+public class HSelectionModel<E extends HPathElement> {
 
-    private final ObservableList<T> items;
+    private final ObservableList<E> items;
 
     private final ObservableList<Integer> selectedIndices = FXCollections.<Integer>observableArrayList();
-    private final ObservableList<Integer> unmodifiableSelectedIndices; // test instantiation of this field
-    private final ObservableList<T> selectedItems = FXCollections.<T>observableArrayList();
-    private final ObservableList<T> unmodifiableSelectedItems;
+    private final ObservableList<Integer> unmodifiableSelectedIndices = FXCollections.<Integer>unmodifiableObservableList(selectedIndices);
+    private final ObservableList<E> selectedItems = FXCollections.<E>observableArrayList();
+    private final ObservableList<E> unmodifiableSelectedItems = FXCollections.<E>unmodifiableObservableList(selectedItems);
 
-    public HSelectionModel(ObservableList<T> items) {
+    public HSelectionModel(ObservableList<E> items) {
         this.items = items;
-        unmodifiableSelectedIndices = FXCollections.<Integer>unmodifiableObservableList(selectedIndices);
-        unmodifiableSelectedItems = FXCollections.<T>unmodifiableObservableList(selectedItems);
         items.addListener(this::itemsChanged);
     }
 
-    private void itemsChanged(ListChangeListener.Change<? extends T> change) {
+    private void itemsChanged(ListChangeListener.Change<? extends E> change) {
         while (change.next()) {
             if (change.wasRemoved()) {
-                for (T item : change.getRemoved()) {
+                for (E item : change.getRemoved()) {
                     int indexOfItem = selectedItems.indexOf(item);
                     if (indexOfItem != -1) { // if item that was removed from list was selected, then remove from
                                              // selectedIndices
@@ -43,7 +41,7 @@ public class HSelectionModel<T extends HPathElement> {
         return unmodifiableSelectedIndices;
     }
 
-    public ObservableList<T> getSelectedItems() {
+    public ObservableList<E> getSelectedItems() {
         return unmodifiableSelectedItems;
     }
 
@@ -144,22 +142,22 @@ public class HSelectionModel<T extends HPathElement> {
         }
     }
 
-    public void select(T item) {
+    public void select(E item) {
         select(items.indexOf(item)); // note if item is not in items it will return -1, and select(int) will not
                                      // actually select it
     }
 
-    public void selectItems(Collection<? extends T> collection) {
-        for (T item : collection) {
+    public void selectItems(Collection<? extends E> collection) {
+        for (E item : collection) {
             select(item);
         }
     }
 
-    public void deselect(T item) {
+    public void deselect(E item) {
         deselect(items.indexOf(item));
     }
 
-    public void toggle(T item) {
+    public void toggle(E item) {
         toggle(items.indexOf(item));
     }
 }

@@ -1,15 +1,19 @@
 package org.team2363.lib.ui.prompts;
 
+import static org.team2363.lib.ui.prompts.FilteredTextField.filterFor;
+
+import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.util.StringConverter;
 
-public class DecimalTextField extends FilteredTextField {
+public class DecimalTextField extends TextField {
 
-    private static final StringConverter<Double> DECIMAL_CONVERTER = new StringConverter<Double>() {
+    public static final StringConverter<Double> DECIMAL_CONVERTER = new StringConverter<Double>() {
 
         @Override
         public String toString(Double object) {
@@ -28,14 +32,14 @@ public class DecimalTextField extends FilteredTextField {
                 return Double.parseDouble(string);
             }
         }
-        
     };
+    public static final Pattern DECIMAL_VALIDATOR = Pattern.compile("-?\\d*(\\.\\d*)?");
+    public static final UnaryOperator<TextFormatter.Change> DECIMAL_FILTER = filterFor(Integer.MAX_VALUE, DECIMAL_VALIDATOR);
 
     private final ObjectProperty<Double> value;
 
     public DecimalTextField() {
-        super(Integer.MAX_VALUE, Pattern.compile("-?\\d*(\\.\\d*)?"));
-        TextFormatter<Double> formatter = new TextFormatter<Double>(DECIMAL_CONVERTER, 0.0, filter);
+        TextFormatter<Double> formatter = new TextFormatter<Double>(DECIMAL_CONVERTER, 0.0, DECIMAL_FILTER);
         value = formatter.valueProperty();
         setTextFormatter(formatter);
         setText("0.0");
@@ -48,6 +52,10 @@ public class DecimalTextField extends FilteredTextField {
 
     public final ObjectProperty<Double> valueProperty() {
         return value;
+    }
+
+    public final void setValue(double value) {
+        this.value.set(value);
     }
     
     public final double getValue() {

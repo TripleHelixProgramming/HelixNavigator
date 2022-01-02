@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2021 Justin Babilino
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package org.team2363.helixnavigator.document.obstacle;
 
 import com.jlbabilino.json.DeserializedJSONDeterminer;
@@ -64,7 +48,7 @@ public abstract class HObstacle extends HPathElement {
         return safetyDistance.get();
     }
 
-    @SerializedJSONObjectValue(key = "type")
+    @SerializedJSONObjectValue(key = "obstacle_type")
     public abstract ObstacleType getObstacleType();
 
     public boolean isPolygon() {
@@ -77,10 +61,10 @@ public abstract class HObstacle extends HPathElement {
     
     @DeserializedJSONDeterminer
     public static final TypeMarker<? extends HObstacle> abstractDeterminer(JSONObject jsonEntry) throws JSONDeserializerException {
-        if (!jsonEntry.containsKey("type")) {
-            throw new JSONDeserializerException("Unable to determine which type of obstacle to deserialize to since the key \"type\" is missing in the JSONObject.");
+        if (!jsonEntry.containsKey("obstacle_type")) {
+            throw new JSONDeserializerException("Unable to determine which type of obstacle to deserialize to since the key \"obstacle_type\" is missing in the JSONObject.");
         }
-        String typeString = ((JSONString) jsonEntry.get("type")).getString();
+        String typeString = ((JSONString) jsonEntry.get("obstacle_type")).getString();
         switch (typeString) {
             case "polygon":
                 return polygonType;

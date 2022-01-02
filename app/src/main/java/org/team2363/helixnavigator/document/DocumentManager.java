@@ -1,17 +1,11 @@
 package org.team2363.helixnavigator.document;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Optional;
 
-import com.jlbabilino.json.JSON;
 import com.jlbabilino.json.JSONDeserializer;
 import com.jlbabilino.json.JSONDeserializerException;
-import com.jlbabilino.json.JSONParser;
 import com.jlbabilino.json.JSONParserException;
 import com.jlbabilino.json.JSONSerializer;
 
@@ -61,7 +55,7 @@ public class DocumentManager {
             } else {
                 docName = "New Document";
             }
-            title = Standards.APPLICATION_NAME + "\u2014" + docName;
+            title = Standards.APPLICATION_NAME + "\u2014" + docName; // escaped em dash
         } else {
             title = Standards.APPLICATION_NAME;
         }
@@ -77,16 +71,13 @@ public class DocumentManager {
     }
 
     private final void setIsDocumentOpen(boolean value) {
-        System.out.println("DocumentManager: isDocumentOpen set to " + value);
         isDocumentOpen.set(value);
     }
 
     public final boolean getIsDocumentOpen() {
         return isDocumentOpen.get();
     }
-    /**
-     * Sets the document to {@code null}
-     */
+
     private final void closeDocument() {
         setDocument(null);
     }
@@ -105,7 +96,7 @@ public class DocumentManager {
      * @return {@code true} if and only if a new document was created and loaded.
      */
     public final boolean requestNewDocument() {
-        System.out.println("DocumentManager: Requesting new document.");
+        System.out.println("DocumentManager: User requested \"New Document\".");
         if (requestCloseDocument()) {
             System.out.println("DocumentManager: Document succesfully closed, setting to new blank document.");
             setDocument(new HDocument());
@@ -124,7 +115,7 @@ public class DocumentManager {
      */
     private final boolean openDocument(File file) {
         try {
-            System.out.println("Opening doc");
+            System.out.println("DocumentManager: Opening file: " + file);
             HDocument openedDocument = JSONDeserializer.deserialize(file, HDocument.class);
             openedDocument.setSaveLocation(file);
             setDocument(openedDocument);
@@ -158,7 +149,7 @@ public class DocumentManager {
      */
     public final boolean requestOpenDocument() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select a HelixNavigator Document");
+        fileChooser.setTitle("Select a Document");
         fileChooser.getExtensionFilters().add(DOCUMENT_FILE_TYPE);
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
@@ -179,8 +170,6 @@ public class DocumentManager {
             return false;
         }
     }
-
-    // TODO: Save stuff here:
 
     /**
      * <p>
@@ -219,11 +208,19 @@ public class DocumentManager {
     }
 
     /**
+     * <p>
+     * <b>Precondition: </b> A document should be open.
+     * </p>
+     * <p>
+     * Prompts the user to save the document. If the save location is already set, then
+     * it will be saved there, but it it isn't set, then the user will be prompted to select
+     * a save location.
+     * </p>
      * 
-     * @return
+     * @return {@code true} if and only if there is no document open or the open document was saved successfully
      */
     public final boolean requestSaveDocument() {
-        if (getIsDocumentOpen()) { // TODO: these checks should be removed soon, the menu items should just be grayyed out
+        if (getIsDocumentOpen()) {
             if (getDocument().isSaveLocationSet()) {
                 return saveDocument();
             } else {
@@ -234,6 +231,16 @@ public class DocumentManager {
         }
     }
 
+    /**
+     * <p>
+     * <b>Precondition: </b> A document should be open.
+     * </p>
+     * <p>
+     * Prompts the user to save the document to a specific location.
+     * </p>
+     * 
+     * @return {@code true} if and only if there is no document open or the open document was saved successfully
+     */
     public final boolean requestSaveAsDocument() {
         if (getIsDocumentOpen()) {
             FileChooser fileChooser = new FileChooser();
@@ -271,14 +278,18 @@ public class DocumentManager {
             System.out.println("DocumentManager: Document is not saved, prompting user...");
             SavePrompt prompt = new SavePrompt();
             Optional<ButtonType> response = prompt.showAndWait();
-            if (response.get() == ButtonType.YES) {
-                requestSaveDocument();
-                closeDocument();
-                return true;
-            } else if (response.get() == ButtonType.NO) {
-                closeDocument();
-                return true;
-            } else {
+            if (response.isPresent()) {
+                if (response.orElseThrow() == ButtonType.YES) {
+                    requestSaveDocument();
+                    closeDocument();
+                    return true;
+                } else if (response.orElseThrow() == ButtonType.NO) {
+                    closeDocument();
+                    return true;
+                } else {
+                    return false;
+                }
+            } else { // pressed x to close stage
                 return false;
             }
         }

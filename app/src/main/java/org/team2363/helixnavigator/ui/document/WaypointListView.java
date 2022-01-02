@@ -1,13 +1,15 @@
 package org.team2363.helixnavigator.ui.document;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.team2363.helixnavigator.document.DocumentManager;
+import org.team2363.helixnavigator.document.HDocument;
+import org.team2363.helixnavigator.document.HPath;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint.WaypointType;
-import org.team2363.helixnavigator.ui.prompts.WaypointEditDialog;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -16,7 +18,6 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.input.ContextMenuEvent;
 
 public class WaypointListView extends ListView<HWaypoint> {
 
@@ -25,51 +26,33 @@ public class WaypointListView extends ListView<HWaypoint> {
     private final DocumentManager documentManager;
 
     private final ContextMenu noneSelectedContextMenu = new ContextMenu();
-    private final ContextMenu singleSelectedContextMenu = new ContextMenu();
-    private final ContextMenu multipleSelectedContextMenu = new ContextMenu();
+    private final MenuItem newSoftWaypointMenuItem = new MenuItem("New soft waypoint");
+    private final MenuItem newHardWaypointMenuItem = new MenuItem("New hard waypoint");
 
-    private final MenuItem editMenuItem = new MenuItem("Edit...");
-    private final MenuItem newSoftWaypointContextMenuItem = new MenuItem("New soft waypoint");
-    private final MenuItem newHardWaypointContextMenuItem = new MenuItem("New hard waypoint");
-    private final MenuItem insertNewSoftWaypointBeforeMenuItem = new MenuItem("Insert new soft waypoint before");
-    private final MenuItem insertNewHardWaypointBeforeMenuItem = new MenuItem("Insert new hard waypoint before");
-    private final MenuItem insertNewSoftWaypointAfterMenuItem = new MenuItem("Insert new soft waypoint after");
-    private final MenuItem insertNewHardWaypointAfterMenuItem = new MenuItem("Insert new hard waypoint after");
-    private final MenuItem deleteSingleWaypointMenuItem = new MenuItem("Delete waypoint");
-    private final MenuItem deleteMultipleWaypointMenuItem = new MenuItem("Delete waypoints");
+    private final ListChangeListener<? super Integer> onListViewSelectedIndicesChanged = this::listViewSelectedIndicesChanged;
+    private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
+    private final ListChangeListener<? super Integer> onPathSelectedWaypointsIndiciesChanged = this::pathSelectedWaypointsIndiciesChanged;
 
     public WaypointListView(DocumentManager documentManager) {
         this.documentManager = documentManager;
-        this.documentManager.documentProperty().addListener((currentVal, oldVal, newVal) -> refreshDocument());
-
-        editMenuItem.setOnAction(this::edit);
-        newSoftWaypointContextMenuItem.setOnAction(this::newSoftWaypoint);
-        newHardWaypointContextMenuItem.setOnAction(this::newHardWaypoint);
-        insertNewSoftWaypointBeforeMenuItem.setOnAction(this::insertNewSoftWaypointBefore);
-        insertNewHardWaypointBeforeMenuItem.setOnAction(this::insertNewHardWaypointBefore);
-        insertNewSoftWaypointAfterMenuItem.setOnAction(this::insertNewSoftWaypointAfter);
-        insertNewHardWaypointAfterMenuItem.setOnAction(this::insertNewHardWaypointAfter);
-        deleteSingleWaypointMenuItem.setOnAction(this::deleteSingleWaypoint);
-        deleteMultipleWaypointMenuItem.setOnAction(this::deleteMultipleWaypoint);
-
-        noneSelectedContextMenu.getItems().addAll(newSoftWaypointContextMenuItem, newHardWaypointContextMenuItem);
-        singleSelectedContextMenu.getItems().addAll(editMenuItem, insertNewSoftWaypointBeforeMenuItem, insertNewHardWaypointBeforeMenuItem, insertNewSoftWaypointAfterMenuItem, insertNewHardWaypointAfterMenuItem, deleteSingleWaypointMenuItem);
-        multipleSelectedContextMenu.getItems().addAll(deleteMultipleWaypointMenuItem);
-
-        noneSelectedContextMenu.setAutoHide(true);
-        singleSelectedContextMenu.setAutoHide(true);
-        multipleSelectedContextMenu.setAutoHide(true);
+        loadDocument(this.documentManager.getDocument());
+        this.documentManager.documentProperty().addListener(this::documentChanged);
 
         setEditable(true);
         setMinHeight(USE_COMPUTED_SIZE);
+        setItems(BLANK);
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        getSelectionModel().getSelectedIndices().addListener(this::selectedIndicesChanged);
+        getSelectionModel().getSelectedIndices().addListener(onListViewSelectedIndicesChanged);
         setCellFactory(WaypointListCell.waypointCellFactory);
-        setOnContextMenuRequested(this::contextMenuRequested);
+        noneSelectedContextMenu.getItems().addAll(newSoftWaypointMenuItem, newHardWaypointMenuItem);
+        newSoftWaypointMenuItem.setOnAction(this::newSoftWaypoint);
+        newHardWaypointMenuItem.setOnAction(this::newHardWaypoint);
+        noneSelectedContextMenu.setAutoHide(true);
+        setContextMenu(noneSelectedContextMenu);
     }
 
-    private void selectedIndicesChanged(ListChangeListener.Change<? extends Integer> change) {
-        // check if there is a path to deselect or select waypointso on
+    private void listViewSelectedIndicesChanged(ListChangeListener.Change<? extends Integer> change) {
+        // check if there is a path to deselect or select waypoints on
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
             while (change.next()) {
                 if (change.wasAdded()) {
@@ -79,94 +62,72 @@ public class WaypointListView extends ListView<HWaypoint> {
                 if (change.wasRemoved()) {
                     List<? extends Integer> list = change.getRemoved();
                     documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().deselectIndices(list);
-                }
+                } // TODO: consider changing this to just setting the selected waypoints to the listview selected waypoints
             }
         }
-    }
-
-    private void contextMenuRequested(ContextMenuEvent event) {
-        ObservableList<Integer> selectedIndices = getSelectionModel().getSelectedIndices();
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().getSelectedPathIndex() != -1) {
-            if (selectedIndices.size() == 0) {
-                noneSelectedContextMenu.show(this.getScene().getWindow(), event.getScreenX(), event.getScreenY());
-            } else if (selectedIndices.size() == 1) {
-                singleSelectedContextMenu.show(this.getScene().getWindow(), event.getScreenX(), event.getScreenY());
-            } else {
-                multipleSelectedContextMenu.show(this.getScene().getWindow(), event.getScreenX(), event.getScreenY());
-            }
-        }
-    }
-
-    private void edit(ActionEvent event) {
-        HWaypoint selectedWaypoint = documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().getSelectedItems().get(0);
-        WaypointEditDialog dialog = new WaypointEditDialog(selectedWaypoint);
-        dialog.show();
     }
 
     private void newSoftWaypoint(ActionEvent event) {
         HWaypoint newWaypoint = new HWaypoint(WaypointType.SOFT);
-        newWaypoint.setName(String.valueOf(documentManager.getDocument().getSelectedPath().getWaypoints().size()));
-        documentManager.getDocument().getSelectedPath().getWaypoints().add(newWaypoint);
+        newWaypoint.setName(String.valueOf(getItems().size()));
+        getItems().add(newWaypoint);
     }
     private void newHardWaypoint(ActionEvent event) {
         HWaypoint newWaypoint = new HWaypoint(WaypointType.HARD);
-        newWaypoint.setName(String.valueOf(documentManager.getDocument().getSelectedPath().getWaypoints().size()));
-        documentManager.getDocument().getSelectedPath().getWaypoints().add(newWaypoint);
+        newWaypoint.setName(String.valueOf(getItems().size()));
+        getItems().add(newWaypoint);
     }
-    private void insertNewSoftWaypointBefore(ActionEvent event) {
-        int selectedWaypointIndex = getSelectionModel().getSelectedIndex();
-        HWaypoint newWaypoint = new HWaypoint(WaypointType.SOFT);
-        newWaypoint.setName(String.valueOf(selectedWaypointIndex));
-        documentManager.getDocument().getSelectedPath().getWaypoints().add(selectedWaypointIndex, newWaypoint);
+
+    private void documentChanged(ObservableValue<? extends HDocument> currentDocument, HDocument oldDocument, HDocument newDocument) {
+        unloadDocument(oldDocument);
+        loadDocument(newDocument);
     }
-    private void insertNewHardWaypointBefore(ActionEvent event) {
-        int selectedWaypointIndex = getSelectionModel().getSelectedIndex();
-        HWaypoint newWaypoint = new HWaypoint(WaypointType.HARD);
-        newWaypoint.setName(String.valueOf(selectedWaypointIndex));
-        documentManager.getDocument().getSelectedPath().getWaypoints().add(selectedWaypointIndex, newWaypoint);
-    }
-    private void insertNewSoftWaypointAfter(ActionEvent event) {
-        int selectedWaypointIndex = getSelectionModel().getSelectedIndex();
-        HWaypoint newWaypoint = new HWaypoint(WaypointType.SOFT);
-        newWaypoint.setName(String.valueOf(selectedWaypointIndex + 1));
-        documentManager.getDocument().getSelectedPath().getWaypoints().add(selectedWaypointIndex + 1, newWaypoint);
-    }
-    private void insertNewHardWaypointAfter(ActionEvent event) {
-        int selectedWaypointIndex = getSelectionModel().getSelectedIndex();
-        HWaypoint newWaypoint = new HWaypoint(WaypointType.HARD);
-        newWaypoint.setName(String.valueOf(selectedWaypointIndex + 1));
-        documentManager.getDocument().getSelectedPath().getWaypoints().add(selectedWaypointIndex + 1, newWaypoint);
-    }
-    private void deleteSingleWaypoint(ActionEvent event) {
-        int selectedWaypointIndex = getSelectionModel().getSelectedIndex();
-        documentManager.getDocument().getSelectedPath().getWaypoints().remove(selectedWaypointIndex);
-    }
-    private void deleteMultipleWaypoint(ActionEvent event) {
-        ObservableList<Integer> selectedIndices = getSelectionModel().getSelectedIndices();
-        Integer[] selectedIndicesArray = selectedIndices.<Integer>toArray(new Integer[0]);
-        Arrays.<Integer>sort(selectedIndicesArray, (a, b) -> b - a);
-        for (Integer index : selectedIndicesArray) {
-            documentManager.getDocument().getSelectedPath().getWaypoints().remove(index.intValue()); // have to use intValue() to remove ambiguity
+
+    private void unloadDocument(HDocument oldDocument) {
+        if (oldDocument != null) {
+            setItems(BLANK);
+            oldDocument.selectedPathProperty().removeListener(onSelectedPathChanged);
         }
     }
-    private void refreshDocument() {
-        System.out.println("WaypointListView: Refreshing document.");
-        if (documentManager.getIsDocumentOpen()) {
-            if (documentManager.getDocument().getSelectedPathIndex() >= 0) {
-                setItems(documentManager.getDocument().getSelectedPath().getWaypoints()); // initial set, then check for changes
-            } else {
-                setItems(BLANK); // if newly opened document has zero paths
+    private void loadDocument(HDocument newDocument) {
+        if (newDocument != null) {
+            loadSelectedPath(newDocument.getSelectedPath());
+            newDocument.selectedPathProperty().addListener(onSelectedPathChanged);
+        }
+    }
+    private void selectedPathChanged(ObservableValue<? extends HPath> currentPath, HPath oldPath, HPath newPath) {
+        unloadSelectedPath(oldPath);
+        loadSelectedPath(newPath);
+    }
+    private void unloadSelectedPath(HPath oldPath) {
+        if (oldPath != null) {
+            getSelectionModel().getSelectedIndices().removeListener(onListViewSelectedIndicesChanged);
+            setItems(BLANK);
+            getSelectionModel().getSelectedIndices().addListener(onListViewSelectedIndicesChanged);
+            oldPath.getWaypointsSelectionModel().getSelectedIndices().removeListener(onPathSelectedWaypointsIndiciesChanged);
+        }
+    }
+    private void loadSelectedPath(HPath newPath) {
+        if (newPath != null) {
+            setItems(newPath.getWaypoints());
+            for (int index : documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().getSelectedIndices()) {
+                getSelectionModel().select(index);
             }
-            documentManager.getDocument().selectedPathIndexProperty().addListener((currentVal, oldVal, newVal) -> {
-                // System.out.println("WaypointListView: Selected Path changed.");
-                if (newVal.intValue() >= 0) {
-                    setItems(documentManager.getDocument().getSelectedPath().getWaypoints());
-                } else {
-                    setItems(BLANK); // if document had multiple paths but all were deleted
+            newPath.getWaypointsSelectionModel().getSelectedIndices().addListener(onPathSelectedWaypointsIndiciesChanged);
+        }
+    }
+    private void pathSelectedWaypointsIndiciesChanged(ListChangeListener.Change<? extends Integer> change) {
+        while (change.next()) {
+            if (change.wasAdded()) {
+                for (int index : change.getAddedSubList()) {
+                    getSelectionModel().select(index);
                 }
-            });
-        } else {
-            setItems(BLANK); // if no document open
+            }
+            if (change.wasRemoved()) {
+                for (int index : change.getRemoved()) {
+                    getSelectionModel().clearSelection(index);
+                }
+            }
         }
     }
 }

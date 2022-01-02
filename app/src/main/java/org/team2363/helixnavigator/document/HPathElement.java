@@ -3,6 +3,7 @@ package org.team2363.helixnavigator.document;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.DeserializedJSONTarget;
 import com.jlbabilino.json.JSONSerializable;
+import com.jlbabilino.json.JSONSerializer;
 import com.jlbabilino.json.SerializedJSONObjectValue;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -32,5 +33,10 @@ public abstract class HPathElement {
     @SerializedJSONObjectValue(key = "name")
     public final String getName() {
         return name.get();
+    }
+
+    @Override
+    public String toString() {
+        return JSONSerializer.serializeString(this);
     }
 }

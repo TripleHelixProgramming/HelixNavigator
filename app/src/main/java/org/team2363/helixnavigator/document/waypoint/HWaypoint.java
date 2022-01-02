@@ -2,8 +2,10 @@ package org.team2363.helixnavigator.document.waypoint;
 
 import java.util.regex.Pattern;
 
+import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.DeserializedJSONTarget;
+import com.jlbabilino.json.JSONDeserializerException;
 import com.jlbabilino.json.SerializedJSONObjectValue;
 
 import org.team2363.helixnavigator.document.HPathElement;
@@ -12,6 +14,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.input.MouseEvent;
 
 public class HWaypoint extends HPathElement {
 
@@ -32,6 +35,7 @@ public class HWaypoint extends HPathElement {
     private final DoubleProperty y = new SimpleDoubleProperty(this, "y", 0.0);
     private final DoubleProperty heading = new SimpleDoubleProperty(this, "x", 0.0);
 
+    @DeserializedJSONConstructor
     public HWaypoint() {
     }
 
@@ -57,13 +61,35 @@ public class HWaypoint extends HPathElement {
         setY(getY() + y);
     }
 
+    public void handleMouseDragged(MouseEvent event) {
+        System.out.print("dragging: x: ");
+        System.out.print(event.getX() + " y: ");
+        System.out.println(event.getY());
+        setX(event.getX());
+        setY(event.getY());
+        event.consume();
+    }
+
     public final ObjectProperty<WaypointType> waypointTypeProperty() {
         return waypointType;
     }
 
+    public final void setWaypointType(WaypointType value) {
+        waypointType.set(value);
+    }
+
     @DeserializedJSONTarget
-    public final void setWaypointType(@DeserializedJSONObjectValue(key = "waypoint_type") WaypointType value) {
-        waypointType.set(value); // TODO: null check, part of encapsulation work
+    public final void setWaypointType(@DeserializedJSONObjectValue(key = "waypoint_type") String typeString) throws JSONDeserializerException {
+        switch (typeString.trim().toLowerCase()) {
+            case "soft":
+                setWaypointType(WaypointType.SOFT);
+                break;
+            case "hard":
+                setWaypointType(WaypointType.HARD);
+                break;
+            default:
+                throw new JSONDeserializerException("Invalid waypoint type string \"" + typeString + "\"");
+        }
     }
 
     @SerializedJSONObjectValue(key = "waypoint_type")
@@ -111,10 +137,5 @@ public class HWaypoint extends HPathElement {
     @SerializedJSONObjectValue(key = "heading")
     public final double getHeading() {
         return heading.get();
-    }
-
-    @Override
-    public String toString() {
-        return getName();
     }
 }

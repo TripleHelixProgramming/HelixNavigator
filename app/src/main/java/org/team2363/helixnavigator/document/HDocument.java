@@ -82,18 +82,25 @@ public class HDocument { // TODO: work on encapsulation of fields
 
     @DeserializedJSONConstructor
     public HDocument() {
-        paths.addListener((ListChangeListener.Change<? extends HPath> change) -> {
-            if (!hasPaths()) {
-                setSelectedPathIndex(-1);
-            }
-        });
-        selectedPathIndex.addListener((currentIndex, oldIndex, newIndex) -> {
-            if (isPathSelected()) {
-                setSelectedPath(paths.get(newIndex.intValue()));
-            } else {
-                setSelectedPath(null);
-            }
-        });
+        paths.addListener((ListChangeListener.Change<? extends HPath> change) -> updateSelectedPathIndex());
+        selectedPathIndex.addListener((currentIndex, oldIndex, newIndex) -> updateSelectedPath());
+    }
+
+    private void updateSelectedPathIndex() {
+        if (!hasPaths()) {
+            setSelectedPathIndex(-1);
+        } else if (!isPathSelected()) {
+            setSelectedPathIndex(0); // if you can select a path, select one!
+        }
+        updateSelectedPath();
+    }
+
+    private void updateSelectedPath() {
+        if (isPathSelected()) {
+            setSelectedPath(paths.get(getSelectedPathIndex()));
+        } else {
+            setSelectedPath(null);
+        }
     }
 
     public final boolean hasPaths() {

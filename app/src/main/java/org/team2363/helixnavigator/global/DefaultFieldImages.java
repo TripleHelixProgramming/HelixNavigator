@@ -1,25 +1,13 @@
 package org.team2363.helixnavigator.global;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.jlbabilino.json.JSON;
 import com.jlbabilino.json.JSONDeserializer;
-import com.jlbabilino.json.JSONDeserializerException;
-import com.jlbabilino.json.JSONParser;
-import com.jlbabilino.json.JSONParserException;
 
 import org.team2363.helixnavigator.document.field.image.HDefaultFieldImage;
-import org.team2363.helixnavigator.document.field.image.HFieldImage;
-
-import javafx.scene.image.Image;
 
 public class DefaultFieldImages {
 

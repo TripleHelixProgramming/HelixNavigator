@@ -7,6 +7,7 @@ import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.DeserializedJSONTarget;
 import com.jlbabilino.json.JSONSerializable;
+import com.jlbabilino.json.JSONSerializer;
 import com.jlbabilino.json.SerializedJSONObjectValue;
 
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
@@ -25,7 +26,10 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.input.ZoomEvent;
 
 @JSONSerializable
 public class HPath {
@@ -64,11 +68,68 @@ public class HPath {
         });
     }
 
-    public void handleScroll(ScrollEvent event) {
-        setZoomXOffset(getZoomXOffset() - event.getDeltaX());
-        setZoomYOffset(getZoomYOffset() - event.getDeltaY());
+    private double startX;
+    private double startY;
+    public void handleMousePressed(MouseEvent event) {
+        System.out.println("Drag beginning");
+        if (event.getButton() == MouseButton.MIDDLE) {
+            startX = event.getX();
+            startY = event.getY();
+        }
+    }
+    public void handleMouseDragged(MouseEvent event) {
+        System.out.println("Mouse dragged");
+        if (event.getButton() == MouseButton.MIDDLE) {
+            pan(startX - event.getX(), startY - event.getY());
+            startX = event.getX();
+            startY = event.getY();
+        }
+    }
+    public void handleMouseReleased(MouseEvent event) {
     }
 
+    public void handleScroll(ScrollEvent event) {
+        int pixels = (int) (-10.0 * event.getDeltaY());
+        double factor;
+        if (pixels >= 0) {
+            factor = 0.999;
+        } else {
+            factor = 1.001;
+            pixels = -pixels;
+        }
+        double pivotX = event.getX();
+        double pivotY = event.getY();
+        for (int i = 0; i < pixels; i++) {
+            zoom(factor, pivotX, pivotY);
+        }
+    }
+
+    public void handleZoom(ZoomEvent event) {
+        zoom(scaleFactor(event.getTotalZoomFactor()), event.getX(), event.getY());
+    }
+
+    private double scaleFactor(double input) {
+        return 1 + .05 * (input - 1);
+    }
+
+    public void pan(double deltaX, double deltaY) {
+        setZoomXOffset(getZoomXOffset() - deltaX);
+        setZoomYOffset(getZoomYOffset() - deltaY);
+    }
+
+    public void zoom(double factor, double pivotX, double pivotY) {
+        // This code allows for zooming in or out about a certain point
+        double s = factor;
+        double xci = getZoomXOffset();
+        double xp = pivotX;
+        double xd = (1-s)*(xp-xci);
+        double yci = getZoomYOffset();
+        double yp = pivotY;
+        double yd = (1-s)*(yp-yci);
+        setZoomXOffset(getZoomXOffset() + xd);
+        setZoomYOffset(getZoomYOffset() + yd);
+        setZoomScale(getZoomScale() * s);
+    }
     public final StringProperty nameProperty() {
         return name;
     }
@@ -169,5 +230,10 @@ public class HPath {
 
     public final boolean getInPolygonPointMode() {
         return inPolygonPointMode.get();
+    }
+    
+    @Override
+    public String toString() {
+        return JSONSerializer.serializeString(this);
     }
 }

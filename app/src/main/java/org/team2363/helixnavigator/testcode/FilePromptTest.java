@@ -1,4 +1,4 @@
-package org.team2363.helixnavigator.document;
+package org.team2363.helixnavigator.testcode;
 
 import java.io.File;
 

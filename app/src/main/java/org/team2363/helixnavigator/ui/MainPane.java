@@ -18,9 +18,9 @@ public class MainPane extends BorderPane {
     public MainPane(DocumentManager documentManager) {
         this.documentManager = documentManager;
 
-        mainMenuBar = new MainMenuBar(documentManager);
-        documentPane = new DocumentPane(documentManager);
-        editorPane = new EditorPane(documentManager);
+        mainMenuBar = new MainMenuBar(this.documentManager);
+        documentPane = new DocumentPane(this.documentManager);
+        editorPane = new EditorPane(this.documentManager);
 
         setTop(mainMenuBar);
         setLeft(documentPane);

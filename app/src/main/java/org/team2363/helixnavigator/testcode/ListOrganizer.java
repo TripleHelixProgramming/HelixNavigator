@@ -55,7 +55,7 @@ public class ListOrganizer extends Application {
         private final ImageView imageView = new ImageView();
 
         public BirdCell() {
-            ListCell thisCell = this;
+            ListCell<?> thisCell = this;
 
             setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             setAlignment(Pos.CENTER);
