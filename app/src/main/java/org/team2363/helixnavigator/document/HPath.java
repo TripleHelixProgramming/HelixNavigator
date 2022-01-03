@@ -87,6 +87,16 @@ public class HPath {
         }
     }
 
+    public void handleElementsPressed(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY) {
+            dragInitialX = event.getX();
+            dragInitialY = event.getY();
+        }
+    }
+    public void handleElementsDragged(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY) {
+        }
+    }
     public void handleScroll(ScrollEvent event) {
         int pixels = (int) (-event.getDeltaY());
         System.out.println(pixels);

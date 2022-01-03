@@ -78,11 +78,13 @@ public class EditorPane extends VBox {
         if (!bottomStack.getChildren().contains(infoText)) {
             bottomStack.getChildren().add(1, infoText);
         }
+        bottomStack.setOpacity(0.5);
     }
 
     private void disableInfoText() {
         if (bottomStack.getChildren().contains(infoText)) {
             bottomStack.getChildren().remove(1);
         }
+        bottomStack.setOpacity(1.0);
     }
 }

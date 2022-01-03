@@ -6,9 +6,8 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseDragEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -22,6 +21,11 @@ public class WaypointView extends StackPane {
     private final Rectangle cross2 = new Rectangle(11, 3);
 
     private final ObjectProperty<WaypointType> waypointType = new SimpleObjectProperty<>(this, "waypointType", WaypointType.SOFT);
+    private final DoubleProperty x = new SimpleDoubleProperty(this, "x", 0.0);
+    private final DoubleProperty y = new SimpleDoubleProperty(this, "y", 0.0);
+    private final DoubleProperty zoomTranslateX = new SimpleDoubleProperty(this, "zoomTranslateX", 0.0);
+    private final DoubleProperty zoomTranslateY = new SimpleDoubleProperty(this, "zoomTranslateY", 0.0);
+    private final DoubleProperty zoomScale = new SimpleDoubleProperty(this, "zoomScale", 1.0);
     private final BooleanProperty selected = new SimpleBooleanProperty(this, "selected", false);
 
     public WaypointView() {
@@ -45,8 +49,9 @@ public class WaypointView extends StackPane {
                     break;
             }
         });
+        translateXProperty().bind(zoomTranslateX.add(x.multiply(zoomScale)).subtract(11.0)); // tx = ztx + zs*x
+        translateYProperty().bind(zoomTranslateY.add(y.multiply(zoomScale)).subtract(11.0)); // ty = zty + zs*y
         selected.addListener((currentValue, oldValue, newValue) -> {
-            System.out.println("Selected: " + newValue);
             selectionCircle.setOpacity(newValue ? 1.0 : 0.0);
         });
     }
@@ -75,27 +80,63 @@ public class WaypointView extends StackPane {
     }
 
     public final DoubleProperty xProperty() {
-        return translateXProperty();
+        return x;
     }
 
     public final void setX(double value) {
-        setTranslateX(value);
+        x.set(value);
     }
 
     public final double getX() {
-        return getTranslateX();
+        return x.get();
     }
 
     public final DoubleProperty yProperty() {
-        return translateYProperty();
+        return y;
     }
 
     public final void setY(double value) {
-        setTranslateY(value);
+        y.set(value);
     }
 
     public final double getY() {
-        return getTranslateY();
+        return y.get();
+    }
+
+    public final DoubleProperty zoomTranslateXProperty() {
+        return zoomTranslateX;
+    }
+
+    public final void setZoomTranslateX(double value) {
+        zoomTranslateX.set(value);
+    }
+
+    public final double getZoomTranslateX() {
+        return zoomTranslateX.get();
+    }
+
+    public final DoubleProperty zoomTranslateYProperty() {
+        return zoomTranslateY;
+    }
+
+    public final void setZoomTranslateY(double value) {
+        zoomTranslateY.set(value);
+    }
+
+    public final double getZoomTranslateY() {
+        return zoomTranslateY.get();
+    }
+
+    public final DoubleProperty zoomScaleProperty() {
+        return zoomScale;
+    }
+
+    public final void setZoomScale(double value) {
+        zoomScale.set(value);
+    }
+
+    public final double getZoomScale() {
+        return zoomScale.get();
     }
 
     public final BooleanProperty selectedProperty() {
