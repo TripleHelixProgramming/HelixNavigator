@@ -3,7 +3,6 @@ package org.team2363.helixnavigator.ui.editor.waypoint;
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
-import org.team2363.helixnavigator.document.field.image.HFieldImage;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 
 import javafx.beans.value.ChangeListener;
@@ -11,10 +10,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
-import javafx.scene.transform.Scale;
-import javafx.scene.transform.Translate;
 
 public class WaypointsView extends Pane {
 
@@ -117,8 +113,8 @@ public class WaypointsView extends Pane {
         waypointView.waypointTypeProperty().bind(waypoint.waypointTypeProperty());
         waypointView.xProperty().bind(waypoint.xProperty());
         waypointView.yProperty().bind(waypoint.yProperty());
-        waypointView.zoomTranslateXProperty().bind(this.documentManager.getDocument().getSelectedPath().zoomXOffsetProperty());
-        waypointView.zoomTranslateYProperty().bind(this.documentManager.getDocument().getSelectedPath().zoomYOffsetProperty());
+        waypointView.zoomTranslateXProperty().bind(this.documentManager.getDocument().getSelectedPath().zoomOffsetXProperty());
+        waypointView.zoomTranslateYProperty().bind(this.documentManager.getDocument().getSelectedPath().zoomOffsetYProperty());
         waypointView.zoomScaleProperty().bind(this.documentManager.getDocument().getSelectedPath().zoomScaleProperty());
         // waypointView.setOnMousePressed(event -> {
         // });

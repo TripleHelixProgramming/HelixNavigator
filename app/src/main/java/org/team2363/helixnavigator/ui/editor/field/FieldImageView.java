@@ -101,8 +101,8 @@ public class FieldImageView extends ImageView {
         if (newPath != null) {
             zoomScale.xProperty().bind(newPath.zoomScaleProperty());
             zoomScale.yProperty().bind(newPath.zoomScaleProperty());
-            zoomTranslate.xProperty().bind(newPath.zoomXOffsetProperty());
-            zoomTranslate.yProperty().bind(newPath.zoomYOffsetProperty());
+            zoomTranslate.xProperty().bind(newPath.zoomOffsetXProperty());
+            zoomTranslate.yProperty().bind(newPath.zoomOffsetYProperty());
         }
     }
 }

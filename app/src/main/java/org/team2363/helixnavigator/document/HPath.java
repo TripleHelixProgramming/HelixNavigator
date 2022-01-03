@@ -47,8 +47,8 @@ public class HPath {
     private final HSelectionModel<HObstacle> obstaclesSelectionModel;
     private final ReadOnlyObjectWrapper<HSelectionModel<HPolygonPoint>> polygonPointsSelectionModel = new ReadOnlyObjectWrapper<>(this, "polygonPointsSelectionModel", null);
     private final DoubleProperty zoomScale = new SimpleDoubleProperty(this, "zoomScale", 1.0);
-    private final DoubleProperty zoomXOffset = new SimpleDoubleProperty(this, "zoomXOffset", 0.0);
-    private final DoubleProperty zoomYOffset = new SimpleDoubleProperty(this, "zoomYOffset", 0.0);
+    private final DoubleProperty zoomOffsetX = new SimpleDoubleProperty(this, "zoomOffsetX", 0.0);
+    private final DoubleProperty zoomOffsetY = new SimpleDoubleProperty(this, "zoomOffsetY", 0.0);
     private final ReadOnlyBooleanWrapper inPolygonPointMode = new ReadOnlyBooleanWrapper(this, "inPolygonPointMode", false);
 
     @DeserializedJSONConstructor
@@ -76,14 +76,14 @@ public class HPath {
         if (event.getButton() == MouseButton.MIDDLE) {
             dragInitialX = event.getX();
             dragInitialY = event.getY();
-            zoomOffsetInitialX = getZoomXOffset();
-            zoomOffsetInitialY = getZoomYOffset();
+            zoomOffsetInitialX = getZoomOffsetX();
+            zoomOffsetInitialY = getZoomOffsetY();
         }
     }
     public void handleMouseDragged(MouseEvent event) {
         if (event.getButton() == MouseButton.MIDDLE) {
-            setZoomXOffset(zoomOffsetInitialX + (event.getX() - dragInitialX));
-            setZoomYOffset(zoomOffsetInitialY + (event.getY() - dragInitialY));
+            setZoomOffsetX(zoomOffsetInitialX + (event.getX() - dragInitialX));
+            setZoomOffsetX(zoomOffsetInitialY + (event.getY() - dragInitialY));
         }
     }
 
@@ -123,21 +123,21 @@ public class HPath {
     }
 
     public void pan(double deltaX, double deltaY) {
-        setZoomXOffset(getZoomXOffset() - deltaX);
-        setZoomYOffset(getZoomYOffset() - deltaY);
+        setZoomOffsetX(getZoomOffsetX() - deltaX);
+        setZoomOffsetY(getZoomOffsetY() - deltaY);
     }
 
     public void zoom(double factor, double pivotX, double pivotY) {
         // This code allows for zooming in or out about a certain point
         double s = factor;
-        double xci = getZoomXOffset();
+        double xci = getZoomOffsetX();
         double xp = pivotX;
         double xd = (1-s)*(xp-xci);
-        double yci = getZoomYOffset();
+        double yci = getZoomOffsetY();
         double yp = pivotY;
         double yd = (1-s)*(yp-yci);
-        setZoomXOffset(getZoomXOffset() + xd);
-        setZoomYOffset(getZoomYOffset() + yd);
+        setZoomOffsetX(getZoomOffsetX() + xd);
+        setZoomOffsetY(getZoomOffsetY() + yd);
         setZoomScale(getZoomScale() * s);
     }
     public final StringProperty nameProperty() {
@@ -198,36 +198,42 @@ public class HPath {
         return zoomScale;
     }
 
-    public final void setZoomScale(double value) {
+    @DeserializedJSONTarget
+    public final void setZoomScale(@DeserializedJSONObjectValue(key = "zoom_scale") double value) {
         zoomScale.set(value);
     }
 
+    @SerializedJSONObjectValue(key = "zoom_scale")
     public final double getZoomScale() {
         return zoomScale.get();
     }
 
-    public final DoubleProperty zoomXOffsetProperty() {
-        return zoomXOffset;
+    public final DoubleProperty zoomOffsetXProperty() {
+        return zoomOffsetX;
     }
 
-    public final void setZoomXOffset(double value) {
-        zoomXOffset.set(value);
+    @DeserializedJSONTarget
+    public final void setZoomOffsetX(@DeserializedJSONObjectValue(key = "zoom_offset_x") double value) {
+        zoomOffsetX.set(value);
     }
 
-    public final double getZoomXOffset() {
-        return zoomXOffset.get();
+    @SerializedJSONObjectValue(key = "zoom_offset_x")
+    public final double getZoomOffsetX() {
+        return zoomOffsetX.get();
     }
 
-    public final DoubleProperty zoomYOffsetProperty() {
-        return zoomYOffset;
+    public final DoubleProperty zoomOffsetYProperty() {
+        return zoomOffsetY;
     }
 
-    public final void setZoomYOffset(double value) {
-        zoomYOffset.set(value);
+    @DeserializedJSONTarget
+    public final void setZoomOffsetY(@DeserializedJSONObjectValue(key = "zoom_offset_y") double value) {
+        zoomOffsetY.set(value);
     }
 
-    public final double getZoomYOffset() {
-        return zoomYOffset.get();
+    @SerializedJSONObjectValue(key = "zoom_offset_y")
+    public final double getZoomOffsetY() {
+        return zoomOffsetY.get();
     }
 
     public final ReadOnlyBooleanProperty inPolygonPointModeProperty() {

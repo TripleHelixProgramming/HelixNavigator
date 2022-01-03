@@ -50,7 +50,8 @@ public class WaypointView extends StackPane {
             }
         });
         translateXProperty().bind(zoomTranslateX.add(x.multiply(zoomScale)).subtract(11.0)); // tx = ztx + zs*x
-        translateYProperty().bind(zoomTranslateY.add(y.multiply(zoomScale)).subtract(11.0)); // ty = zty + zs*y
+        // For y you must subtract to flip the coordinates, in graphics +y is down but in robotics +y is up:
+        translateYProperty().bind(zoomTranslateY.subtract(y.multiply(zoomScale)).subtract(11.0)); // ty = zty + zs*y
         selected.addListener((currentValue, oldValue, newValue) -> {
             selectionCircle.setOpacity(newValue ? 1.0 : 0.0);
         });
