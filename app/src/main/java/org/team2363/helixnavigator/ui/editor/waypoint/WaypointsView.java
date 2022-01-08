@@ -10,6 +10,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
 public class WaypointsView extends Pane {
@@ -60,20 +63,28 @@ public class WaypointsView extends Pane {
             getChildren().clear();
             oldPath.getWaypoints().removeListener(onWaypointsChanged);
             oldPath.getWaypointsSelectionModel().getSelectedIndices().removeListener(onWaypointsSelectedIndicesChanged);
+            setOnMousePressed(null);
+            setOnMouseDragged(null);
         }
     }
 
     private void loadSelectedPath(HPath newPath) {
         if (newPath != null) {
-            for (HWaypoint waypoint : newPath.getWaypoints()) {
+            for (int i = 0; i < newPath.getWaypoints().size(); i++) {
                 WaypointView waypointView = new WaypointView();
-                linkWaypointView(waypointView, waypoint);
+                linkWaypointView(i, waypointView, newPath.getWaypoints().get(i));
                 waypointViews.add(waypointView);
                 getChildren().add(waypointView);
             }
             updateSelectedWaypoints();
             newPath.getWaypoints().addListener(onWaypointsChanged);
             newPath.getWaypointsSelectionModel().getSelectedIndices().addListener(onWaypointsSelectedIndicesChanged);
+            setOnMousePressed(event -> {
+                documentManager.getDocument().getSelectedPath().handleElementsPressed(event);
+            });
+            setOnMouseDragged(event -> {
+                documentManager.getDocument().getSelectedPath().handleElementsDragged(event);
+            });
         }
     }
 
@@ -86,7 +97,7 @@ public class WaypointsView extends Pane {
             if (change.wasAdded()) {
                 for (int i = change.getFrom(); i < change.getTo(); i++) {
                     WaypointView waypointView = new WaypointView();
-                    linkWaypointView(waypointView, change.getList().get(i));
+                    linkWaypointView(i, waypointView, change.getList().get(i));
                     waypointViews.add(i, waypointView);
                     getChildren().add(i, waypointView);
                 }
@@ -109,27 +120,43 @@ public class WaypointsView extends Pane {
         }
     }
 
-    private void linkWaypointView(WaypointView waypointView, HWaypoint waypoint) {
+    // Index needs to be dynamically updated
+    private void linkWaypointView(int index, WaypointView waypointView, HWaypoint waypoint) {
         waypointView.waypointTypeProperty().bind(waypoint.waypointTypeProperty());
         waypointView.xProperty().bind(waypoint.xProperty());
         waypointView.yProperty().bind(waypoint.yProperty());
         waypointView.zoomTranslateXProperty().bind(this.documentManager.getDocument().getSelectedPath().zoomOffsetXProperty());
         waypointView.zoomTranslateYProperty().bind(this.documentManager.getDocument().getSelectedPath().zoomOffsetYProperty());
         waypointView.zoomScaleProperty().bind(this.documentManager.getDocument().getSelectedPath().zoomScaleProperty());
-        // waypointView.setOnMousePressed(event -> {
-        // });
-        // waypointView.setOnMouseReleased(event -> {
-        //     if (event.getButton() == MouseButton.PRIMARY) {
-        //         documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().toggle(waypoint);
-        //     }
-        // });
-        // waypointView.setOnMouseClicked(event -> {
-        //     if (event.getButton() == MouseButton.PRIMARY) {
-        //         documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().toggle(waypoint);
-        //     }
-        // });
-        // waypointView.setOnMouseDragged(event -> {
-        //     waypoint.handleMouseDragged(event);
-        // });
+
+        // TWO STATES:
+        // Deselected:
+        //     setOnMousePressed(onPressed);
+        //     setOnMouseClicked(onReleased);
+        // Selected:
+        //     setOnMousePressed(onPressed);
+        //     setOnMouseClicked(null);
+        EventHandler<MouseEvent> onReleased = event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                System.out.println("Released");
+                if (documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().isSelected(index)) {
+                    documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().deselect(index);
+                }
+            }
+        };
+        EventHandler<MouseEvent> onPressed = event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                System.out.println("Pressed");
+                if (!documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().isSelected(index)) {
+                    documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().select(index);
+                    setOnMouseReleased(null);
+                    System.out.println("Event released = " + getOnMouseReleased());
+                } else {
+                    setOnMouseReleased(onReleased);
+                    System.out.println("Event released = " + getOnMouseReleased());
+                }
+            }
+        };
+        waypointView.setOnMousePressed(onPressed);
     }
 }

@@ -26,6 +26,7 @@ import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONObjectValue;
 
 import org.team2363.helixnavigator.document.field.image.HFieldImage;
+import org.team2363.helixnavigator.document.field.image.HReferenceFieldImage;
 import org.team2363.helixnavigator.global.Standards;
 
 import javafx.beans.property.BooleanProperty;
@@ -52,7 +53,7 @@ public class HDocument { // TODO: work on encapsulation of fields
      * The field that contains the image that the Editor pane will display behind
      * the path editor.
      */
-    private final ObjectProperty<HFieldImage> fieldImage = new SimpleObjectProperty<>(this, "fieldImage", Standards.DEFAULT_FIELD_IMAGE);
+    private final ObjectProperty<HFieldImage> fieldImage = new SimpleObjectProperty<>(this, "fieldImage", new HReferenceFieldImage(Standards.DEFAULT_FIELD_IMAGE));
     /**
      * The list of paths in this document. A path can be selected to be displayed in
      * the Editor pane.

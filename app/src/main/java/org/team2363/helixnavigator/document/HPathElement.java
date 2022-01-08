@@ -21,6 +21,11 @@ public abstract class HPathElement {
 
     public abstract void translateRelativeY(double y);
 
+    public void translateRelative(double x, double y) {
+        translateRelativeX(x);
+        translateRelativeY(y);
+    }
+
     public final StringProperty nameProperty() {
         return name;
     }

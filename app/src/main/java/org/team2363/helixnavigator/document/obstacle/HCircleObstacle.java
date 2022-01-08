@@ -19,13 +19,13 @@ public class HCircleObstacle extends HObstacle {
     }
 
     @Override
-    public void translateRelativeX(double x) {
-        setCenterX(getCenterX() + x);
+    public void translateRelativeX(double dx) {
+        setCenterX(getCenterX() + dx);
     }
 
     @Override
-    public void translateRelativeY(double y) {
-        setCenterY(getCenterY() + y);
+    public void translateRelativeY(double dy) {
+        setCenterY(getCenterY() + dy);
     }
 
     public final DoubleProperty centerXProperty() {
@@ -69,7 +69,7 @@ public class HCircleObstacle extends HObstacle {
     public final double getRadius() {
         return radius.get();
     }
-    
+
     @Override
     public ObstacleType getObstacleType() {
         return ObstacleType.CIRCLE;

@@ -65,13 +65,13 @@ public abstract class HObstacle extends HPathElement {
             throw new JSONDeserializerException("Unable to determine which type of obstacle to deserialize to since the key \"obstacle_type\" is missing in the JSONObject.");
         }
         String typeString = ((JSONString) jsonEntry.get("obstacle_type")).getString();
-        switch (typeString) {
+        switch (typeString.trim().toLowerCase()) {
             case "polygon":
                 return polygonType;
             case "circle":
                 return circleType;
             default:
-                throw new JSONDeserializerException("Unrecognized obstacle type string.");
+                throw new JSONDeserializerException("Unrecognized obstacle type string: \"" + typeString + "\"");
         }
     }
 }

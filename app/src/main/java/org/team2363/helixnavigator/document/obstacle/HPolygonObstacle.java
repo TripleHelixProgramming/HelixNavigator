@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
-import com.jlbabilino.json.DeserializedJSONTarget;
 import com.jlbabilino.json.SerializedJSONObjectValue;
 
 import javafx.collections.FXCollections;
@@ -14,7 +13,6 @@ public class HPolygonObstacle extends HObstacle {
 
     private final ObservableList<HPolygonPoint> points = FXCollections.<HPolygonPoint>observableArrayList();
 
-    @DeserializedJSONConstructor
     public HPolygonObstacle() {
         HPolygonPoint[] initialPoints = new HPolygonPoint[3];
         for (int i = 0; i < initialPoints.length; i++) {
@@ -29,19 +27,19 @@ public class HPolygonObstacle extends HObstacle {
         points.addAll(initialPoints[0], initialPoints[1], initialPoints[2]);
     }
 
-    @Override
-    public void translateRelativeX(double x) {
-        points.forEach(point -> point.translateRelativeX(x));
+    @DeserializedJSONConstructor
+    public HPolygonObstacle(@DeserializedJSONObjectValue(key = "points") List<? extends HPolygonPoint> initialPoints) {
+        points.setAll(initialPoints);
     }
 
     @Override
-    public void translateRelativeY(double y) {
-        points.forEach(point -> point.translateRelativeY(y));
+    public void translateRelativeX(double dx) {
+        points.forEach(point -> point.translateRelativeX(dx));
     }
 
-    @DeserializedJSONTarget
-    public final void setPoints(@DeserializedJSONObjectValue(key = "points") List<? extends HPolygonPoint> newPoints) {
-        points.setAll(newPoints);
+    @Override
+    public void translateRelativeY(double dy) {
+        points.forEach(point -> point.translateRelativeY(dy));
     }
 
     @SerializedJSONObjectValue(key = "points")

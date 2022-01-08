@@ -20,13 +20,13 @@ public class HPolygonPoint extends HPathElement {
     }
 
     @Override
-    public void translateRelativeX(double x) {
-        setX(getX() + x);
+    public void translateRelativeX(double dx) {
+        setX(getX() + dx);
     }
 
     @Override
-    public void translateRelativeY(double y) {
-        setY(getY() + y);
+    public void translateRelativeY(double dy) {
+        setY(getY() + dy);
     }
 
     public final DoubleProperty xProperty() {

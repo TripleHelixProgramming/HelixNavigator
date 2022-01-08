@@ -108,6 +108,14 @@ public class HSelectionModel<E extends HPathElement> {
         selectedItems.clear();
     }
 
+    public boolean isSelected(int index) {
+        return selectedIndices.contains(index);
+    }
+
+    public boolean isSelected(E item) {
+        return selectedItems.contains(item);
+    }
+
     public void selectRange(int startIndex, int endIndex) {
         for (int i = startIndex; i < endIndex; i++) {
             select(i);

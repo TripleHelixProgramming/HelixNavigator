@@ -7,7 +7,7 @@ import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONObjectValue;
 
-import org.team2363.helixnavigator.global.Standards;
+import org.team2363.helixnavigator.global.DefaultFieldImages;
 
 import javafx.scene.image.Image;
 
@@ -33,7 +33,7 @@ public class HDefaultFieldImage implements HFieldImage {
         this.imageCenterX = imageCenterX;
         this.imageCenterY = imageCenterY;
         this.fileName = fileName;
-        InputStream imageStream = HDefaultFieldImage.class.getResourceAsStream(Standards.FIELD_IMAGES_PATH_PREFIX + this.fileName);
+        InputStream imageStream = DefaultFieldImages.class.getResourceAsStream(this.fileName);
         image = new Image(imageStream);
     }
 

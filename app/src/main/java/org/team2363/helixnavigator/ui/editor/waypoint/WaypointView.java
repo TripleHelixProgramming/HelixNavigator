@@ -58,12 +58,10 @@ public class WaypointView extends StackPane {
     }
 
     private void disableCross() {
-        System.out.println("Disabling cross");
         cross1.setOpacity(0.0);
         cross2.setOpacity(0.0);
     }
     private void enableCross() {
-        System.out.println("Enabling cross");
         cross1.setOpacity(1.0);
         cross2.setOpacity(1.0);
     }

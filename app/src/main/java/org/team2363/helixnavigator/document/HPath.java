@@ -68,35 +68,47 @@ public class HPath {
         });
     }
 
-    private double dragInitialX;
-    private double dragInitialY;
+    private double backgroundDragInitialX;
+    private double backgroundDragInitialY;
     private double zoomOffsetInitialX;
     private double zoomOffsetInitialY;
-    public void handleMousePressed(MouseEvent event) {
-        if (event.getButton() == MouseButton.MIDDLE) {
-            dragInitialX = event.getX();
-            dragInitialY = event.getY();
+    public void handleBackgroundPressed(MouseEvent event) {
+        if (event.getButton() == MouseButton.MIDDLE) { // TODO: switch to switch statement
+            backgroundDragInitialX = event.getX();
+            backgroundDragInitialY = event.getY();
             zoomOffsetInitialX = getZoomOffsetX();
             zoomOffsetInitialY = getZoomOffsetY();
+        } else if (event.getButton() == MouseButton.PRIMARY) {
+            // clearSelection();
         }
     }
-    public void handleMouseDragged(MouseEvent event) {
+    public void handleBackgroundDragged(MouseEvent event) {
         if (event.getButton() == MouseButton.MIDDLE) {
-            setZoomOffsetX(zoomOffsetInitialX + (event.getX() - dragInitialX));
-            setZoomOffsetX(zoomOffsetInitialY + (event.getY() - dragInitialY));
+            setZoomOffsetX(zoomOffsetInitialX + (event.getX() - backgroundDragInitialX));
+            setZoomOffsetY(zoomOffsetInitialY + (event.getY() - backgroundDragInitialY));
         }
     }
 
+    private double lastElementsDragX;
+    private double lastElementsDragY;
     public void handleElementsPressed(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
-            dragInitialX = event.getX();
-            dragInitialY = event.getY();
+            lastElementsDragX = event.getSceneX();
+            lastElementsDragY  = event.getSceneY();
         }
     }
     public void handleElementsDragged(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
+            double deltaX = event.getSceneX() - lastElementsDragX;
+            double deltaY = event.getSceneY() - lastElementsDragY;
+            double scaledDeltaX = deltaX / getZoomScale();
+            double scaledDeltaY = -deltaY / getZoomScale();
+            moveSelectedElementsRelative(scaledDeltaX, scaledDeltaY);
+            lastElementsDragX = event.getSceneX();
+            lastElementsDragY = event.getSceneY();
         }
     }
+
     public void handleScroll(ScrollEvent event) {
         int pixels = (int) (-event.getDeltaY());
         System.out.println(pixels);
@@ -140,6 +152,16 @@ public class HPath {
         setZoomOffsetY(getZoomOffsetY() + yd);
         setZoomScale(getZoomScale() * s);
     }
+
+    public void moveSelectedElementsRelative(double deltaX, double deltaY) {
+        getWaypointsSelectionModel().getSelectedItems().forEach(element -> element.translateRelative(deltaX, deltaY));
+    }
+
+    public void clearSelection() {
+        waypointsSelectionModel.clear();
+        obstaclesSelectionModel.clear();
+    }
+
     public final StringProperty nameProperty() {
         return name;
     }

@@ -31,12 +31,12 @@ public class PathPane extends Pane {
                 if (event.getButton() == MouseButton.MIDDLE) {
                     this.documentManager.getStage().getScene().setCursor(Cursor.CLOSED_HAND);
                 }
-                this.documentManager.getDocument().getSelectedPath().handleMousePressed(event);
+                this.documentManager.getDocument().getSelectedPath().handleBackgroundPressed(event);
             }
         });
         setOnMouseDragged(event -> {
             if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
-                this.documentManager.getDocument().getSelectedPath().handleMouseDragged(event);
+                this.documentManager.getDocument().getSelectedPath().handleBackgroundDragged(event);
             }
         });
         setOnMouseReleased(event -> {

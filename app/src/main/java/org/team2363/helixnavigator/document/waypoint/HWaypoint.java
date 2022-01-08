@@ -14,7 +14,6 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.input.MouseEvent;
 
 public class HWaypoint extends HPathElement {
 
@@ -43,6 +42,20 @@ public class HWaypoint extends HPathElement {
         setWaypointType(waypointType);
     }
 
+    @DeserializedJSONConstructor
+    public HWaypoint(@DeserializedJSONObjectValue(key = "waypoint_type") String waypointTypeString) throws JSONDeserializerException {
+        switch (waypointTypeString.trim().toLowerCase()) {
+            case "soft":
+                setWaypointType(WaypointType.SOFT);
+                break;
+            case "hard":
+                setWaypointType(WaypointType.HARD);
+                break;
+            default:
+                throw new JSONDeserializerException("Invalid waypoint type string \"" + waypointTypeString + "\"");
+        }
+    }
+
     public boolean isSoft() {
         return getWaypointType() == WaypointType.SOFT;
     }
@@ -52,22 +65,13 @@ public class HWaypoint extends HPathElement {
     }
 
     @Override
-    public void translateRelativeX(double x) {
-        setX(getX() + x);
+    public void translateRelativeX(double dx) {
+        setX(getX() + dx);
     }
 
     @Override
-    public void translateRelativeY(double y) {
-        setY(getY() + y);
-    }
-
-    public void handleMouseDragged(MouseEvent event) {
-        System.out.print("dragging: x: ");
-        System.out.print(event.getX() + " y: ");
-        System.out.println(event.getY());
-        setX(event.getX());
-        setY(event.getY());
-        event.consume();
+    public void translateRelativeY(double dy) {
+        setY(getY() + dy);
     }
 
     public final ObjectProperty<WaypointType> waypointTypeProperty() {
@@ -76,20 +80,6 @@ public class HWaypoint extends HPathElement {
 
     public final void setWaypointType(WaypointType value) {
         waypointType.set(value);
-    }
-
-    @DeserializedJSONTarget
-    public final void setWaypointType(@DeserializedJSONObjectValue(key = "waypoint_type") String typeString) throws JSONDeserializerException {
-        switch (typeString.trim().toLowerCase()) {
-            case "soft":
-                setWaypointType(WaypointType.SOFT);
-                break;
-            case "hard":
-                setWaypointType(WaypointType.HARD);
-                break;
-            default:
-                throw new JSONDeserializerException("Invalid waypoint type string \"" + typeString + "\"");
-        }
     }
 
     @SerializedJSONObjectValue(key = "waypoint_type")

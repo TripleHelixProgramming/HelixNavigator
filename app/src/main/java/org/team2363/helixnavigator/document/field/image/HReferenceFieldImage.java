@@ -17,7 +17,7 @@ public class HReferenceFieldImage implements HFieldImage {
 
     @DeserializedJSONConstructor
     public HReferenceFieldImage(
-            @DeserializedJSONObjectValue(key = "default") String name) {
+            @DeserializedJSONObjectValue(key = "default") String name) throws DefaultFieldImageNotFoundException {
         this.name = name;
         fieldImage = DefaultFieldImages.forName(this.name);
     }
