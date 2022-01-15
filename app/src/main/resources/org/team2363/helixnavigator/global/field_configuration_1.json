@@ -1,0 +1,15 @@
+{
+	"field_image": {
+        "default": "2020: Infinite Recharge"
+    },
+    "obstacles": [
+        {
+            "name": "cone",
+            "obstacle_type": "circle",
+            "safety_distance": 5.0,
+            "center_x": 40.0,
+            "center_y": 0.0,
+            "radius": 10.0
+        }
+    ]
+}

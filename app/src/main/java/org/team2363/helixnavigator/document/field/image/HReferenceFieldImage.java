@@ -6,26 +6,25 @@ import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONObjectValue;
 
 import org.team2363.helixnavigator.global.DefaultFieldImages;
+import org.team2363.helixnavigator.global.DefaultResourceUnavailableException;
 
 import javafx.scene.image.Image;
 
 @JSONSerializable
 public class HReferenceFieldImage implements HFieldImage {
 
-    private final String name;
     private final HDefaultFieldImage fieldImage;
 
     @DeserializedJSONConstructor
     public HReferenceFieldImage(
-            @DeserializedJSONObjectValue(key = "default") String name) throws DefaultFieldImageNotFoundException {
-        this.name = name;
-        fieldImage = DefaultFieldImages.forName(this.name);
+            @DeserializedJSONObjectValue(key = "default") String name) throws DefaultResourceUnavailableException {
+        fieldImage = DefaultFieldImages.forName(name);
     }
 
     @SerializedJSONObjectValue(key = "default")
     @Override
     public String getName() {
-        return name;
+        return fieldImage.getName();
     }
 
     @Override

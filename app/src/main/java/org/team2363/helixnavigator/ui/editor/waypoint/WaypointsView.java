@@ -1,5 +1,7 @@
 package org.team2363.helixnavigator.ui.editor.waypoint;
 
+import java.util.List;
+
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
@@ -89,21 +91,33 @@ public class WaypointsView extends Pane {
     }
 
     private void waypointsChanged(ListChangeListener.Change<? extends HWaypoint> change) {
-        while (change.next()) {
-            if (change.wasRemoved()) {
-                waypointViews.remove(change.getFrom(), change.getFrom() + change.getRemovedSize());
-                getChildren().remove(change.getFrom(), change.getFrom() + change.getRemovedSize());
-            }
-            if (change.wasAdded()) {
-                for (int i = change.getFrom(); i < change.getTo(); i++) {
-                    WaypointView waypointView = new WaypointView();
-                    linkWaypointView(i, waypointView, change.getList().get(i));
-                    waypointViews.add(i, waypointView);
-                    getChildren().add(i, waypointView);
-                }
-            }
-        }
+        // while (change.next()) {
+        //     if (change.wasRemoved()) {
+        //         waypointViews.remove(change.getFrom(), change.getFrom() + change.getRemovedSize());
+        //         getChildren().remove(change.getFrom(), change.getFrom() + change.getRemovedSize());
+        //     }
+        //     if (change.wasAdded()) {
+        //         for (int i = change.getFrom(); i < change.getTo(); i++) {
+        //             WaypointView waypointView = new WaypointView();
+        //             linkWaypointView(i, waypointView, change.getList().get(i));
+        //             waypointViews.add(i, waypointView);
+        //             getChildren().add(i, waypointView);
+        //         }
+        //     }
+        // }
+        updateWaypoints(change.getList());
         updateSelectedWaypoints();
+    }
+
+    private void updateWaypoints(List<? extends HWaypoint> list) {
+        waypointViews.clear();
+        getChildren().clear();
+        for (int i = 0; i < list.size(); i++) {
+            WaypointView waypointView = new WaypointView();
+            linkWaypointView(i, waypointView, list.get(i));
+            waypointViews.add(i, waypointView);
+            getChildren().add(i, waypointView);
+        }
     }
 
     private void waypointsSelectedIndicesChanged(ListChangeListener.Change<? extends Integer> change) {

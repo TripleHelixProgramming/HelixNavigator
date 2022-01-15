@@ -55,17 +55,17 @@ public class HPath {
     public HPath() {
         waypointsSelectionModel = new HSelectionModel<>(waypoints);
         obstaclesSelectionModel = new HSelectionModel<>(obstacles);
-        obstaclesSelectionModel.getSelectedIndices().addListener((ListChangeListener.Change<? extends Integer> change) -> {
-            if (waypointsSelectionModel.getSelectedIndices().isEmpty() && obstaclesSelectionModel.getSelectedIndices().size() == 1 && obstaclesSelectionModel.getSelectedItems().get(0).isPolygon()) {
-                if (getPolygonPointsSelectionModel() != null) { // if not first time using it
-                    getPolygonPointsSelectionModel().clear();
-                }
-                setPolygonPointsSelectionModel(new HSelectionModel<HPolygonPoint>(((HPolygonObstacle) obstaclesSelectionModel.getSelectedItems().get(0)).getPoints()));
-                setInPolygonPointModeProperty(true);
-            } else {
-                setInPolygonPointModeProperty(false);
-            }
-        });
+        // obstaclesSelectionModel.getSelectedIndices().addListener((ListChangeListener.Change<? extends Integer> change) -> {
+        //     if (waypointsSelectionModel.getSelectedIndices().isEmpty() && obstaclesSelectionModel.getSelectedIndices().size() == 1 && obstaclesSelectionModel.getSelectedItems().get(0).isPolygon()) {
+        //         if (getPolygonPointsSelectionModel() != null) { // if not first time using it
+        //             getPolygonPointsSelectionModel().clear();
+        //         }
+        //         setPolygonPointsSelectionModel(new HSelectionModel<HPolygonPoint>(((HPolygonObstacle) obstaclesSelectionModel.getSelectedItems().get(0)).getPoints()));
+        //         setInPolygonPointModeProperty(true);
+        //     } else {
+        //         setInPolygonPointModeProperty(false);
+        //     }
+        // });
     }
 
     private double backgroundDragInitialX;

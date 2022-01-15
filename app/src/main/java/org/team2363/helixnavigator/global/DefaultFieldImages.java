@@ -10,7 +10,6 @@ import com.jlbabilino.json.JSONDeserializer;
 import com.jlbabilino.json.JSONDeserializerException;
 import com.jlbabilino.json.JSONParserException;
 
-import org.team2363.helixnavigator.document.field.image.DefaultFieldImageNotFoundException;
 import org.team2363.helixnavigator.document.field.image.HDefaultFieldImage;
 
 public class DefaultFieldImages {
@@ -21,7 +20,7 @@ public class DefaultFieldImages {
         System.out.println("DefaultFieldImages: Loading default images...");
         int index = 0;
         InputStream currentStream;
-        while ((currentStream = DefaultFieldImages.class.getResourceAsStream("field_" + index + ".json")) != null) {
+        while ((currentStream = DefaultFieldImages.class.getResourceAsStream("field_image_" + index + ".json")) != null) {
             try {
                 HDefaultFieldImage fieldImage = JSONDeserializer.deserialize(new String(currentStream.readAllBytes()), HDefaultFieldImage.class);
                 currentStream.close(); // This does nothing but I need it to avoid the warning
@@ -45,9 +44,9 @@ public class DefaultFieldImages {
         return fieldImageMap.containsKey(name);
     }
 
-    public static HDefaultFieldImage forName(String name) throws DefaultFieldImageNotFoundException {
+    public static HDefaultFieldImage forName(String name) throws DefaultResourceUnavailableException {
         if (!containsName(name)) {
-            throw new DefaultFieldImageNotFoundException("Default field image named \"" + name + "\" does not exist");
+            throw new DefaultResourceUnavailableException("Default field image named \"" + name + "\" does not exist");
         }
         return fieldImageMap.get(name);
     }

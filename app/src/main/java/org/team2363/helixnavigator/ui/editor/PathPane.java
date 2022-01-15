@@ -5,6 +5,7 @@ import org.team2363.helixnavigator.ui.editor.field.FieldImageView;
 import org.team2363.helixnavigator.ui.editor.waypoint.WaypointsView;
 
 import javafx.scene.Cursor;
+import javafx.scene.Group;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;

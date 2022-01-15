@@ -39,7 +39,6 @@ public class WaypointListView extends ListView<HWaypoint> {
         this.documentManager.documentProperty().addListener(this::documentChanged);
 
         setEditable(true);
-        setMinHeight(USE_COMPUTED_SIZE);
         setItems(BLANK);
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         getSelectionModel().getSelectedIndices().addListener(onListViewSelectedIndicesChanged);

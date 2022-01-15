@@ -56,4 +56,9 @@ public class HPolygonPoint extends HPathElement {
     public final double getY() {
         return y.get();
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

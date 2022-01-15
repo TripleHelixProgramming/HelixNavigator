@@ -12,7 +12,7 @@ public class HCircleObstacle extends HObstacle {
 
     private final DoubleProperty centerX = new SimpleDoubleProperty(this, "centerX", 0.0);
     private final DoubleProperty centerY = new SimpleDoubleProperty(this, "centerY", 0.0);
-    private final DoubleProperty radius = new SimpleDoubleProperty(this, "radius", 1.0);
+    private final DoubleProperty radius = new SimpleDoubleProperty(this, "radius", 10.0);
 
     @DeserializedJSONConstructor
     public HCircleObstacle() {

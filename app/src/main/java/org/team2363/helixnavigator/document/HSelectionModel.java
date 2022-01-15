@@ -1,6 +1,8 @@
 package org.team2363.helixnavigator.document;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -21,20 +23,22 @@ public class HSelectionModel<E extends HPathElement> {
     }
 
     private void itemsChanged(ListChangeListener.Change<? extends E> change) {
-        while (change.next()) {
-            if (change.wasRemoved()) {
-                for (E item : change.getRemoved()) {
-                    int indexOfItem = selectedItems.indexOf(item);
-                    if (indexOfItem != -1) { // if item that was removed from list was selected, then remove from
-                                             // selectedIndices
-                        selectedIndices.remove(indexOfItem); // since indices of selectedIndices and selectedItems are
-                                                             // in the same order, we can just assume they are the same
-                                                             // and remove that index.
-                        selectedItems.remove(indexOfItem);
-                    }
-                }
+        for (int i = 0; i < selectedIndices.size(); i++) {
+            if (selectedIndices.get(i).intValue() >= items.size()) {
+                selectedIndices.remove(i, selectedIndices.size());
+                selectedItems.remove(i, selectedItems.size());
+                break;
             }
         }
+        updateSelectedItems();
+    }
+
+    private void updateSelectedItems() {
+        List<E> newSelectedItems = new ArrayList<>();
+        for (Integer index : selectedIndices) {
+            newSelectedItems.add(items.get(index));
+        }
+        selectedItems.setAll(newSelectedItems);
     }
 
     public ObservableList<Integer> getSelectedIndices() {
@@ -127,13 +131,16 @@ public class HSelectionModel<E extends HPathElement> {
     }
 
     public void selectIndices(int... indices) {
-        for (int indexInIndices : indices) {
-            select(indexInIndices);
+        for (int index : indices) {
+            select(index);
         }
     }
 
-    public void selectIndices(Collection<? extends Integer> collection) {
-        for (Integer index : collection) {
+    public void selectIndices(Collection<? extends Integer> indices) {
+        System.out.println("Items: " + items);
+        System.out.println("Trying to select these indices: " + indices);
+        for (Integer index : indices) {
+            System.out.println("Selecting index " + index);
             select(index);
         }
     }

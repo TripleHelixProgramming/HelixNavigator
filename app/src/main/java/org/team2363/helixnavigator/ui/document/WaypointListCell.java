@@ -209,9 +209,9 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
     protected String fileString() {
         ObservableList<HWaypoint> selectedItems = getListView().getSelectionModel().getSelectedItems();
         if (selectedItems.size() == 1) {
-            return JSONSerializer.serializeJSON(getListView().getSelectionModel().getSelectedItem()).exportJSON();
+            return JSONSerializer.serializeString(getListView().getSelectionModel().getSelectedItem());
         } else if (selectedItems.size() > 1) {
-            return JSONSerializer.serializeJSON(getListView().getSelectionModel().getSelectedItems()).exportJSON();
+            return JSONSerializer.serializeString(getListView().getSelectionModel().getSelectedItems());
         } else {
             return "";
         }
