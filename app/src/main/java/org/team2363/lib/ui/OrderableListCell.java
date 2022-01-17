@@ -9,6 +9,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.Image;
@@ -29,6 +31,8 @@ public abstract class OrderableListCell<E> extends ListCell<E> {
     private static final Border BOTTOM_BORDER = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0.0, 0.0, 1.0, 0.0)));
 
     private boolean dropAtTop;
+
+    private final BooleanProperty orderable = new SimpleBooleanProperty(this, "orderable", true);
 
     public OrderableListCell() {
         setOnDragDetected(event -> {
@@ -90,9 +94,10 @@ public abstract class OrderableListCell<E> extends ListCell<E> {
             }
             Dragboard dragboard = event.getDragboard();
             ObservableList<E> items = getListView().getItems();
-            boolean inItems = false;
+            boolean inThisListView = false;
             if (gestureSource instanceof ListCell<?>) {
-                inItems = items.contains(((ListCell<?>) event.getGestureSource()).getItem());
+                ListCell<?> listCell = (ListCell<?>) gestureSource;
+                inThisListView = listCell.getListView() == this.getListView();
             }
             int index = dropAtTop ? getIndex() : getIndex() + 1;
             if (index > items.size()) {
@@ -100,22 +105,26 @@ public abstract class OrderableListCell<E> extends ListCell<E> {
             }
             boolean success;
             dropAttempt: {
-                if (inItems) {
-                    ObservableList<Integer> selectedIndicies = getListView().getSelectionModel().getSelectedIndices();
-                    List<E> selectedItems = new ArrayList<>(); // have to use this to avoid automatic updating
-                    selectedItems.addAll(getListView().getSelectionModel().getSelectedItems());
-                    int numSelectedLessThanIndex = 0;
-                    for (int selectedIndex : selectedIndicies) {
-                        if (selectedIndex < index) {
-                            numSelectedLessThanIndex++;
+                if (inThisListView) {
+                    if (isOrderable()) {
+                        ObservableList<Integer> selectedIndicies = getListView().getSelectionModel().getSelectedIndices();
+                        List<E> selectedItems = new ArrayList<>(); // have to use this to avoid automatic updating
+                        selectedItems.addAll(getListView().getSelectionModel().getSelectedItems());
+                        int numSelectedLessThanIndex = 0;
+                        for (int selectedIndex : selectedIndicies) {
+                            if (selectedIndex < index) {
+                                numSelectedLessThanIndex++;
+                            }
                         }
+                        items.removeAll(selectedItems);
+                        index -= numSelectedLessThanIndex;
+                        items.addAll(index, selectedItems);
+                        getListView().getSelectionModel().clearSelection();
+                        getListView().getSelectionModel().selectRange(index, index + selectedItems.size());
+                        success = true;
+                    } else {
+                        success = false;
                     }
-                    items.removeAll(selectedItems);
-                    index -= numSelectedLessThanIndex;
-                    items.addAll(index, selectedItems);
-                    getListView().getSelectionModel().clearSelection();
-                    getListView().getSelectionModel().selectRange(index, index + selectedItems.size());
-                    success = true;
                 } else {
                     String string;
                     if (dragboard.hasString()) {
@@ -163,6 +172,17 @@ public abstract class OrderableListCell<E> extends ListCell<E> {
         setBorder(BOTTOM_BORDER);
     }
 
+    public final BooleanProperty orderableProperty() {
+        return orderable;
+    }
+
+    public final void setOrderable(boolean value) {
+        orderable.set(value);
+    }
+
+    public final boolean isOrderable() {
+        return orderable.get();
+    }
     protected abstract Image dragView(int selectionSize);
     protected abstract String fileName();
     protected abstract String fileString();

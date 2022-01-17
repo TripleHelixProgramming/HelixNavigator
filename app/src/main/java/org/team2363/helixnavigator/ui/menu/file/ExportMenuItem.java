@@ -13,6 +13,7 @@ public class ExportMenuItem extends MenuItem {
         this.documentManager = documentManager;
         setText("Export...");
         setOnAction(this::action);
+        disableProperty().bind(this.documentManager.isDocumentOpenProperty().not());
     }
 
     public void action(ActionEvent event) {

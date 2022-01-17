@@ -6,6 +6,9 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
+import java.util.logging.Logger;
+
+import org.team2363.helixnavigator.global.Logs;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -23,19 +26,8 @@ public class Test extends Application {
     }
 
     public static void main(String[] args) throws Exception {
-        InputStream s = Test.class.getResourceAsStream("/script.py");
-        File file = Files.createTempFile("script", ".py").toFile();
-        FileOutputStream os = new FileOutputStream(file);
-        s.transferTo(os);
-        os.close();
-        ProcessBuilder builder = new ProcessBuilder("python3", file.getAbsolutePath());
-        Process process = builder.start();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            System.out.println(line);
-        }
-        System.out.println(file.getAbsolutePath());
+        Logs.initialize();
+        Logger.getLogger("org.team2363.helixnavigator.document").info("this is a test");
         // launch(args);
     }
 }

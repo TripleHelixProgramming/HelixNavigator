@@ -22,13 +22,13 @@ public class FileMenu extends Menu {
 
         setText("_File");
 
-        newDocumentMenuItem = new NewDocumentMenuItem(documentManager);
-        openDocumentMenuItem = new OpenDocumentMenuItem(documentManager);
-        saveMenuItem = new SaveMenuItem(documentManager);
-        saveAsMenuItem = new SaveAsMenuItem(documentManager);
-        importMenuItem = new ImportMenuItem(documentManager);
-        exportMenuItem = new ExportMenuItem(documentManager);
-        closeDocumentMenuItem = new CloseDocumentMenuItem(documentManager);
+        newDocumentMenuItem = new NewDocumentMenuItem(this.documentManager);
+        openDocumentMenuItem = new OpenDocumentMenuItem(this.documentManager);
+        saveMenuItem = new SaveMenuItem(this.documentManager);
+        saveAsMenuItem = new SaveAsMenuItem(this.documentManager);
+        importMenuItem = new ImportMenuItem(this.documentManager);
+        exportMenuItem = new ExportMenuItem(this.documentManager);
+        closeDocumentMenuItem = new CloseDocumentMenuItem(this.documentManager);
 
         getItems().add(newDocumentMenuItem);
         getItems().add(openDocumentMenuItem);

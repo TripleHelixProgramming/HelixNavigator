@@ -82,6 +82,7 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
         polygonView.setFitHeight(20);
         graphicBox.getChildren().add(circleView); // have to use one image here even though we don't know which it is yet
         setEditable(true);
+        setOrderable(false);
         // cancel edit if clicked off of or ENTER is pressed:
         textField.setOnAction(event -> {
             if (isEditing()) {

@@ -13,6 +13,7 @@ public class ImportMenuItem extends MenuItem {
         this.documentManager = documentManager;
         setText("Import...");
         setOnAction(this::action);
+        disableProperty().bind(this.documentManager.isDocumentOpenProperty().not());
     }
 
     public void action(ActionEvent event) {

@@ -95,7 +95,7 @@ public class ObstacleListView extends ListView<HObstacle> {
             getSelectionModel().getSelectedIndices().removeListener(onListViewSelectedIndicesChanged);
             setItems(BLANK);
             getSelectionModel().getSelectedIndices().addListener(onListViewSelectedIndicesChanged);
-            // oldPath.getObstaclesSelectionModel().getSelectedIndices().removeListener(onPathSelectedObstaclesIndiciesChanged);
+            oldPath.getObstaclesSelectionModel().getSelectedIndices().removeListener(onPathSelectedObstaclesIndiciesChanged);
         }
     }
     private void loadSelectedPath(HPath newPath) {
@@ -104,7 +104,7 @@ public class ObstacleListView extends ListView<HObstacle> {
             for (int index : documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().getSelectedIndices()) {
                 getSelectionModel().select(index);
             }
-            // newPath.getObstaclesSelectionModel().getSelectedIndices().addListener(onPathSelectedObstaclesIndiciesChanged);
+            newPath.getObstaclesSelectionModel().getSelectedIndices().addListener(onPathSelectedObstaclesIndiciesChanged);
         }
     }
     private void pathSelectedObstaclesIndiciesChanged(ListChangeListener.Change<? extends Integer> change) {

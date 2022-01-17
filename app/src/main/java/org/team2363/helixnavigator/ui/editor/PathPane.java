@@ -17,12 +17,14 @@ public class PathPane extends Pane {
 
     private final DocumentManager documentManager;
 
+    private final BackgroundRectangle backgroundRectangle;
     private final FieldImageView fieldImageView;
     private final WaypointsView waypointsLayer;
     
     public PathPane(DocumentManager documentManager) {
         this.documentManager = documentManager;
 
+        backgroundRectangle = new BackgroundRectangle(this.documentManager);
         fieldImageView = new FieldImageView(this.documentManager);
         waypointsLayer = new WaypointsView(this.documentManager);
         getChildren().addAll(fieldImageView, waypointsLayer);
@@ -32,12 +34,12 @@ public class PathPane extends Pane {
                 if (event.getButton() == MouseButton.MIDDLE) {
                     this.documentManager.getStage().getScene().setCursor(Cursor.CLOSED_HAND);
                 }
-                this.documentManager.getDocument().getSelectedPath().handleBackgroundPressed(event);
+                this.documentManager.getDocument().handleBackgroundPressed(event);
             }
         });
         setOnMouseDragged(event -> {
             if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
-                this.documentManager.getDocument().getSelectedPath().handleBackgroundDragged(event);
+                this.documentManager.getDocument().handleBackgroundDragged(event);
             }
         });
         setOnMouseReleased(event -> {
@@ -47,12 +49,7 @@ public class PathPane extends Pane {
         });
         setOnScroll(event -> {
             if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
-                this.documentManager.getDocument().getSelectedPath().handleScroll(event);
-            }
-        });
-        setOnZoom(event -> {
-            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
-                this.documentManager.getDocument().getSelectedPath().handleZoom(event);
+                this.documentManager.getDocument().handleScroll(event);
             }
         });
 

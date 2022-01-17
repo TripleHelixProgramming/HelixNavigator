@@ -3,6 +3,7 @@ package org.team2363.helixnavigator.document;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 import com.jlbabilino.json.JSONDeserializer;
 import com.jlbabilino.json.JSONDeserializerException;
@@ -27,6 +28,8 @@ public class DocumentManager {
 
     private static final ExtensionFilter DOCUMENT_FILE_TYPE = new ExtensionFilter("HelixNavigator Document (*.json)", "*.json");
 
+    private static final Logger logger = Logger.getLogger("org.team2363.helixnavigator.document");
+
     private final Stage stage;
     private final ReadOnlyObjectWrapper<HDocument> document = new ReadOnlyObjectWrapper<HDocument>(this, "document", null);
     private final ReadOnlyBooleanWrapper isDocumentOpen = new ReadOnlyBooleanWrapper(this, "isDocumentOpen", false);
@@ -40,7 +43,7 @@ public class DocumentManager {
     }
 
     private final void setDocument(HDocument value) {
-        System.out.println("DocumentManager: Setting document");
+        logger.info("Setting document");
         setIsDocumentOpen(value != null); // spent about an hour trying to fix a bug:
         document.set(value);              // just had to switch these two lines
         updateStageTitle();
@@ -55,7 +58,7 @@ public class DocumentManager {
             } else {
                 docName = "New Document";
             }
-            title = Standards.APPLICATION_NAME + "\u2014" + docName; // escaped em dash
+            title = Standards.APPLICATION_NAME + " \u2014 " + docName; // escaped em dash
         } else {
             title = Standards.APPLICATION_NAME;
         }
@@ -96,9 +99,9 @@ public class DocumentManager {
      * @return {@code true} if and only if a new document was created and loaded.
      */
     public final boolean requestNewDocument() {
-        System.out.println("DocumentManager: User requested \"New Document\".");
+        logger.info("User requested \"New Document\".");
         if (requestCloseDocument()) {
-            System.out.println("DocumentManager: Document succesfully closed, setting to new blank document.");
+            logger.info("Document succesfully closed, setting to new blank document.");
             setDocument(new HDocument());
             return true;
         } else {
@@ -115,24 +118,28 @@ public class DocumentManager {
      */
     private final boolean openDocument(File file) {
         try {
-            System.out.println("DocumentManager: Opening file: " + file);
+            logger.info("Opening file: " + file.getAbsolutePath());
             HDocument openedDocument = JSONDeserializer.deserialize(file, HDocument.class);
             openedDocument.setSaveLocation(file);
             setDocument(openedDocument);
+            logger.info("File \"" + file.getAbsolutePath() + "\" succesffully opened.");
             return true;
         } catch (IOException e) {
+            logger.finer("Could not read file: " + file.getAbsolutePath());
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("File Error");
             alert.setContentText("Could not read file: " + file.getAbsolutePath());
             alert.showAndWait();
             return false;
         } catch (JSONParserException e) {
+            logger.finer("Could not parse JSON in file \"" + file.getName() + "\":" + e.getMessage());
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Parsing Error");
             alert.setContentText("Could not parse JSON in file \"" + file.getName() + "\":" + e.getMessage());
             alert.showAndWait();
             return false;
         } catch (JSONDeserializerException e) {
+            logger.finer("Could not deserialize JSON data in file \"" + file.getName() + "\":" + e.getMessage());
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("JSON Error");
             alert.setContentText(
@@ -266,16 +273,16 @@ public class DocumentManager {
      *         {@code false} if document was not closed
      */
     public final boolean requestCloseDocument() {
-        System.out.println("DocumentManager: Document close reuqested.");
+        logger.info("Document close reuqested.");
         if (!getIsDocumentOpen()) {
-            System.out.println("DocumentManager: no document was open, already closed.");
+            logger.info("no document was open, already closed.");
             return true;
         } else if (getDocument().isSaved()) {
-            System.out.println("DocumentManager: Document is saved, closing without prompt.");
+            logger.info("Document is saved, closing without prompt.");
             closeDocument();
             return true;
         } else {
-            System.out.println("DocumentManager: Document is not saved, prompting user...");
+            logger.info("Document is not saved, prompting user...");
             SavePrompt prompt = new SavePrompt();
             Optional<ButtonType> response = prompt.showAndWait();
             if (response.isPresent()) {

@@ -15,6 +15,7 @@ public class CloseDocumentMenuItem extends MenuItem {
         setText("Close Document");
         setAccelerator(KeyCombination.keyCombination("shortcut+W"));
         setOnAction(this::action);
+        disableProperty().bind(this.documentManager.isDocumentOpenProperty().not());
     }
 
     public void action(ActionEvent event) {

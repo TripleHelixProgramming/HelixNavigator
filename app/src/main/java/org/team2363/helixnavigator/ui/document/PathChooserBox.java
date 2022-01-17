@@ -3,6 +3,7 @@ package org.team2363.helixnavigator.ui.document;
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
+import org.team2363.helixnavigator.global.Standards;
 import org.team2363.lib.ui.prompts.FilteredTextInputDialog;
 
 import javafx.beans.value.ChangeListener;
@@ -83,8 +84,8 @@ public class PathChooserBox extends HBox {
             FilteredTextInputDialog prompt = new FilteredTextInputDialog();
             prompt.setHeaderText("Enter a valid path name");
             prompt.getEditor().setPromptText("Path name");
-            prompt.setMaxChars(HPath.MAX_PATH_NAME_LENGTH);
-            prompt.setValidator(HPath.VALID_PATH_NAME);
+            prompt.setMaxChars(Standards.MAX_NAME_LENGTH);
+            prompt.setValidator(Standards.VALID_NAME);
             prompt.showAndWait().ifPresent(response -> {
                 HPath path = new HPath();
                 path.setName(response);

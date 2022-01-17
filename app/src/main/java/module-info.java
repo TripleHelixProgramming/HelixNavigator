@@ -1,4 +1,6 @@
 module org.team2363.helixnavigator {
+    requires transitive java.logging;
+    requires java.desktop;
     requires transitive com.jlbabilino.json;
     requires transitive javafx.controls;
     requires transitive javafx.graphics;
