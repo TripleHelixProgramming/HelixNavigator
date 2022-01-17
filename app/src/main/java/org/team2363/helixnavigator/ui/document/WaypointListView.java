@@ -46,7 +46,6 @@ public class WaypointListView extends ListView<HWaypoint> {
         newSoftWaypointMenuItem.setOnAction(this::newSoftWaypoint);
         newHardWaypointMenuItem.setOnAction(this::newHardWaypoint);
         noneSelectedContextMenu.setAutoHide(true);
-        setContextMenu(noneSelectedContextMenu);
     }
 
     private void listViewSelectedIndicesChanged(ListChangeListener.Change<? extends Integer> change) {
@@ -76,7 +75,7 @@ public class WaypointListView extends ListView<HWaypoint> {
 
     private void unloadDocument(HDocument oldDocument) {
         if (oldDocument != null) {
-            setItems(BLANK);
+            unloadSelectedPath(oldDocument.getSelectedPath());
             oldDocument.selectedPathProperty().removeListener(onSelectedPathChanged);
         }
     }

@@ -21,6 +21,6 @@ public class Standards {
      * Up to 50 characters
      */
     public static final int MAX_NAME_LENGTH = 50;
-    public static final String DEFAULT_FIELD_IMAGE = "2020: Infinite Recharge";
+    public static final String DEFAULT_FIELD_IMAGE = "2022: Rapid React";
     public static final double DEFAULT_OBSTACLE_SAFETY_DISTANCE = 5.0;
 }

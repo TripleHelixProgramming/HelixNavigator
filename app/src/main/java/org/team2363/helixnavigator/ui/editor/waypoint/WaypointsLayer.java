@@ -16,6 +16,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 public class WaypointsLayer implements PathLayer {
@@ -124,35 +125,32 @@ public class WaypointsLayer implements PathLayer {
         waypointView.zoomScaleProperty().bind(this.documentManager.getDocument().zoomScaleProperty());
 
         EventHandler<MouseEvent> onMousePressed = event -> {
-            System.out.println("Pressed");
         };
         EventHandler<MouseEvent> onMouseDragBegin = event -> {
-            System.out.println("Drag Begin");
-            if (!event.isShortcutDown() && !documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().isSelected(index)) {
-                documentManager.getDocument().getSelectedPath().clearSelection();
+            if (event.getButton() == MouseButton.PRIMARY) {
+                if (!event.isShortcutDown() && !documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().isSelected(index)) {
+                    documentManager.getDocument().getSelectedPath().clearSelection();
+                }
+                documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().select(index);
+                documentManager.getDocument().handleElementsDragBegin(event);
             }
-            documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().select(index);
-            documentManager.getDocument().handleElementsDragBegin(event);
         };
         EventHandler<MouseEvent> onMouseDragged = event -> {
-            System.out.println("Draggged");
-            documentManager.getDocument().handleElementsDragged(event);
+            if (event.getButton() == MouseButton.PRIMARY) {
+                documentManager.getDocument().handleElementsDragged(event);
+            }
         };
         EventHandler<MouseEvent> onMouseDragEnd = event -> {
-            System.out.println("Drag End");
         };
         EventHandler<MouseEvent> onMouseReleased = event -> {
-            System.out.println("Released");
-            if (!event.isShortcutDown()) {
-                boolean selected = documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().isSelected(index);
-                documentManager.getDocument().getSelectedPath().clearSelection();
-                documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().setSelected(index, selected);
+            if (event.getButton() == MouseButton.PRIMARY) {
+                if (!event.isShortcutDown()) {
+                    boolean selected = documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().isSelected(index);
+                    documentManager.getDocument().getSelectedPath().clearSelection();
+                    documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().setSelected(index, selected);
+                }
+                documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().toggle(index);
             }
-            boolean isSelectedBefore = documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().isSelected(index);
-            documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().toggle(index);
-            boolean isSelectedAfter = documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().isSelected(index);
-            System.out.println("Before: " + isSelectedBefore);
-            System.out.println("After: " + isSelectedAfter);
         };
 
         MouseEventWrapper eventWrapper = new MouseEventWrapper(onMousePressed, onMouseDragBegin, onMouseDragged, onMouseDragEnd, onMouseReleased);
