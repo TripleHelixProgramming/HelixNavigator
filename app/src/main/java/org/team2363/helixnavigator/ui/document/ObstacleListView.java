@@ -30,7 +30,7 @@ public class ObstacleListView extends ListView<HObstacle> {
 
     private final ListChangeListener<? super Integer> onListViewSelectedIndicesChanged = this::listViewSelectedIndicesChanged;
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
-    private final ListChangeListener<? super Integer> onPathSelectedObstaclesIndiciesChanged = this::pathSelectedObstaclesIndiciesChanged;
+    private final ListChangeListener<? super Integer> onPathSelectedObstaclesIndicesChanged = this::pathSelectedObstaclesIndicesChanged;
 
     public ObstacleListView(DocumentManager documentManager) {
         this.documentManager = documentManager;
@@ -39,6 +39,7 @@ public class ObstacleListView extends ListView<HObstacle> {
 
         setEditable(true);
         setItems(BLANK);
+        setContextMenu(null);
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         getSelectionModel().getSelectedIndices().addListener(onListViewSelectedIndicesChanged);
         setCellFactory(ObstacleListCell.obstacleCellFactory);
@@ -46,7 +47,6 @@ public class ObstacleListView extends ListView<HObstacle> {
         newCircleObstacleMenuItem.setOnAction(this::newCircleObstacle);
         newPolygonObstacleMenuItem.setOnAction(this::newPolygonObstacle);
         noneSelectedContextMenu.setAutoHide(true);
-        setContextMenu(noneSelectedContextMenu);
     }
 
     private void newCircleObstacle(ActionEvent event) {
@@ -62,8 +62,10 @@ public class ObstacleListView extends ListView<HObstacle> {
 
     private void listViewSelectedIndicesChanged(ListChangeListener.Change<? extends Integer> change) {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+            documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().getSelectedIndices().removeListener(onPathSelectedObstaclesIndicesChanged);
             documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().clear();
             documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().selectIndices(getSelectionModel().getSelectedIndices());
+            documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().getSelectedIndices().addListener(onPathSelectedObstaclesIndicesChanged);
         }
     }
 
@@ -94,23 +96,27 @@ public class ObstacleListView extends ListView<HObstacle> {
             // the selection model clears selected indices too
             getSelectionModel().getSelectedIndices().removeListener(onListViewSelectedIndicesChanged);
             setItems(BLANK);
+            setContextMenu(null);
             getSelectionModel().getSelectedIndices().addListener(onListViewSelectedIndicesChanged);
-            oldPath.getObstaclesSelectionModel().getSelectedIndices().removeListener(onPathSelectedObstaclesIndiciesChanged);
+            oldPath.getObstaclesSelectionModel().getSelectedIndices().removeListener(onPathSelectedObstaclesIndicesChanged);
         }
     }
     private void loadSelectedPath(HPath newPath) {
         if (newPath != null) {
             setItems(newPath.getObstacles());
+            setContextMenu(noneSelectedContextMenu);
             for (int index : documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().getSelectedIndices()) {
                 getSelectionModel().select(index);
             }
-            newPath.getObstaclesSelectionModel().getSelectedIndices().addListener(onPathSelectedObstaclesIndiciesChanged);
+            newPath.getObstaclesSelectionModel().getSelectedIndices().addListener(onPathSelectedObstaclesIndicesChanged);
         }
     }
-    private void pathSelectedObstaclesIndiciesChanged(ListChangeListener.Change<? extends Integer> change) {
+    private void pathSelectedObstaclesIndicesChanged(ListChangeListener.Change<? extends Integer> change) {
+        getSelectionModel().getSelectedIndices().removeListener(onListViewSelectedIndicesChanged);
         getSelectionModel().clearSelection();
         for (int index : change.getList()) {
             getSelectionModel().select(index);
         }
+        getSelectionModel().getSelectedIndices().addListener(onListViewSelectedIndicesChanged);
     }
 }

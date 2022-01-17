@@ -1,7 +1,5 @@
 package org.team2363.helixnavigator.ui.document;
 
-import java.util.List;
-
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
@@ -31,7 +29,7 @@ public class WaypointListView extends ListView<HWaypoint> {
 
     private final ListChangeListener<? super Integer> onListViewSelectedIndicesChanged = this::listViewSelectedIndicesChanged;
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
-    private final ListChangeListener<? super Integer> onPathSelectedWaypointsIndiciesChanged = this::pathSelectedWaypointsIndiciesChanged;
+    private final ListChangeListener<? super Integer> onPathSelectedWaypointsIndicesChanged = this::pathSelectedWaypointsIndicesChanged;
 
     public WaypointListView(DocumentManager documentManager) {
         this.documentManager = documentManager;
@@ -40,6 +38,7 @@ public class WaypointListView extends ListView<HWaypoint> {
 
         setEditable(true);
         setItems(BLANK);
+        setContextMenu(null);
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         getSelectionModel().getSelectedIndices().addListener(onListViewSelectedIndicesChanged);
         setCellFactory(WaypointListCell.waypointCellFactory);
@@ -51,18 +50,11 @@ public class WaypointListView extends ListView<HWaypoint> {
     }
 
     private void listViewSelectedIndicesChanged(ListChangeListener.Change<? extends Integer> change) {
-        // check if there is a path to deselect or select waypoints on
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            while (change.next()) {
-                if (change.wasAdded()) {
-                    List<? extends Integer> list = change.getAddedSubList();
-                    documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().selectIndices(list);
-                } // don't use else if it doesn't work for replacements -- it will crash the program
-                if (change.wasRemoved()) {
-                    List<? extends Integer> list = change.getRemoved();
-                    documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().deselectIndices(list);
-                } // TODO: consider changing this to just setting the selected waypoints to the listview selected waypoints
-            }
+            documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().getSelectedIndices().removeListener(onPathSelectedWaypointsIndicesChanged);
+            documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().clear();
+            documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().selectIndices(getSelectionModel().getSelectedIndices());
+            documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().getSelectedIndices().addListener(onPathSelectedWaypointsIndicesChanged);
         }
     }
 
@@ -102,31 +94,27 @@ public class WaypointListView extends ListView<HWaypoint> {
         if (oldPath != null) {
             getSelectionModel().getSelectedIndices().removeListener(onListViewSelectedIndicesChanged);
             setItems(BLANK);
+            setContextMenu(null);
             getSelectionModel().getSelectedIndices().addListener(onListViewSelectedIndicesChanged);
-            oldPath.getWaypointsSelectionModel().getSelectedIndices().removeListener(onPathSelectedWaypointsIndiciesChanged);
+            oldPath.getWaypointsSelectionModel().getSelectedIndices().removeListener(onPathSelectedWaypointsIndicesChanged);
         }
     }
     private void loadSelectedPath(HPath newPath) {
         if (newPath != null) {
             setItems(newPath.getWaypoints());
+            setContextMenu(noneSelectedContextMenu);
             for (int index : documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().getSelectedIndices()) {
                 getSelectionModel().select(index);
             }
-            newPath.getWaypointsSelectionModel().getSelectedIndices().addListener(onPathSelectedWaypointsIndiciesChanged);
+            newPath.getWaypointsSelectionModel().getSelectedIndices().addListener(onPathSelectedWaypointsIndicesChanged);
         }
     }
-    private void pathSelectedWaypointsIndiciesChanged(ListChangeListener.Change<? extends Integer> change) {
-        while (change.next()) {
-            if (change.wasAdded()) {
-                for (int index : change.getAddedSubList()) {
-                    getSelectionModel().select(index);
-                }
-            }
-            if (change.wasRemoved()) {
-                for (int index : change.getRemoved()) {
-                    getSelectionModel().clearSelection(index);
-                }
-            }
+    private void pathSelectedWaypointsIndicesChanged(ListChangeListener.Change<? extends Integer> change) {
+        getSelectionModel().getSelectedIndices().removeListener(onListViewSelectedIndicesChanged);
+        getSelectionModel().clearSelection();
+        for (int index : change.getList()) {
+            getSelectionModel().select(index);
         }
+        getSelectionModel().getSelectedIndices().addListener(onListViewSelectedIndicesChanged);
     }
 }

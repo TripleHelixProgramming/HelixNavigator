@@ -98,6 +98,22 @@ public class HSelectionModel<E extends HPathElement> {
         return unmodifiableSelectedItems;
     }
 
+    public void setSelected(int index, boolean value) {
+        if (value) {
+            select(index);
+        } else {
+            deselect(index);
+        }
+    }
+
+    public void setSelected(E item, boolean value) {
+        if (value) {
+            select(item);
+        } else {
+            deselect(item);
+        }
+    }
+
     /**
      * Returns {@code true} if and only if {@code index} is currently selected.
      * This is a convenience method short for {@code getSelectedIndices.contains(index)}.

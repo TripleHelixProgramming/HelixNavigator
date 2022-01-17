@@ -1,33 +1,32 @@
 package org.team2363.helixnavigator.ui.editor;
 
 import org.team2363.helixnavigator.document.DocumentManager;
-import org.team2363.helixnavigator.ui.editor.field.FieldImageView;
-import org.team2363.helixnavigator.ui.editor.waypoint.WaypointsView;
+import org.team2363.helixnavigator.ui.editor.field.FieldImageLayer;
+import org.team2363.helixnavigator.ui.editor.waypoint.WaypointsLayer;
 
+import javafx.collections.ListChangeListener;
 import javafx.scene.Cursor;
-import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class PathPane extends Pane {
 
     private final DocumentManager documentManager;
 
-    private final BackgroundRectangle backgroundRectangle;
-    private final FieldImageView fieldImageView;
-    private final WaypointsView waypointsLayer;
+    private final BackgroundLayer backgroundLayer;
+    private final FieldImageLayer fieldImageLayer;
+    private final WaypointsLayer waypointsLayer;
     
     public PathPane(DocumentManager documentManager) {
         this.documentManager = documentManager;
 
-        backgroundRectangle = new BackgroundRectangle(this.documentManager);
-        fieldImageView = new FieldImageView(this.documentManager);
-        waypointsLayer = new WaypointsView(this.documentManager);
-        getChildren().addAll(fieldImageView, waypointsLayer);
+        backgroundLayer = new BackgroundLayer(this.documentManager);
+        fieldImageLayer = new FieldImageLayer(this.documentManager);
+        waypointsLayer = new WaypointsLayer(this.documentManager);
+        updateLayers();
+        waypointsLayer.getChildren().addListener((ListChangeListener.Change<? extends Node> change) -> updateLayers());
 
         setOnMousePressed(event -> {
             if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
@@ -53,12 +52,21 @@ public class PathPane extends Pane {
             }
         });
 
-        setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, null, null)));
         Rectangle clip = new Rectangle();
         layoutBoundsProperty().addListener((currentValue, oldValue, newValue) -> {
             clip.setWidth(newValue.getWidth());
             clip.setHeight(newValue.getHeight());
         });
         setClip(clip);
+        Rectangle backgroundRectangle = backgroundLayer.getRectangle();
+        backgroundRectangle.widthProperty().bind(clip.widthProperty());
+        backgroundRectangle.heightProperty().bind(clip.heightProperty());
+    }
+
+    public void updateLayers() {
+        getChildren().clear();
+        getChildren().addAll(backgroundLayer.getChildren());
+        getChildren().addAll(fieldImageLayer.getChildren());
+        getChildren().addAll(waypointsLayer.getChildren());
     }
 }

@@ -41,11 +41,11 @@ public class HPath {
     public HPath() {
         waypointsSelectionModel = new HSelectionModel<>(waypoints);
         obstaclesSelectionModel = new HSelectionModel<>(obstacles);
-        waypointsSelectionModel.getSelectedIndices().addListener((ListChangeListener.Change<? extends Integer> change) -> {
+        waypointsSelectionModel.getSelectedItems().addListener((ListChangeListener.Change<? extends HWaypoint> change) -> {
             updateInPolygonPointMode();
             updatePolygonPointsSelectionModel();
         });
-        obstaclesSelectionModel.getSelectedIndices().addListener((ListChangeListener.Change<? extends Integer> change) -> {
+        obstaclesSelectionModel.getSelectedItems().addListener((ListChangeListener.Change<? extends HObstacle> change) -> {
             updateInPolygonPointMode();
             updatePolygonPointsSelectionModel();
         });
@@ -54,12 +54,12 @@ public class HPath {
     private void updateInPolygonPointMode() {
         setInPolygonPointMode(
                 waypointsSelectionModel.getSelectedIndices().isEmpty()
-                && obstaclesSelectionModel.getSelectedIndices().size() == 1
+                && obstaclesSelectionModel.getSelectedItems().size() == 1
                 && obstaclesSelectionModel.getSelectedItems().get(0).isPolygon());
     }
     private void updatePolygonPointsSelectionModel() {
         if (getInPolygonPointMode()) {
-            setPolygonPointsSelectionModel(new HSelectionModel<HPolygonPoint>(((HPolygonObstacle) obstacles.get(0)).getPoints()));
+            setPolygonPointsSelectionModel(new HSelectionModel<HPolygonPoint>(((HPolygonObstacle) obstaclesSelectionModel.getSelectedItems().get(0)).getPoints()));
         } else {
             setPolygonPointsSelectionModel(null);
         }

@@ -6,6 +6,7 @@ import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+import org.team2363.helixnavigator.ui.editor.PathLayer;
 import org.team2363.lib.ui.MouseEventWrapper;
 
 import javafx.beans.value.ChangeListener;
@@ -14,20 +15,22 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 
-public class WaypointsView extends Pane {
+public class WaypointsLayer implements PathLayer {
 
     private final DocumentManager documentManager;
 
+    private final ObservableList<Node> children = FXCollections.observableArrayList();
+    private final ObservableList<Node> childrenUnmodifiable = FXCollections.unmodifiableObservableList(children);
     private final ObservableList<WaypointView> waypointViews = FXCollections.<WaypointView>observableArrayList();
 
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
     private final ListChangeListener<? super HWaypoint> onWaypointsChanged = this::waypointsChanged;
     private final ListChangeListener<? super Integer> onWaypointsSelectedIndicesChanged = this::waypointsSelectedIndicesChanged;
     
-    public WaypointsView(DocumentManager documentManager) {
+    public WaypointsLayer(DocumentManager documentManager) {
         this.documentManager = documentManager;
 
         loadDocument(this.documentManager.getDocument());
@@ -61,11 +64,9 @@ public class WaypointsView extends Pane {
     private void unloadSelectedPath(HPath oldPath) {
         if (oldPath != null) {
             waypointViews.clear();
-            getChildren().clear();
+            children.clear();
             oldPath.getWaypoints().removeListener(onWaypointsChanged);
             oldPath.getWaypointsSelectionModel().getSelectedIndices().removeListener(onWaypointsSelectedIndicesChanged);
-            setOnMousePressed(null);
-            setOnMouseDragged(null);
         }
     }
 
@@ -75,7 +76,7 @@ public class WaypointsView extends Pane {
                 WaypointView waypointView = new WaypointView();
                 linkWaypointView(i, waypointView, newPath.getWaypoints().get(i));
                 waypointViews.add(waypointView);
-                getChildren().add(waypointView);
+                children.add(waypointView);
             }
             updateSelectedWaypoints();
             newPath.getWaypoints().addListener(onWaypointsChanged);
@@ -90,12 +91,12 @@ public class WaypointsView extends Pane {
 
     private void updateWaypoints(List<? extends HWaypoint> list) {
         waypointViews.clear();
-        getChildren().clear();
+        children.clear();
         for (int i = 0; i < list.size(); i++) {
             WaypointView waypointView = new WaypointView();
             linkWaypointView(i, waypointView, list.get(i));
             waypointViews.add(i, waypointView);
-            getChildren().add(i, waypointView);
+            children.add(i, waypointView);
         }
     }
 
@@ -108,7 +109,7 @@ public class WaypointsView extends Pane {
             waypointView.setSelected(false);
         }
         for (int i : documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().getSelectedIndices()) {
-            WaypointView wv = (WaypointView) getChildren().get(i);
+            WaypointView wv = (WaypointView) children.get(i);
             wv.setSelected(true);
         }
     }
@@ -123,27 +124,44 @@ public class WaypointsView extends Pane {
         waypointView.zoomScaleProperty().bind(this.documentManager.getDocument().zoomScaleProperty());
 
         EventHandler<MouseEvent> onMousePressed = event -> {
-
+            System.out.println("Pressed");
         };
         EventHandler<MouseEvent> onMouseDragBegin = event -> {
+            System.out.println("Drag Begin");
+            if (!event.isShortcutDown() && !documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().isSelected(index)) {
+                documentManager.getDocument().getSelectedPath().clearSelection();
+            }
+            documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().select(index);
             documentManager.getDocument().handleElementsDragBegin(event);
         };
         EventHandler<MouseEvent> onMouseDragged = event -> {
+            System.out.println("Draggged");
             documentManager.getDocument().handleElementsDragged(event);
         };
         EventHandler<MouseEvent> onMouseDragEnd = event -> {
-
+            System.out.println("Drag End");
         };
         EventHandler<MouseEvent> onMouseReleased = event -> {
+            System.out.println("Released");
             if (!event.isShortcutDown()) {
+                boolean selected = documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().isSelected(index);
                 documentManager.getDocument().getSelectedPath().clearSelection();
+                documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().setSelected(index, selected);
             }
+            boolean isSelectedBefore = documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().isSelected(index);
             documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().toggle(index);
+            boolean isSelectedAfter = documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().isSelected(index);
+            System.out.println("Before: " + isSelectedBefore);
+            System.out.println("After: " + isSelectedAfter);
         };
 
         MouseEventWrapper eventWrapper = new MouseEventWrapper(onMousePressed, onMouseDragBegin, onMouseDragged, onMouseDragEnd, onMouseReleased);
         waypointView.setOnMousePressed(eventWrapper.getOnMousePressed());
         waypointView.setOnMouseDragged(eventWrapper.getOnMouseDragged());
         waypointView.setOnMouseReleased(eventWrapper.getOnMouseReleased());
+    }
+
+    public ObservableList<Node> getChildren() {
+        return childrenUnmodifiable;
     }
 }

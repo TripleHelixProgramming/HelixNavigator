@@ -326,11 +326,11 @@ public class HDocument {
 
     @DeserializedJSONTarget
     public final void setSelectedPathIndex(@DeserializedJSONObjectValue(key = "selected_path_index") int value) {
-        if (value < 0) {
-            System.out.println("WARNING: illegal selected path index was attempted");
+        if (value < 0 && hasPaths()) {
+            System.out.println("WARNING: illegal selected path index was attempted: " + value);
             value = 0;
         } else if (value >= paths.size()) {
-            System.out.println("WARNING: illegal selected path index was attempted");
+            System.out.println("WARNING: illegal selected path index was attempted: " + value);
             value = paths.size() - 1;
         }
         selectedPathIndex.set(value);

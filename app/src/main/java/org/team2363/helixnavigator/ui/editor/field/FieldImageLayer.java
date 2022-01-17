@@ -3,18 +3,26 @@ package org.team2363.helixnavigator.ui.editor.field;
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.field.image.HFieldImage;
+import org.team2363.helixnavigator.ui.editor.PathLayer;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 
-public class FieldImageView extends ImageView {
+public class FieldImageLayer implements PathLayer {
 
     private final DocumentManager documentManager;
 
+    private final ObservableList<Node> children = FXCollections.observableArrayList();
+    private final ObservableList<Node> childrenUnmodifiable = FXCollections.unmodifiableObservableList(children);
+
+    private final ImageView imageView = new ImageView();
     private final Scale unitsScale = new Scale();
     private final Translate centerTranslate = new Translate();
     private final Scale zoomScale = new Scale();
@@ -22,14 +30,16 @@ public class FieldImageView extends ImageView {
 
     private final ChangeListener<? super HFieldImage> onFieldImageChanged = this::fieldImageChanged;
 
-    public FieldImageView(DocumentManager documentManager) {
+    public FieldImageLayer(DocumentManager documentManager) {
         this.documentManager = documentManager;
         this.documentManager.documentProperty().addListener(this::documentChanged);
 
-        // the first item in the list is the last translation applied:
-        getTransforms().addAll(zoomTranslate, zoomScale, centerTranslate, unitsScale);
+        children.add(imageView);
 
-        setOnMouseClicked(event -> {
+        // the first item in the list is the last translation applied:
+        imageView.getTransforms().addAll(zoomTranslate, zoomScale, centerTranslate, unitsScale);
+
+        imageView.setOnMouseClicked(event -> {
             System.out.println("Field Image clicked");
             if (event.getButton() == MouseButton.PRIMARY
                     && this.documentManager.getIsDocumentOpen()
@@ -73,7 +83,7 @@ public class FieldImageView extends ImageView {
 
     private void unloadFieldImage(HFieldImage fieldImage) {
         if (fieldImage != null) {
-            setImage(null);
+            imageView.setImage(null);
             unitsScale.setX(1.0);
             unitsScale.setY(1.0);
             centerTranslate.setX(0.0);
@@ -83,11 +93,15 @@ public class FieldImageView extends ImageView {
 
     private void loadFieldImage(HFieldImage fieldImage) {
         if (fieldImage != null) {
-            setImage(fieldImage.getImage());
+            imageView.setImage(fieldImage.getImage());
             unitsScale.setX(fieldImage.getImageRes());
             unitsScale.setY(fieldImage.getImageRes());
             centerTranslate.setX(-fieldImage.getImageCenterX());
             centerTranslate.setY(-fieldImage.getImageCenterY());
         }
+    }
+
+    public ObservableList<? extends Node> getChildren() {
+        return childrenUnmodifiable;
     }
 }
