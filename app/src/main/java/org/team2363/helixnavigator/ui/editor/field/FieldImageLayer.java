@@ -27,6 +27,7 @@ public class FieldImageLayer implements PathLayer {
     private final Translate centerTranslate = new Translate();
     private final Scale zoomScale = new Scale();
     private final Translate zoomTranslate = new Translate();
+    private final Translate pathAreaTranslate = new Translate();
 
     private final ChangeListener<? super HFieldImage> onFieldImageChanged = this::fieldImageChanged;
 
@@ -36,8 +37,11 @@ public class FieldImageLayer implements PathLayer {
 
         children.add(imageView);
 
+        pathAreaTranslate.xProperty().bind(this.documentManager.pathAreaWidthProperty().multiply(0.5));
+        pathAreaTranslate.yProperty().bind(this.documentManager.pathAreaHeightProperty().multiply(0.5));
+
         // the first item in the list is the last translation applied:
-        imageView.getTransforms().addAll(zoomTranslate, zoomScale, centerTranslate, unitsScale);
+        imageView.getTransforms().addAll(pathAreaTranslate, zoomTranslate, zoomScale, centerTranslate, unitsScale);
 
         imageView.setOnMouseClicked(event -> {
             System.out.println("Field Image clicked");

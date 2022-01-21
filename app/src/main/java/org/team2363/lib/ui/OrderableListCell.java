@@ -116,10 +116,14 @@ public abstract class OrderableListCell<E> extends ListCell<E> {
                                 numSelectedLessThanIndex++;
                             }
                         }
+                        // I think this may fix some bugs--clear the selection
+                        // before modifying the list so that ListView doesn't
+                        // do it automatically. This should make the behavior
+                        // more predictable
+                        getListView().getSelectionModel().clearSelection();
                         items.removeAll(selectedItems);
                         index -= numSelectedLessThanIndex;
                         items.addAll(index, selectedItems);
-                        getListView().getSelectionModel().clearSelection();
                         getListView().getSelectionModel().selectRange(index, index + selectedItems.size());
                         success = true;
                     } else {

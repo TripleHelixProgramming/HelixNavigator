@@ -13,10 +13,12 @@ import com.jlbabilino.json.JSONSerializer;
 import org.team2363.helixnavigator.global.Standards;
 import org.team2363.lib.ui.prompts.SavePrompt;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -30,11 +32,15 @@ public class DocumentManager {
 
     private static final Logger logger = Logger.getLogger("org.team2363.helixnavigator.document");
 
+    private final DocumentActions actions;
     private final Stage stage;
+    private final DoubleProperty pathAreaWidth = new SimpleDoubleProperty(this, "pathAreaWidth", 0.0);
+    private final DoubleProperty pathAreaHeight = new SimpleDoubleProperty(this, "pathAreaHeight", 0.0);
     private final ReadOnlyObjectWrapper<HDocument> document = new ReadOnlyObjectWrapper<HDocument>(this, "document", null);
     private final ReadOnlyBooleanWrapper isDocumentOpen = new ReadOnlyBooleanWrapper(this, "isDocumentOpen", false);
 
     public DocumentManager(Stage stage) {
+        this.actions = new DocumentActions(this);
         this.stage = stage;
     }
 
@@ -46,6 +52,9 @@ public class DocumentManager {
         logger.info("Setting document");
         setIsDocumentOpen(value != null); // spent about an hour trying to fix a bug:
         document.set(value);              // just had to switch these two lines
+        if (actions.getLockZoom()) {
+            actions.zoomToFit();
+        }
         updateStageTitle();
     }
 
@@ -302,7 +311,35 @@ public class DocumentManager {
         }
     }
 
+    public DocumentActions actions() {
+        return actions;
+    }
+
     public Stage getStage() {
         return stage;
+    }
+
+    public DoubleProperty pathAreaWidthProperty() {
+        return pathAreaWidth;
+    }
+
+    public void setPathAreaWidth(double value) {
+        pathAreaWidth.set(value);
+    }
+    
+    public double getPathAreaWidth() {
+        return pathAreaWidth.get();
+    }
+
+    public DoubleProperty pathAreaHeightProperty() {
+        return pathAreaHeight;
+    }
+
+    public void setPathAreaHeight(double value) {
+        pathAreaHeight.set(value);
+    }
+    
+    public double getPathAreaHeight() {
+        return pathAreaHeight.get();
     }
 }

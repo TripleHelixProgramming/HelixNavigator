@@ -73,12 +73,7 @@ public class WaypointsLayer implements PathLayer {
 
     private void loadSelectedPath(HPath newPath) {
         if (newPath != null) {
-            for (int i = 0; i < newPath.getWaypoints().size(); i++) {
-                WaypointView waypointView = new WaypointView();
-                linkWaypointView(i, waypointView, newPath.getWaypoints().get(i));
-                waypointViews.add(waypointView);
-                children.add(waypointView);
-            }
+            updateWaypoints(newPath.getWaypoints());
             updateSelectedWaypoints();
             newPath.getWaypoints().addListener(onWaypointsChanged);
             newPath.getWaypointsSelectionModel().getSelectedIndices().addListener(onWaypointsSelectedIndicesChanged);
@@ -87,7 +82,7 @@ public class WaypointsLayer implements PathLayer {
 
     private void waypointsChanged(ListChangeListener.Change<? extends HWaypoint> change) {
         updateWaypoints(change.getList());
-        updateSelectedWaypoints();
+        // updateSelectedWaypoints();
     }
 
     private void updateWaypoints(List<? extends HWaypoint> list) {
@@ -110,8 +105,8 @@ public class WaypointsLayer implements PathLayer {
             waypointView.setSelected(false);
         }
         for (int i : documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().getSelectedIndices()) {
-            WaypointView wv = (WaypointView) children.get(i);
-            wv.setSelected(true);
+            WaypointView waypointView = (WaypointView) children.get(i);
+            waypointView.setSelected(true);
         }
     }
 
@@ -120,9 +115,11 @@ public class WaypointsLayer implements PathLayer {
         waypointView.waypointTypeProperty().bind(waypoint.waypointTypeProperty());
         waypointView.xProperty().bind(waypoint.xProperty());
         waypointView.yProperty().bind(waypoint.yProperty());
-        waypointView.zoomTranslateXProperty().bind(this.documentManager.getDocument().zoomTranslateXProperty());
-        waypointView.zoomTranslateYProperty().bind(this.documentManager.getDocument().zoomTranslateYProperty());
-        waypointView.zoomScaleProperty().bind(this.documentManager.getDocument().zoomScaleProperty());
+        waypointView.pathAreaWidthProperty().bind(documentManager.pathAreaWidthProperty());
+        waypointView.pathAreaHeightProperty().bind(documentManager.pathAreaHeightProperty());
+        waypointView.zoomTranslateXProperty().bind(documentManager.getDocument().zoomTranslateXProperty());
+        waypointView.zoomTranslateYProperty().bind(documentManager.getDocument().zoomTranslateYProperty());
+        waypointView.zoomScaleProperty().bind(documentManager.getDocument().zoomScaleProperty());
 
         EventHandler<MouseEvent> onMousePressed = event -> {
         };
@@ -132,12 +129,12 @@ public class WaypointsLayer implements PathLayer {
                     documentManager.getDocument().getSelectedPath().clearSelection();
                 }
                 documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().select(index);
-                documentManager.getDocument().handleElementsDragBegin(event);
+                documentManager.actions().handleMouseDragBeginAsElementsDragBegin(event);
             }
         };
         EventHandler<MouseEvent> onMouseDragged = event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                documentManager.getDocument().handleElementsDragged(event);
+                documentManager.actions().handleMouseDraggedAsElementsDragged(event);
             }
         };
         EventHandler<MouseEvent> onMouseDragEnd = event -> {

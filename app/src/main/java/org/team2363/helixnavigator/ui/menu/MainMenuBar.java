@@ -25,7 +25,7 @@ public class MainMenuBar extends MenuBar {
 
         fileMenu = new FileMenu(this.documentManager);
         editMenu = new EditMenu(this.documentManager);
-        viewMenu = new ViewMenu();
+        viewMenu = new ViewMenu(this.documentManager);
 
         getMenus().add(fileMenu);
         getMenus().add(editMenu);

@@ -17,6 +17,7 @@ public class PathPane extends Pane {
 
     private final BackgroundLayer backgroundLayer;
     private final FieldImageLayer fieldImageLayer;
+    private final LinesLayer linesLayer;
     private final WaypointsLayer waypointsLayer;
     
     public PathPane(DocumentManager documentManager) {
@@ -24,6 +25,7 @@ public class PathPane extends Pane {
 
         backgroundLayer = new BackgroundLayer(this.documentManager);
         fieldImageLayer = new FieldImageLayer(this.documentManager);
+        linesLayer = new LinesLayer(this.documentManager);
         waypointsLayer = new WaypointsLayer(this.documentManager);
         updateLayers();
         waypointsLayer.getChildren().addListener((ListChangeListener.Change<? extends Node> change) -> updateLayers());
@@ -33,12 +35,12 @@ public class PathPane extends Pane {
                 if (event.getButton() == MouseButton.MIDDLE) {
                     this.documentManager.getStage().getScene().setCursor(Cursor.CLOSED_HAND);
                 }
-                this.documentManager.getDocument().handleBackgroundPressed(event);
+                this.documentManager.actions().handleMousePressedAsPan(event);
             }
         });
         setOnMouseDragged(event -> {
             if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
-                this.documentManager.getDocument().handleBackgroundDragged(event);
+                this.documentManager.actions().handleMouseDraggedAsPan(event);
             }
         });
         setOnMouseReleased(event -> {
@@ -48,7 +50,7 @@ public class PathPane extends Pane {
         });
         setOnScroll(event -> {
             if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
-                this.documentManager.getDocument().handleScroll(event);
+                this.documentManager.actions().handleScrollAsZoom(event);
             }
         });
 
@@ -56,17 +58,23 @@ public class PathPane extends Pane {
         layoutBoundsProperty().addListener((currentValue, oldValue, newValue) -> {
             clip.setWidth(newValue.getWidth());
             clip.setHeight(newValue.getHeight());
+            if (documentManager.actions().getLockZoom()) {
+                documentManager.actions().zoomToFit();
+            }
         });
         setClip(clip);
         Rectangle backgroundRectangle = backgroundLayer.getRectangle();
         backgroundRectangle.widthProperty().bind(clip.widthProperty());
         backgroundRectangle.heightProperty().bind(clip.heightProperty());
+        this.documentManager.pathAreaWidthProperty().bind(clip.widthProperty());
+        this.documentManager.pathAreaHeightProperty().bind(clip.heightProperty());
     }
 
     public void updateLayers() {
         getChildren().clear();
         getChildren().addAll(backgroundLayer.getChildren());
         getChildren().addAll(fieldImageLayer.getChildren());
+        getChildren().addAll(linesLayer.getChildren());
         getChildren().addAll(waypointsLayer.getChildren());
     }
 }

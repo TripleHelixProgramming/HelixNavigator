@@ -41,7 +41,7 @@ public class WaypointListView extends ListView<HWaypoint> {
         setContextMenu(null);
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         getSelectionModel().getSelectedIndices().addListener(onListViewSelectedIndicesChanged);
-        setCellFactory(WaypointListCell.waypointCellFactory);
+        setCellFactory(WaypointListCell.WAYPOINT_CELL_FACTORY);
         noneSelectedContextMenu.getItems().addAll(newSoftWaypointMenuItem, newHardWaypointMenuItem);
         newSoftWaypointMenuItem.setOnAction(this::newSoftWaypoint);
         newHardWaypointMenuItem.setOnAction(this::newHardWaypoint);

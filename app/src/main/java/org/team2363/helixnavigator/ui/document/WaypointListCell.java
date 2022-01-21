@@ -14,6 +14,7 @@ import com.jlbabilino.json.TypeMarker;
 
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint.WaypointType;
+import org.team2363.helixnavigator.global.Standards;
 import org.team2363.helixnavigator.ui.prompts.WaypointEditDialog;
 import org.team2363.lib.ui.OrderableListCell;
 import org.team2363.lib.ui.prompts.FilteredTextField;
@@ -45,7 +46,8 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
     private static final Image THREE_DRAGGED;
     private static final Image FOUR_DRAGGED;
 
-    public static final Callback<ListView<HWaypoint>, ListCell<HWaypoint>> waypointCellFactory = new Callback<ListView<HWaypoint>, ListCell<HWaypoint>>() {
+    public static final Callback<ListView<HWaypoint>, ListCell<HWaypoint>> WAYPOINT_CELL_FACTORY =
+            new Callback<ListView<HWaypoint>, ListCell<HWaypoint>>() {
         @Override
         public ListCell<HWaypoint> call(ListView<HWaypoint> listView) {
             return new WaypointListCell();
@@ -71,7 +73,7 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
 
     private final ImageView softView = new ImageView(SOFT);
     private final ImageView hardView = new ImageView(HARD);
-    private final TextField textField = new FilteredTextField(HWaypoint.MAX_WAYPOINT_NAME_LENGTH, HWaypoint.VALID_WAYPOINT_NAME);
+    private final TextField textField = new FilteredTextField(Standards.MAX_NAME_LENGTH, Standards.VALID_NAME);
     private final HBox graphicBox = new HBox();
 
     private final ContextMenu noneSelectedContextMenu = new ContextMenu();

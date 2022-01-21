@@ -23,8 +23,6 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 
 @JSONSerializable
 public class HPath {

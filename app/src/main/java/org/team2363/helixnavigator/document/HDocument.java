@@ -18,6 +18,7 @@ package org.team2363.helixnavigator.document;
 
 import java.io.File;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
@@ -42,9 +43,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 
 /**
  * This class represents a document in Helix Navigator
@@ -53,6 +51,8 @@ import javafx.scene.input.ScrollEvent;
  */
 @JSONSerializable
 public class HDocument {
+
+    private static final Logger logger = Logger.getLogger("org.team2363.helixnavigator.document");
 
     /**
      * The field that contains the image that the editor pane will display behind
@@ -113,10 +113,15 @@ public class HDocument {
     /**
      * Constructs an {@code HDocument}.
      */
-    @DeserializedJSONConstructor
     public HDocument() {
         paths.addListener((ListChangeListener.Change<? extends HPath> change) -> updateSelectedPathIndex());
         selectedPathIndex.addListener((currentIndex, oldIndex, newIndex) -> updateSelectedPath());
+    }
+
+    @DeserializedJSONConstructor
+    public HDocument(@DeserializedJSONObjectValue(key = "paths") List<? extends HPath> initialPaths) {
+        this();
+        paths.setAll(initialPaths);
     }
 
     /**
@@ -129,8 +134,9 @@ public class HDocument {
         } else if (!isPathSelected()) {
             setSelectedPathIndex(0);    // if the selected path index is now out of bounds, 
                                         // and you can select a path, select one!
+        } else {
+            updateSelectedPath();
         }
-        updateSelectedPath();
     }
 
     /**
@@ -167,6 +173,10 @@ public class HDocument {
      * <pre>
      * getSelectedPathIndex() >= 0 && getSelectedPathIndex() < getPaths().size()
      * </pre>
+     * <p>
+     * This method should always return the same value as hasPaths(). The only
+     * reason this method is public is because I may decide later that allowing
+     * the user to have no path open while there are paths availible is okay.
      * 
      * @return {@code true} if and only if the selected path index is within bounds
      */
@@ -181,77 +191,6 @@ public class HDocument {
      */
     public boolean isSaveLocationSet() {
         return getSaveLocation() != null;
-    }
-
-    private double lastBackgroundDragX;
-    private double lastBackgroundDragY;
-    public void handleBackgroundPressed(MouseEvent event) {
-        if (event.getButton() == MouseButton.MIDDLE) { // TODO: switch to switch statement
-            lastBackgroundDragX = event.getX();
-            lastBackgroundDragY = event.getY();
-        }
-    }
-    public void handleBackgroundDragged(MouseEvent event) {
-        if (event.getButton() == MouseButton.MIDDLE) {
-            pan(event.getX() - lastBackgroundDragX, event.getY() - lastBackgroundDragY);
-            lastBackgroundDragX = event.getX();
-            lastBackgroundDragY = event.getY();
-        }
-    }
-
-    public void handleScroll(ScrollEvent event) {
-        int pixels = (int) (-event.getDeltaY());
-        double factor;
-        if (pixels >= 0) {
-            factor = 0.995;
-        } else {
-            factor = 1.005;
-            pixels = -pixels;
-        }
-        double pivotX = event.getX();
-        double pivotY = event.getY();
-        for (int i = 0; i < pixels; i++) {
-            zoom(factor, pivotX, pivotY);
-        }
-    }
-
-    public void pan(double deltaX, double deltaY) {
-        setZoomTranslateX(getZoomTranslateX() + deltaX);
-        setZoomTranslateY(getZoomTranslateY() + deltaY);
-    }
-
-    public void zoom(double factor, double pivotX, double pivotY) {
-        // This code allows for zooming in or out about a certain point
-        double s = factor;
-        double xci = getZoomTranslateX();
-        double xp = pivotX;
-        double xd = (1-s)*(xp-xci);
-        double yci = getZoomTranslateY();
-        double yp = pivotY;
-        double yd = (1-s)*(yp-yci);
-        setZoomTranslateX(getZoomTranslateX() + xd);
-        setZoomTranslateY(getZoomTranslateY() + yd);
-        setZoomScale(getZoomScale() * s);
-    }
-
-    private double lastElementsDragX;
-    private double lastElementsDragY;
-    public void handleElementsDragBegin(MouseEvent event) {
-        if (event.getButton() == MouseButton.PRIMARY) {
-            lastElementsDragX = event.getSceneX();
-            lastElementsDragY  = event.getSceneY();
-        }
-    }
-    public void handleElementsDragged(MouseEvent event) {
-        if (event.getButton() == MouseButton.PRIMARY) {
-            double deltaX = event.getSceneX() - lastElementsDragX;
-            double deltaY = event.getSceneY() - lastElementsDragY;
-            double scaledDeltaX = deltaX / getZoomScale();
-            double scaledDeltaY = -deltaY / getZoomScale();
-            getSelectedPath().moveSelectedElementsRelative(scaledDeltaX, scaledDeltaY);
-            lastElementsDragX = event.getSceneX();
-            lastElementsDragY = event.getSceneY();
-        }
     }
 
     public final ObjectProperty<HFieldImage> fieldImageProperty() {
@@ -310,11 +249,6 @@ public class HDocument {
         return zoomTranslateY.get();
     }
 
-    @DeserializedJSONTarget
-    public final void setPaths(@DeserializedJSONObjectValue(key = "paths") List<? extends HPath> newPaths) {
-        paths.setAll(newPaths);
-    }
-
     @SerializedJSONObjectValue(key = "paths")
     public final ObservableList<HPath> getPaths() {
         return paths;
@@ -327,10 +261,10 @@ public class HDocument {
     @DeserializedJSONTarget
     public final void setSelectedPathIndex(@DeserializedJSONObjectValue(key = "selected_path_index") int value) {
         if (value < 0 && hasPaths()) {
-            System.out.println("WARNING: illegal selected path index was attempted: " + value);
+            logger.warning("WARNING: illegal selected path index was attempted: " + value);
             value = 0;
         } else if (value >= paths.size()) {
-            System.out.println("WARNING: illegal selected path index was attempted: " + value);
+            logger.warning("WARNING: illegal selected path index was attempted: " + value);
             value = paths.size() - 1;
         }
         selectedPathIndex.set(value);

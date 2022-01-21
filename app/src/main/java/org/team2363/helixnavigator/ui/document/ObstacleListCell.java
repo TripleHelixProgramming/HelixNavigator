@@ -15,7 +15,7 @@ import org.team2363.helixnavigator.document.obstacle.HCircleObstacle;
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HObstacle.ObstacleType;
 import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
-import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+import org.team2363.helixnavigator.global.Standards;
 import org.team2363.lib.ui.OrderableListCell;
 import org.team2363.lib.ui.prompts.FilteredTextField;
 
@@ -40,7 +40,8 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
     private static final Image POLYGON;
     private static final Image ANY_DRAGGED;
 
-    public static final Callback<ListView<HObstacle>, ListCell<HObstacle>> obstacleCellFactory = new Callback<ListView<HObstacle>, ListCell<HObstacle>>() {
+    public static final Callback<ListView<HObstacle>, ListCell<HObstacle>> obstacleCellFactory =
+            new Callback<ListView<HObstacle>, ListCell<HObstacle>>() {
         @Override
         public ListCell<HObstacle> call(ListView<HObstacle> listView) {
             return new ObstacleListCell();
@@ -54,8 +55,8 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
     }
 
     private final ImageView circleView = new ImageView(CIRCLE);
-    private final ImageView polygonView = new ImageView(POLYGON); // TODO: move constants all to Standards
-    private final TextField textField = new FilteredTextField(HWaypoint.MAX_WAYPOINT_NAME_LENGTH, HWaypoint.VALID_WAYPOINT_NAME); // Obstacles just use same naming as waypoints
+    private final ImageView polygonView = new ImageView(POLYGON);
+    private final TextField textField = new FilteredTextField(Standards.MAX_NAME_LENGTH, Standards.VALID_NAME);
     private final HBox graphicBox = new HBox();
 
     private final ContextMenu noneSelectedContextMenu = new ContextMenu();
@@ -82,14 +83,15 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
         polygonView.setFitHeight(20);
         graphicBox.getChildren().add(circleView); // have to use one image here even though we don't know which it is yet
         setEditable(true);
-        setOrderable(false);
-        // cancel edit if clicked off of or ENTER is pressed:
+        setOrderable(true);
+        // cancel edit if ENTER is pressed:
         textField.setOnAction(event -> {
             if (isEditing()) {
                 cancelEdit();
             }
             event.consume();
         });
+        // cancel edit if enter is pressed
         textField.focusedProperty().addListener((val, oldVal, newVal) -> {
             if (isEditing() && newVal == false) {
                 cancelEdit();
@@ -180,7 +182,7 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
         if (selectedItems.size() == 1) {
             return JSONSerializer.serializeString(getListView().getSelectionModel().getSelectedItem());
         } else if (selectedItems.size() > 1) {
-            return JSONSerializer.serializeJSON(getListView().getSelectionModel().getSelectedItems()).exportJSON();
+            return JSONSerializer.serializeString(getListView().getSelectionModel().getSelectedItems());
         } else {
             return "";
         }
@@ -216,7 +218,6 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
 
     private void edit(ActionEvent event) {
         // HObstacle selectedWaypoint = getListView().getSelectionModel().getSelectedItems().get(0);
-        // WaypointEditDialog dialog = new WaypointEditDialog(selectedWaypoint);
         System.out.println("Editing not yet implemented...");
         // dialog.show();
     }

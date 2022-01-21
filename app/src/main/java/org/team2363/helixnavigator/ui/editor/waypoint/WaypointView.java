@@ -12,25 +12,32 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
 
 public class WaypointView extends StackPane {
 
-    private final Circle waypointCircle = new Circle(8.0);
-    private final Circle selectionCircle = new Circle(11.0);
-    private final Rectangle cross1 = new Rectangle(11, 3);
-    private final Rectangle cross2 = new Rectangle(11, 3);
+    private final Circle selectionCircle = new Circle(12.0);
+    private final Circle waypointCircle = new Circle(10.0);
+    private final Rectangle cross1 = new Rectangle(13, 3);
+    private final Rectangle cross2 = new Rectangle(13, 3);
 
     private final ObjectProperty<WaypointType> waypointType = new SimpleObjectProperty<>(this, "waypointType", WaypointType.SOFT);
     private final DoubleProperty x = new SimpleDoubleProperty(this, "x", 0.0);
     private final DoubleProperty y = new SimpleDoubleProperty(this, "y", 0.0);
+    private final DoubleProperty pathAreaWidth = new SimpleDoubleProperty(this, "pathAreaWidth", 0.0);
+    private final DoubleProperty pathAreaHeight = new SimpleDoubleProperty(this, "pathAreaHeight", 0.0);
     private final DoubleProperty zoomTranslateX = new SimpleDoubleProperty(this, "zoomTranslateX", 0.0);
     private final DoubleProperty zoomTranslateY = new SimpleDoubleProperty(this, "zoomTranslateY", 0.0);
     private final DoubleProperty zoomScale = new SimpleDoubleProperty(this, "zoomScale", 1.0);
     private final BooleanProperty selected = new SimpleBooleanProperty(this, "selected", false);
 
     public WaypointView() {
-        waypointCircle.setFill(Color.BLUE);
         selectionCircle.setFill(Color.ORANGE);
+        waypointCircle.setFill(Color.BLUE);
+        
+        waypointCircle.setStroke(Color.BLACK);
+        waypointCircle.setStrokeType(StrokeType.INSIDE);
+        waypointCircle.setStrokeWidth(3.0);
         selectionCircle.setOpacity(0.0);
         cross1.setRotate(45);
         cross2.setRotate(-45);
@@ -49,9 +56,9 @@ public class WaypointView extends StackPane {
                     break;
             }
         });
-        translateXProperty().bind(zoomTranslateX.add(x.multiply(zoomScale)).subtract(11.0)); // tx = ztx + zs*x
-        // For y you must subtract to flip the coordinates, in graphics +y is down but in robotics +y is up:
-        translateYProperty().bind(zoomTranslateY.subtract(y.multiply(zoomScale)).subtract(11.0)); // ty = zty + zs*y
+        // For y you must subtract to flip the coordinates, in graphics +y is down but in math/engineering/robotics +y is up (i think):
+        translateXProperty().bind(zoomTranslateX.add(x.multiply(zoomScale)).subtract(13.0).add(pathAreaWidth.multiply(0.5)));       // tx = ztx + zs*x - 11 + paw/2
+        translateYProperty().bind(zoomTranslateY.subtract(y.multiply(zoomScale)).subtract(13.0).add(pathAreaHeight.multiply(0.5))); // ty = zty + zs*y - 11 + pah/2
         selected.addListener((currentValue, oldValue, newValue) -> {
             selectionCircle.setOpacity(newValue ? 1.0 : 0.0);
         });
@@ -100,6 +107,30 @@ public class WaypointView extends StackPane {
 
     public final double getY() {
         return y.get();
+    }
+
+    public final DoubleProperty pathAreaWidthProperty() {
+        return pathAreaWidth;
+    }
+
+    public final void setPathAreaWidth(double value) {
+        pathAreaWidth.set(value);
+    }
+
+    public final double getPathAreaWidth() {
+        return pathAreaWidth.get();
+    }
+
+    public final DoubleProperty pathAreaHeightProperty() {
+        return pathAreaHeight;
+    }
+
+    public final void setPathAreaHeight(double value) {
+        pathAreaHeight.set(value);
+    }
+
+    public final double getPathAreaHeight() {
+        return pathAreaHeight.get();
     }
 
     public final DoubleProperty zoomTranslateXProperty() {

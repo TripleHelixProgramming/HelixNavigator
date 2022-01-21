@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import com.jlbabilino.json.JSONDeserializer;
 import com.jlbabilino.json.JSONDeserializerException;
@@ -14,10 +15,12 @@ import org.team2363.helixnavigator.document.field.configuration.HDefaultFieldCon
 
 public class DefaultFieldConfigurations {
 
+    private static final Logger LOGGER = Logger.getLogger("org.team2363.helixnavigator.global");
+
     private static final Map<String, HDefaultFieldConfiguration> fieldConfigurationMap = new HashMap<>();
 
-    static {
-        System.out.println("DefaultFieldConfigurations: Loading default field configurations...");
+    public static void loadDefaultFieldConfigurations() {
+        LOGGER.info("Loading default field configurations...");
         int index = 0;
         InputStream currentStream;
         while ((currentStream = DefaultFieldConfigurations.class.getResourceAsStream("field_configuration_" + index + ".json")) != null) {
@@ -25,15 +28,15 @@ public class DefaultFieldConfigurations {
                 HDefaultFieldConfiguration fieldConfiguration = JSONDeserializer.deserialize(new String(currentStream.readAllBytes()), HDefaultFieldConfiguration.class);
                 currentStream.close(); // This does nothing but I need it to avoid the warning
                 fieldConfigurationMap.put(fieldConfiguration.getName(), fieldConfiguration);
-                System.out.println("DefaultFieldConfigurations: Loaded field configuration: \"" + fieldConfiguration.getName() + "\"");
+                LOGGER.info("Loaded field configuration: \"" + fieldConfiguration.getName() + "\"");
             } catch (NullPointerException e) {
-                System.out.println("DefaultFieldConfigurations: Failed to load a file: null");
+                LOGGER.finer("Failed to load a file: null");
             } catch (IOException e) {
-                System.out.println("DefaultFieldConfigurations: Failed to load a file: " + e.getMessage());
+                LOGGER.finer("Failed to load a file: " + e.getMessage());
             } catch (JSONParserException e) {
-                System.out.println("DefaultFieldConfigurations: Failed to parse a file: " + e.getMessage());
+                LOGGER.finer("Failed to parse a file: " + e.getMessage());
             } catch (JSONDeserializerException e) {
-                System.out.println("DefaultFieldConfigurations: Failed to deserialize a file: " + e.getMessage());
+                LOGGER.finer("Failed to deserialize a file: " + e.getMessage());
             } finally {
                 index++;
             }

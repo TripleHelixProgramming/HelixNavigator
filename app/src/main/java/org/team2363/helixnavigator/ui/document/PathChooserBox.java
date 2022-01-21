@@ -18,32 +18,17 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.util.StringConverter;
 
 public class PathChooserBox extends HBox {
 
     private static final ObservableList<HPath> BLANK = FXCollections.<HPath>observableArrayList();
-
-    private static final StringConverter<HPath> PATH_CONVERTER = new StringConverter<HPath>() {
-        @Override
-        public String toString(HPath object) {
-            if (object == null) {
-                return "";
-            }
-            return object.getName();
-        }
-
-        @Override
-        public HPath fromString(String string) {
-            return null;
-        }
-    };
 
     private final DocumentManager documentManager;
 
     private final ComboBox<HPath> pathChooser = new ComboBox<>(); // starts with blank array
     private final Button plusButton = new Button("+");
     private final Button minusButton = new Button("-");
+    private final Button renameButton = new Button("R");
 
     private final ChangeListener<? super Number> onSelectedPathIndexChanged = this::selectedPathIndexChanged;
 
@@ -57,13 +42,16 @@ public class PathChooserBox extends HBox {
         // Note that it is not necessary to check if the selected path changes in the document since
         // the path chooser box has exclusive control over the selected path, no other ui elements
         // should change it.
-        pathChooser.setConverter(PATH_CONVERTER);
+        pathChooser.setCellFactory(PathListCell.PATH_CELL_FACTORY);
+        // seems weird to me that this doesn't happen automatically:
+        pathChooser.setButtonCell(new PathListCell());
         pathChooser.setMaxWidth(200);
         HBox.setHgrow(pathChooser, Priority.ALWAYS);
         plusButton.setOnAction(this::plusButtonPressed);
         minusButton.setOnAction(this::minusButtonPressed);
+        renameButton.setOnAction(this::renameButtonPressed);
         setSpacing(10.0);
-        getChildren().addAll(pathChooser, plusButton, minusButton);
+        getChildren().addAll(pathChooser, plusButton, minusButton, renameButton);
     }
 
     private void pathSelected(ActionEvent event) {
@@ -103,6 +91,23 @@ public class PathChooserBox extends HBox {
             alert.showAndWait().filter(result -> result == ButtonType.OK).ifPresent(result -> {
                 documentManager.getDocument().getPaths().remove(documentManager.getDocument().getSelectedPathIndex());
                 // this will trigger pathSelected()
+            });
+        }
+    }
+
+    private void renameButtonPressed(ActionEvent event) {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+            FilteredTextInputDialog prompt = new FilteredTextInputDialog();
+            prompt.setHeaderText("Enter a valid path name");
+            prompt.getEditor().setPromptText("Renamed path name");
+            prompt.setMaxChars(Standards.MAX_NAME_LENGTH);
+            prompt.setValidator(Standards.VALID_NAME);
+            prompt.showAndWait().ifPresent(response -> {
+                documentManager.getDocument().getSelectedPath().setName(response);
+                // TODO: the name on the combo box doesn't update dynamically,
+                // meaning renaming doesn't have a visual effect.
+                // This can be fixed by making a custom cell for HPath
+                // (Similar to WaypointListCell)
             });
         }
     }
