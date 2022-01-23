@@ -1,4 +1,4 @@
-package org.team2363.helixnavigator.ui.editor;
+package org.team2363.helixnavigator.ui.editor.line;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;

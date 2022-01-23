@@ -1,6 +1,7 @@
 package org.team2363.helixnavigator;
 
 import org.team2363.helixnavigator.global.DefaultResources;
+import org.team2363.helixnavigator.global.Logs;
 import org.team2363.helixnavigator.ui.MainStage;
 
 import javafx.application.Application;
@@ -17,6 +18,7 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
         DefaultResources.loadAllResources();
+        Logs.initialize();
         mainStage = new MainStage(primaryStage);
         mainStage.show();
     }

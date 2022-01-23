@@ -65,6 +65,7 @@ public class HPath {
 
     public void moveSelectedElementsRelative(double deltaX, double deltaY) {
         getWaypointsSelectionModel().getSelectedItems().forEach(element -> element.translateRelative(deltaX, deltaY));
+        getObstaclesSelectionModel().getSelectedItems().forEach(element -> element.translateRelative(deltaX, deltaY));
     }
 
     public void clearSelection() {

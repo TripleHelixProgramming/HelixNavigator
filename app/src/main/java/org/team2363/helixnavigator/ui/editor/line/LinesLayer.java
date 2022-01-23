@@ -1,4 +1,4 @@
-package org.team2363.helixnavigator.ui.editor;
+package org.team2363.helixnavigator.ui.editor.line;
 
 import java.util.List;
 
@@ -6,6 +6,7 @@ import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+import org.team2363.helixnavigator.ui.editor.PathLayer;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

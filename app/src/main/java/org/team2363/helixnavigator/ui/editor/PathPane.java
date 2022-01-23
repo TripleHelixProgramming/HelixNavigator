@@ -2,6 +2,8 @@ package org.team2363.helixnavigator.ui.editor;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.ui.editor.field.FieldImageLayer;
+import org.team2363.helixnavigator.ui.editor.line.LinesLayer;
+import org.team2363.helixnavigator.ui.editor.obstacle.ObstaclesLayer;
 import org.team2363.helixnavigator.ui.editor.waypoint.WaypointsLayer;
 
 import javafx.collections.ListChangeListener;
@@ -19,6 +21,7 @@ public class PathPane extends Pane {
     private final FieldImageLayer fieldImageLayer;
     private final LinesLayer linesLayer;
     private final WaypointsLayer waypointsLayer;
+    private final ObstaclesLayer obstaclesLayer;
     
     public PathPane(DocumentManager documentManager) {
         this.documentManager = documentManager;
@@ -27,8 +30,11 @@ public class PathPane extends Pane {
         fieldImageLayer = new FieldImageLayer(this.documentManager);
         linesLayer = new LinesLayer(this.documentManager);
         waypointsLayer = new WaypointsLayer(this.documentManager);
+        obstaclesLayer = new ObstaclesLayer(this.documentManager);
         updateLayers();
+        // This next line also accounts for the line layer since they both change simultaneously
         waypointsLayer.getChildren().addListener((ListChangeListener.Change<? extends Node> change) -> updateLayers());
+        obstaclesLayer.getChildren().addListener((ListChangeListener.Change<? extends Node> change) -> updateLayers());
 
         setOnMousePressed(event -> {
             if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
@@ -76,5 +82,6 @@ public class PathPane extends Pane {
         getChildren().addAll(fieldImageLayer.getChildren());
         getChildren().addAll(linesLayer.getChildren());
         getChildren().addAll(waypointsLayer.getChildren());
+        getChildren().addAll(obstaclesLayer.getChildren());
     }
 }

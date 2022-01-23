@@ -92,7 +92,7 @@ public class WaypointsLayer implements PathLayer {
             WaypointView waypointView = new WaypointView();
             linkWaypointView(i, waypointView, list.get(i));
             waypointViews.add(i, waypointView);
-            children.add(i, waypointView);
+            children.add(i, waypointView.getView());
         }
     }
 
@@ -105,7 +105,7 @@ public class WaypointsLayer implements PathLayer {
             waypointView.setSelected(false);
         }
         for (int i : documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().getSelectedIndices()) {
-            WaypointView waypointView = (WaypointView) children.get(i);
+            WaypointView waypointView = waypointViews.get(i);
             waypointView.setSelected(true);
         }
     }
@@ -151,9 +151,9 @@ public class WaypointsLayer implements PathLayer {
         };
 
         MouseEventWrapper eventWrapper = new MouseEventWrapper(onMousePressed, onMouseDragBegin, onMouseDragged, onMouseDragEnd, onMouseReleased);
-        waypointView.setOnMousePressed(eventWrapper.getOnMousePressed());
-        waypointView.setOnMouseDragged(eventWrapper.getOnMouseDragged());
-        waypointView.setOnMouseReleased(eventWrapper.getOnMouseReleased());
+        waypointView.getView().setOnMousePressed(eventWrapper.getOnMousePressed());
+        waypointView.getView().setOnMouseDragged(eventWrapper.getOnMouseDragged());
+        waypointView.getView().setOnMouseReleased(eventWrapper.getOnMouseReleased());
     }
 
     public ObservableList<Node> getChildren() {

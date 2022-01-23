@@ -1,6 +1,7 @@
 package org.team2363.helixnavigator.ui.editor.waypoint;
 
 import org.team2363.helixnavigator.document.waypoint.HWaypoint.WaypointType;
+import org.team2363.helixnavigator.ui.editor.PathElementView;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -8,14 +9,16 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 
-public class WaypointView extends StackPane {
+public class WaypointView implements PathElementView {
 
+    private final StackPane stack = new StackPane();
     private final Circle selectionCircle = new Circle(12.0);
     private final Circle waypointCircle = new Circle(10.0);
     private final Rectangle cross1 = new Rectangle(13, 3);
@@ -44,7 +47,7 @@ public class WaypointView extends StackPane {
         cross1.setFill(Color.RED);
         cross2.setFill(Color.RED);
         disableCross();
-        getChildren().addAll(selectionCircle, waypointCircle, cross1, cross2);
+        stack.getChildren().addAll(selectionCircle, waypointCircle, cross1, cross2);
 
         waypointType.addListener((currentValue, oldValue, newValue) -> {
             switch (newValue) {
@@ -57,8 +60,8 @@ public class WaypointView extends StackPane {
             }
         });
         // For y you must subtract to flip the coordinates, in graphics +y is down but in math/engineering/robotics +y is up (i think):
-        translateXProperty().bind(zoomTranslateX.add(x.multiply(zoomScale)).subtract(13.0).add(pathAreaWidth.multiply(0.5)));       // tx = ztx + zs*x - 11 + paw/2
-        translateYProperty().bind(zoomTranslateY.subtract(y.multiply(zoomScale)).subtract(13.0).add(pathAreaHeight.multiply(0.5))); // ty = zty + zs*y - 11 + pah/2
+        stack.translateXProperty().bind(zoomTranslateX.add(x.multiply(zoomScale)).subtract(13.0).add(pathAreaWidth.multiply(0.5)));       // tx = ztx + zs*x - 13 + paw/2
+        stack.translateYProperty().bind(zoomTranslateY.subtract(y.multiply(zoomScale)).subtract(13.0).add(pathAreaHeight.multiply(0.5))); // ty = zty + zs*y - 13 + pah/2
         selected.addListener((currentValue, oldValue, newValue) -> {
             selectionCircle.setOpacity(newValue ? 1.0 : 0.0);
         });
@@ -169,15 +172,23 @@ public class WaypointView extends StackPane {
         return zoomScale.get();
     }
 
+    @Override
     public final BooleanProperty selectedProperty() {
         return selected;
     }
 
+    @Override
     public final void setSelected(boolean value) {
         selected.set(value);
     }
 
+    @Override
     public final boolean getSelected() {
         return selected.get();
+    }
+
+    @Override
+    public Node getView() {
+        return stack;
     }
 }
