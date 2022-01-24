@@ -61,7 +61,7 @@ public class DocumentActions {
             } else { // if image is thinner than area
                 scale = areaHeight / imageScaledHeight;
             }
-            // take the negative distance away from the actual center of the image and the cetner of the coordinate system, then apply the zoom scale.
+            // take the negative distance away from the actual center of the image and the center of the coordinate system, then apply the zoom scale.
             double translateX = scale * (fieldImage.getImageCenterX() - imageScaledWidth / 2);
             double translateY = scale * (fieldImage.getImageCenterY() - imageScaledHeight / 2);
             document.setZoomScale(scale);
@@ -97,8 +97,8 @@ public class DocumentActions {
                 factor = 1.005;
                 pixels = -pixels;
             }
-            double pivotX = event.getX() - documentManager.getPathAreaWidth() / 2;
-            double pivotY = event.getY() - documentManager.getPathAreaHeight() / 2;
+            double pivotX = event.getX();
+            double pivotY = event.getY();
             for (int i = 0; i < pixels; i++) {
                 zoom(factor, pivotX, pivotY);
             }
@@ -123,6 +123,12 @@ public class DocumentActions {
             document.getSelectedPath().moveSelectedElementsRelative(scaledDeltaX, scaledDeltaY);
             lastElementsDragX = event.getSceneX();
             lastElementsDragY = event.getSceneY();
+        }
+    }
+
+    public void clearSelection() {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+            documentManager.getDocument().getSelectedPath().clearSelection();
         }
     }
 

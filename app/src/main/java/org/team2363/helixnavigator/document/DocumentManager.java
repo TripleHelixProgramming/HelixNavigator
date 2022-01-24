@@ -52,9 +52,7 @@ public class DocumentManager {
         logger.info("Setting document");
         setIsDocumentOpen(value != null); // spent about an hour trying to fix a bug:
         document.set(value);              // just had to switch these two lines
-        if (actions.getLockZoom()) {
-            actions.zoomToFit();
-        }
+        actions.zoomToFit();
         updateStageTitle();
     }
 

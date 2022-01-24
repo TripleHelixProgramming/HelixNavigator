@@ -1,6 +1,7 @@
 package org.team2363.helixnavigator.ui.editor;
 
 import org.team2363.helixnavigator.document.DocumentManager;
+import org.team2363.helixnavigator.ui.editor.background.BackgroundLayer;
 import org.team2363.helixnavigator.ui.editor.field.FieldImageLayer;
 import org.team2363.helixnavigator.ui.editor.line.LinesLayer;
 import org.team2363.helixnavigator.ui.editor.obstacle.ObstaclesLayer;
