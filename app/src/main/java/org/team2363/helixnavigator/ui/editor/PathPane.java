@@ -1,17 +1,20 @@
 package org.team2363.helixnavigator.ui.editor;
 
 import org.team2363.helixnavigator.document.DocumentManager;
+import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.ui.editor.field.FieldImageLayer;
 import org.team2363.helixnavigator.ui.editor.line.LinesLayer;
 import org.team2363.helixnavigator.ui.editor.obstacle.ObstaclesLayer;
 import org.team2363.helixnavigator.ui.editor.waypoint.WaypointsLayer;
 
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.Translate;
 
 public class PathPane extends Pane {
 
@@ -22,9 +25,15 @@ public class PathPane extends Pane {
     private final ObstaclesLayer obstaclesLayer;
     private final LinesLayer linesLayer;
     private final WaypointsLayer waypointsLayer;
+
+    private final Translate pathAreaTranslate = new Translate();
+    private final Translate zoomTranslateTranslate = new Translate();
     
     public PathPane(DocumentManager documentManager) {
         this.documentManager = documentManager;
+
+        loadDocument(this.documentManager.getDocument());
+        this.documentManager.documentProperty().addListener(this::documentChanged);
 
         backgroundRectangle = new BackgroundRectangle(this.documentManager);
         fieldImageLayer = new FieldImageLayer(this.documentManager);
@@ -69,20 +78,44 @@ public class PathPane extends Pane {
                 documentManager.actions().zoomToFit();
             }
         });
+        clip.translateXProperty().bind(clip.widthProperty().multiply(-0.5));
+        clip.translateYProperty().bind(clip.heightProperty().multiply(-0.5));
         setClip(clip);
-        Rectangle backgroundRectangle = backgroundLayer.getRectangle();
-        backgroundRectangle.widthProperty().bind(clip.widthProperty());
-        backgroundRectangle.heightProperty().bind(clip.heightProperty());
+
         this.documentManager.pathAreaWidthProperty().bind(clip.widthProperty());
         this.documentManager.pathAreaHeightProperty().bind(clip.heightProperty());
+
+        pathAreaTranslate.xProperty().bind(clip.widthProperty().multiply(0.5));
+        pathAreaTranslate.yProperty().bind(clip.heightProperty().multiply(0.5));
+
+        getTransforms().addAll(pathAreaTranslate, zoomTranslateTranslate);
     }
 
-    public void updateLayers() {
+    private void updateLayers() {
         getChildren().clear();
         getChildren().add(backgroundRectangle.getRectangle());
         getChildren().addAll(fieldImageLayer.getChildren());
+        getChildren().addAll(obstaclesLayer.getChildren());
         getChildren().addAll(linesLayer.getChildren());
         getChildren().addAll(waypointsLayer.getChildren());
-        getChildren().addAll(obstaclesLayer.getChildren());
+    }
+
+    private void documentChanged(ObservableValue<? extends HDocument> currentDocument, HDocument oldDocument, HDocument newDocument) {
+        unloadDocument(oldDocument);
+        loadDocument(newDocument);
+    }
+
+    private void unloadDocument(HDocument oldDocument) {
+        if (oldDocument != null) {
+            zoomTranslateTranslate.xProperty().unbind();
+            zoomTranslateTranslate.yProperty().unbind();
+        }
+    }
+
+    private void loadDocument(HDocument newDocument) {
+        if (newDocument != null) {
+            zoomTranslateTranslate.xProperty().bind(newDocument.zoomTranslateXProperty().negate());
+            zoomTranslateTranslate.yProperty().bind(newDocument.zoomTranslateYProperty().negate());
+        }
     }
 }
