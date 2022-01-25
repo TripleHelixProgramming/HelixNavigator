@@ -1,4 +1,4 @@
-package org.team2363.helixnavigator.ui.editor;
+package org.team2363.helixnavigator.ui.editor.toolbar;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 
