@@ -16,7 +16,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 //TODO: show origin as icon
-public class FieldImageLayer implements PathLayer {
+public class FieldImageLayer {
 
     private final DocumentManager documentManager;
 

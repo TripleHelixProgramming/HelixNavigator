@@ -1,7 +1,6 @@
 package org.team2363.helixnavigator.ui.editor;
 
 import org.team2363.helixnavigator.document.DocumentManager;
-import org.team2363.helixnavigator.ui.editor.background.BackgroundLayer;
 import org.team2363.helixnavigator.ui.editor.field.FieldImageLayer;
 import org.team2363.helixnavigator.ui.editor.line.LinesLayer;
 import org.team2363.helixnavigator.ui.editor.obstacle.ObstaclesLayer;
@@ -18,20 +17,21 @@ public class PathPane extends Pane {
 
     private final DocumentManager documentManager;
 
-    private final BackgroundLayer backgroundLayer;
+    private final BackgroundRectangle backgroundRectangle;
     private final FieldImageLayer fieldImageLayer;
+    private final ObstaclesLayer obstaclesLayer;
     private final LinesLayer linesLayer;
     private final WaypointsLayer waypointsLayer;
-    private final ObstaclesLayer obstaclesLayer;
     
     public PathPane(DocumentManager documentManager) {
         this.documentManager = documentManager;
 
-        backgroundLayer = new BackgroundLayer(this.documentManager);
+        backgroundRectangle = new BackgroundRectangle(this.documentManager);
         fieldImageLayer = new FieldImageLayer(this.documentManager);
+        obstaclesLayer = new ObstaclesLayer(this.documentManager);
         linesLayer = new LinesLayer(this.documentManager);
         waypointsLayer = new WaypointsLayer(this.documentManager);
-        obstaclesLayer = new ObstaclesLayer(this.documentManager);
+
         updateLayers();
         // This next line also accounts for the line layer since they both change simultaneously
         waypointsLayer.getChildren().addListener((ListChangeListener.Change<? extends Node> change) -> updateLayers());
@@ -79,7 +79,7 @@ public class PathPane extends Pane {
 
     public void updateLayers() {
         getChildren().clear();
-        getChildren().addAll(backgroundLayer.getChildren());
+        getChildren().add(backgroundRectangle.getRectangle());
         getChildren().addAll(fieldImageLayer.getChildren());
         getChildren().addAll(linesLayer.getChildren());
         getChildren().addAll(waypointsLayer.getChildren());
