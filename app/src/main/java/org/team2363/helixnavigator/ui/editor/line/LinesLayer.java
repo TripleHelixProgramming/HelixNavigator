@@ -83,21 +83,17 @@ public class LinesLayer implements PathLayer {
             LineView lineView = new LineView();
             linkLineView(lineView, list.get(i), list.get(i + 1));
             lineViews.add(i, lineView);
-            children.add(i, lineView);
+            children.add(i, lineView.getView());
         }
     }
 
     private void linkLineView(LineView lineView, HWaypoint initialWaypoint, HWaypoint finalWaypoint) {
-        lineView.initialPointXProperty().bind(initialWaypoint.xProperty());
-        lineView.initialPointYProperty().bind(initialWaypoint.yProperty());
-        lineView.finalPointXProperty().bind(finalWaypoint.xProperty());
-        lineView.finalPointYProperty().bind(finalWaypoint.yProperty());
-        lineView.pathAreaWidthProperty().bind(documentManager.pathAreaWidthProperty());
-        lineView.pathAreaHeightProperty().bind(documentManager.pathAreaHeightProperty());
-        lineView.zoomTranslateXProperty().bind(documentManager.getDocument().zoomTranslateXProperty());
-        lineView.zoomTranslateYProperty().bind(documentManager.getDocument().zoomTranslateYProperty());
+        lineView.startPointXProperty().bind(initialWaypoint.xProperty());
+        lineView.startPointYProperty().bind(initialWaypoint.yProperty());
+        lineView.endPointXProperty().bind(finalWaypoint.xProperty());
+        lineView.endPointYProperty().bind(finalWaypoint.yProperty());
         lineView.zoomScaleProperty().bind(documentManager.getDocument().zoomScaleProperty());
-        lineView.setOnMouseClicked(event -> {
+        lineView.getView().setOnMouseClicked(event -> {
             documentManager.getDocument().getSelectedPath().clearSelection();
         });
     }

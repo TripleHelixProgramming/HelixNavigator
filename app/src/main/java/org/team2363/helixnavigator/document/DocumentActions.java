@@ -4,6 +4,7 @@ import org.team2363.helixnavigator.document.field.image.HFieldImage;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -31,10 +32,10 @@ public class DocumentActions {
             HDocument document = documentManager.getDocument();
             // This code allows for zooming in or out about a certain point
             double s = factor;
-            double xci = document.getZoomTranslateX();
+            double xci = 0;// document.getZoomTranslateX();
             double xp = pivotX;
             double xd = (1-s)*(xp-xci);
-            double yci = document.getZoomTranslateY();
+            double yci = 0;// document.getZoomTranslateY();
             double yp = pivotY;
             double yd = (1-s)*(yp-yci);
             document.setZoomTranslateX(document.getZoomTranslateX() + xd);
@@ -75,15 +76,15 @@ public class DocumentActions {
     private double lastBackgroundDragY;
     public void handleMousePressedAsPan(MouseEvent event) {
         if (!getLockZoom() && event.getButton() == MouseButton.MIDDLE) {
-            lastBackgroundDragX = event.getX();
-            lastBackgroundDragY = event.getY();
+            lastBackgroundDragX = event.getSceneX();
+            lastBackgroundDragY = event.getSceneY();
         }
     }
     public void handleMouseDraggedAsPan(MouseEvent event) {
         if (documentManager.getIsDocumentOpen() && !getLockZoom() && event.getButton() == MouseButton.MIDDLE) {
-            pan(event.getX() - lastBackgroundDragX, event.getY() - lastBackgroundDragY);
-            lastBackgroundDragX = event.getX();
-            lastBackgroundDragY = event.getY();
+            pan(event.getSceneX() - lastBackgroundDragX, event.getSceneY() - lastBackgroundDragY);
+            lastBackgroundDragX = event.getSceneX();
+            lastBackgroundDragY = event.getSceneY();
         }
     }
 
@@ -99,6 +100,7 @@ public class DocumentActions {
             }
             double pivotX = event.getX();
             double pivotY = event.getY();
+            System.out.println("X: " + event.getX() + " Y: " + event.getY());
             for (int i = 0; i < pixels; i++) {
                 zoom(factor, pivotX, pivotY);
             }

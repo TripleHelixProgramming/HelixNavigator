@@ -106,7 +106,7 @@ public class LineView {
         return zoomScale.get();
     }
 
-    public Pane getLineView() {
+    public Pane getView() {
         return pane;
     }
 }

@@ -11,15 +11,16 @@ public class Test extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        Circle circle = new Circle(40);
         StackPane innerPane = new StackPane();
-        Circle circle = new Circle(20, 20, 5);
         Pane outerPane = new Pane(innerPane, circle);
-
-
         Scene scene = new Scene(outerPane);
         primaryStage.setScene(scene);
         innerPane.setOnMouseClicked(event -> {
             System.out.println("Inner pane clicked");
+        });
+        circle.setOnMouseClicked(event -> {
+            System.out.println("Circle clicked");
         });
 
         primaryStage.show();

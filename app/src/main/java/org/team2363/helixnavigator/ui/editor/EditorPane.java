@@ -8,6 +8,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class EditorPane extends VBox {
@@ -17,16 +18,15 @@ public class EditorPane extends VBox {
     private final PathToolBar pathToolBar;
     private final PathPane pathPane;
     private final ForegroundInfoText infoText;
+    private final StackPane bottomStack;
 
     public EditorPane(DocumentManager documentManager) {
         this.documentManager = documentManager;
 
-        loadDocument(this.documentManager.getDocument());
-        this.documentManager.documentProperty().addListener(this::documentChanged);
-
         pathToolBar = new PathToolBar(this.documentManager);
         pathPane = new PathPane(this.documentManager);
         infoText = new ForegroundInfoText();
+        bottomStack = new StackPane(infoText.getForegroundPane());
 
         setPadding(new Insets(0, 10, 10, 5));
         setSpacing(10.0);
@@ -34,6 +34,9 @@ public class EditorPane extends VBox {
         setAlignment(Pos.CENTER);
 
         getChildren().addAll(pathToolBar, infoText.getForegroundPane());
+
+        loadDocument(this.documentManager.getDocument());
+        this.documentManager.documentProperty().addListener(this::documentChanged);
     }
 
     private void documentChanged(ObservableValue<? extends HDocument> currentDocument, HDocument oldDocument, HDocument newDocument) {
