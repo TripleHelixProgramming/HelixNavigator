@@ -43,7 +43,7 @@ public class LineView {
         topLine.setStroke(Color.BLACK);
         clip.setStrokeWidth(5);
         
-        pane.setClip(bottomLine);
+        pane.setClip(clip);
     }
 
     public final DoubleProperty startPointXProperty() {

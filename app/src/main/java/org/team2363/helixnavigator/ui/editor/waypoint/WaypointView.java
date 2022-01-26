@@ -9,30 +9,29 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.Node;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeType;
+import javafx.scene.transform.Translate;
 
 public class WaypointView implements PathElementView {
 
-    private final StackPane stack = new StackPane();
     private final Circle selectionCircle = new Circle(12.0);
     private final Circle waypointCircle = new Circle(10.0);
-    private final Rectangle cross1 = new Rectangle(13, 3);
-    private final Rectangle cross2 = new Rectangle(13, 3);
+    private final Line cross1 = new Line(-4, 4, 4, -4);
+    private final Line cross2 = new Line(-4, -4, 4, 4);
+    private final Circle clip = new Circle(12.0);
+    private final Pane pane = new Pane();
 
-    private final ObjectProperty<WaypointType> waypointType = new SimpleObjectProperty<>(this, "waypointType", WaypointType.SOFT);
+    private final ObjectProperty<WaypointType> waypointType = new SimpleObjectProperty<>(this, "waypointType", WaypointType.HARD);
     private final DoubleProperty x = new SimpleDoubleProperty(this, "x", 0.0);
     private final DoubleProperty y = new SimpleDoubleProperty(this, "y", 0.0);
-    private final DoubleProperty pathAreaWidth = new SimpleDoubleProperty(this, "pathAreaWidth", 0.0);
-    private final DoubleProperty pathAreaHeight = new SimpleDoubleProperty(this, "pathAreaHeight", 0.0);
-    private final DoubleProperty zoomTranslateX = new SimpleDoubleProperty(this, "zoomTranslateX", 0.0);
-    private final DoubleProperty zoomTranslateY = new SimpleDoubleProperty(this, "zoomTranslateY", 0.0);
     private final DoubleProperty zoomScale = new SimpleDoubleProperty(this, "zoomScale", 1.0);
     private final BooleanProperty selected = new SimpleBooleanProperty(this, "selected", false);
+
+    private final Translate centerTranslate = new Translate();
 
     public WaypointView() {
         selectionCircle.setFill(Color.ORANGE);
@@ -42,12 +41,12 @@ public class WaypointView implements PathElementView {
         waypointCircle.setStrokeType(StrokeType.INSIDE);
         waypointCircle.setStrokeWidth(3.0);
         selectionCircle.setOpacity(0.0);
-        cross1.setRotate(45);
-        cross2.setRotate(-45);
-        cross1.setFill(Color.RED);
-        cross2.setFill(Color.RED);
-        disableCross();
-        stack.getChildren().addAll(selectionCircle, waypointCircle, cross1, cross2);
+        cross1.setStrokeWidth(3);
+        cross2.setStrokeWidth(3);
+        cross1.setStroke(Color.RED);
+        cross2.setStroke(Color.RED);
+        pane.getChildren().addAll(selectionCircle, waypointCircle, cross1, cross2);
+        pane.setClip(clip);
 
         waypointType.addListener((currentValue, oldValue, newValue) -> {
             switch (newValue) {
@@ -60,8 +59,9 @@ public class WaypointView implements PathElementView {
             }
         });
         // For y you must subtract to flip the coordinates, in graphics +y is down but in math/engineering/robotics +y is up (i think):
-        stack.translateXProperty().bind(zoomTranslateX.add(x.multiply(zoomScale)).subtract(13.0).add(pathAreaWidth.multiply(0.5)));       // tx = ztx + zs*x - 13 + paw/2
-        stack.translateYProperty().bind(zoomTranslateY.subtract(y.multiply(zoomScale)).subtract(13.0).add(pathAreaHeight.multiply(0.5))); // ty = zty + zs*y - 13 + pah/2
+        centerTranslate.xProperty().bind(x.multiply(zoomScale));
+        centerTranslate.yProperty().bind(y.multiply(zoomScale).negate());
+        pane.getTransforms().add(centerTranslate);
         selected.addListener((currentValue, oldValue, newValue) -> {
             selectionCircle.setOpacity(newValue ? 1.0 : 0.0);
         });
@@ -112,54 +112,6 @@ public class WaypointView implements PathElementView {
         return y.get();
     }
 
-    public final DoubleProperty pathAreaWidthProperty() {
-        return pathAreaWidth;
-    }
-
-    public final void setPathAreaWidth(double value) {
-        pathAreaWidth.set(value);
-    }
-
-    public final double getPathAreaWidth() {
-        return pathAreaWidth.get();
-    }
-
-    public final DoubleProperty pathAreaHeightProperty() {
-        return pathAreaHeight;
-    }
-
-    public final void setPathAreaHeight(double value) {
-        pathAreaHeight.set(value);
-    }
-
-    public final double getPathAreaHeight() {
-        return pathAreaHeight.get();
-    }
-
-    public final DoubleProperty zoomTranslateXProperty() {
-        return zoomTranslateX;
-    }
-
-    public final void setZoomTranslateX(double value) {
-        zoomTranslateX.set(value);
-    }
-
-    public final double getZoomTranslateX() {
-        return zoomTranslateX.get();
-    }
-
-    public final DoubleProperty zoomTranslateYProperty() {
-        return zoomTranslateY;
-    }
-
-    public final void setZoomTranslateY(double value) {
-        zoomTranslateY.set(value);
-    }
-
-    public final double getZoomTranslateY() {
-        return zoomTranslateY.get();
-    }
-
     public final DoubleProperty zoomScaleProperty() {
         return zoomScale;
     }
@@ -188,7 +140,7 @@ public class WaypointView implements PathElementView {
     }
 
     @Override
-    public Node getView() {
-        return stack;
+    public Pane getView() {
+        return pane;
     }
 }

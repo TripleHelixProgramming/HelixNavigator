@@ -11,22 +11,17 @@ public class Test extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Circle circle = new Circle(40);
-        StackPane innerPane = new StackPane();
-        Pane outerPane = new Pane(innerPane, circle);
-        Scene scene = new Scene(outerPane);
-        primaryStage.setScene(scene);
-        innerPane.setOnMouseClicked(event -> {
-            System.out.println("Inner pane clicked");
-        });
-        circle.setOnMouseClicked(event -> {
-            System.out.println("Circle clicked");
-        });
-
+        Circle paneCircle = new Circle(40);
+        Circle directCircle = new Circle(30);
+        Pane pane = new Pane(paneCircle);
+        StackPane outerStack = new StackPane(directCircle);
+        primaryStage.setScene(new Scene(outerStack));
+        // System.out.println(pane.getBoundsInParent().getWidth());
+        System.out.println(directCircle.getBoundsInParent().getWidth());
         primaryStage.show();
     }
 
     public static void main(String[] args) throws Exception {
-        launch(args);
+        Application.launch(args);
     }
 }

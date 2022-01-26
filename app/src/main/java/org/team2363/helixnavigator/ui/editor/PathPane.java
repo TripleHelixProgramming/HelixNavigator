@@ -9,11 +9,8 @@ import org.team2363.helixnavigator.ui.editor.waypoint.WaypointsLayer;
 
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Translate;
 
 public class PathPane extends Pane {
@@ -22,9 +19,9 @@ public class PathPane extends Pane {
 
     private final BackgroundRectangle backgroundRectangle;
     private final FieldImageLayer fieldImageLayer;
-    // private final ObstaclesLayer obstaclesLayer;
-    // private final LinesLayer linesLayer;
-    // private final WaypointsLayer waypointsLayer;
+    private final ObstaclesLayer obstaclesLayer;
+    private final LinesLayer linesLayer;
+    private final WaypointsLayer waypointsLayer;
 
     private final Translate pathAreaTranslate = new Translate();
     private final Translate zoomTranslateTranslate = new Translate();
@@ -34,58 +31,17 @@ public class PathPane extends Pane {
 
         backgroundRectangle = new BackgroundRectangle(this.documentManager);
         fieldImageLayer = new FieldImageLayer(this.documentManager);
-        // obstaclesLayer = new ObstaclesLayer(this.documentManager);
-        // linesLayer = new LinesLayer(this.documentManager);
-        // waypointsLayer = new WaypointsLayer(this.documentManager);
+        obstaclesLayer = new ObstaclesLayer(this.documentManager);
+        linesLayer = new LinesLayer(this.documentManager);
+        waypointsLayer = new WaypointsLayer(this.documentManager);
 
         updateLayers();
         // This next line also accounts for the line layer since they both change simultaneously
-        // waypointsLayer.getChildren().addListener((ListChangeListener.Change<? extends Node> change) -> updateLayers());
-        // obstaclesLayer.getChildren().addListener((ListChangeListener.Change<? extends Node> change) -> updateLayers());
+        waypointsLayer.getChildren().addListener((ListChangeListener.Change<? extends Node> change) -> updateLayers());
+        obstaclesLayer.getChildren().addListener((ListChangeListener.Change<? extends Node> change) -> updateLayers());
 
-        setOnMousePressed(event -> {
-            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
-                if (event.getButton() == MouseButton.MIDDLE) {
-                    this.documentManager.getStage().getScene().setCursor(Cursor.CLOSED_HAND);
-                }
-                this.documentManager.actions().handleMousePressedAsPan(event);
-            }
-        });
-        setOnMouseDragged(event -> {
-            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
-                this.documentManager.actions().handleMouseDraggedAsPan(event);
-            }
-        });
-        setOnMouseReleased(event -> {
-            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
-                this.documentManager.getStage().getScene().setCursor(Cursor.DEFAULT);
-            }
-        });
-        setOnScroll(event -> {
-            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
-                this.documentManager.actions().handleScrollAsZoom(event);
-            }
-        });
-
-        this.documentManager.setPathAreaWidth(layoutBoundsProperty().get().getWidth());
-        this.documentManager.setPathAreaHeight(layoutBoundsProperty().get().getHeight());
-        if (this.documentManager.actions().getLockZoom()) {
-            this.documentManager.actions().zoomToFit();
-        }
-        layoutBoundsProperty().addListener((currentValue, oldValue, newValue) -> {
-            this.documentManager.setPathAreaWidth(newValue.getWidth());
-            this.documentManager.setPathAreaHeight(newValue.getHeight());
-            if (this.documentManager.actions().getLockZoom()) {
-                this.documentManager.actions().zoomToFit();
-            }
-        });
         pathAreaTranslate.xProperty().bind(this.documentManager.pathAreaWidthProperty().multiply(0.5));
         pathAreaTranslate.yProperty().bind(this.documentManager.pathAreaHeightProperty().multiply(0.5));
-
-        // Rectangle clip = new Rectangle();
-        // clip.translateXProperty().bind(clip.widthProperty().multiply(-0.5));
-        // clip.translateYProperty().bind(clip.heightProperty().multiply(-0.5));
-        // setClip(clip);
 
         getTransforms().addAll(pathAreaTranslate, zoomTranslateTranslate);
 
@@ -96,10 +52,11 @@ public class PathPane extends Pane {
     private void updateLayers() {
         getChildren().clear();
         getChildren().add(backgroundRectangle.getRectangle());
-        getChildren().addAll(fieldImageLayer.getChildren());
-        // getChildren().addAll(obstaclesLayer.getChildren());
-        // getChildren().addAll(linesLayer.getChildren());
-        // getChildren().addAll(waypointsLayer.getChildren());
+        getChildren().add(fieldImageLayer.getImageView());
+        getChildren().add(fieldImageLayer.getOriginView().getView());
+        getChildren().addAll(obstaclesLayer.getChildren());
+        getChildren().addAll(linesLayer.getChildren());
+        getChildren().addAll(waypointsLayer.getChildren());
     }
 
     private void documentChanged(ObservableValue<? extends HDocument> currentDocument, HDocument oldDocument, HDocument newDocument) {

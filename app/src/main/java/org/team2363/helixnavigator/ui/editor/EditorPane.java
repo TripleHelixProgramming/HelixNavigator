@@ -7,9 +7,12 @@ import org.team2363.helixnavigator.ui.editor.toolbar.PathToolBar;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 
 public class EditorPane extends VBox {
 
@@ -30,10 +33,35 @@ public class EditorPane extends VBox {
 
         setPadding(new Insets(0, 10, 10, 5));
         setSpacing(10.0);
-        VBox.setVgrow(pathPane, Priority.ALWAYS);
+        VBox.setVgrow(bottomStack, Priority.ALWAYS);
         setAlignment(Pos.CENTER);
 
-        getChildren().addAll(pathToolBar, infoText.getForegroundPane());
+        getChildren().addAll(pathToolBar, bottomStack);
+
+        bottomStack.layoutBoundsProperty().addListener((currentValue, oldValue, newValue) -> {
+            this.documentManager.setPathAreaWidth(newValue.getWidth());
+            this.documentManager.setPathAreaHeight(newValue.getHeight());
+            if (this.documentManager.actions().getLockZoom()) {
+                this.documentManager.actions().zoomToFit();
+            }
+        });
+        bottomStack.setOnMousePressed(event -> {
+            if (this.documentManager.getIsDocumentOpen() && !this.documentManager.actions().getLockZoom()
+                    && event.getButton() == MouseButton.MIDDLE) {
+                bottomStack.setCursor(Cursor.CLOSED_HAND);
+            }
+            this.documentManager.actions().handleMousePressedAsPan(event);
+        });
+        bottomStack.setOnMouseDragged(this.documentManager.actions()::handleMouseDraggedAsPan);
+        bottomStack.setOnMouseReleased(event -> {
+            bottomStack.setCursor(Cursor.DEFAULT);
+        });
+        bottomStack.setOnScroll(this.documentManager.actions()::handleScrollAsZoom);
+
+        Rectangle clip = new Rectangle();
+        clip.widthProperty().bind(this.documentManager.pathAreaWidthProperty());
+        clip.heightProperty().bind(this.documentManager.pathAreaHeightProperty());
+        bottomStack.setClip(clip);
 
         loadDocument(this.documentManager.getDocument());
         this.documentManager.documentProperty().addListener(this::documentChanged);
@@ -52,9 +80,9 @@ public class EditorPane extends VBox {
     }
 
     private void disableInfoText() {
-        getChildren().set(1, pathPane);
+        bottomStack.getChildren().set(0, pathPane);
     }
     private void enableInfoText() {
-        getChildren().set(1, infoText.getForegroundPane());
+        bottomStack.getChildren().set(0, infoText.getForegroundPane());
     }
 }

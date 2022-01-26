@@ -52,7 +52,9 @@ public class DocumentManager {
         logger.info("Setting document");
         setIsDocumentOpen(value != null); // spent about an hour trying to fix a bug:
         document.set(value);              // just had to switch these two lines
-        actions.zoomToFit();
+        if (actions.getLockZoom()) {
+            actions.zoomToFit();
+        }
         updateStageTitle();
     }
 
@@ -110,6 +112,7 @@ public class DocumentManager {
         if (requestCloseDocument()) {
             logger.info("Document succesfully closed, setting to new blank document.");
             setDocument(new HDocument());
+            actions.zoomToFit();
             return true;
         } else {
             return false;

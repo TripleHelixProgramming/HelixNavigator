@@ -6,19 +6,12 @@ import org.team2363.helixnavigator.document.field.image.HFieldImage;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 public class FieldImageLayer {
 
     private final DocumentManager documentManager;
-
-    private final ObservableList<Node> children = FXCollections.observableArrayList();
-    private final ObservableList<Node> childrenUnmodifiable = FXCollections.unmodifiableObservableList(children);
 
     private final ImageView imageView = new ImageView();
     private final Scale unitsScale = new Scale();
@@ -31,28 +24,14 @@ public class FieldImageLayer {
     public FieldImageLayer(DocumentManager documentManager) {
         this.documentManager = documentManager;
 
-        loadDocument(this.documentManager.getDocument());
-        this.documentManager.documentProperty().addListener(this::documentChanged);
-
-        children.addAll(imageView, originView.getView());
-
         // the first item in the list is the last translation applied:
         imageView.getTransforms().addAll(zoomScale, centerTranslate, unitsScale);
 
-        imageView.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY
-                    && this.documentManager.getIsDocumentOpen()
-                    && this.documentManager.getDocument().isPathSelected()) {
-                this.documentManager.getDocument().getSelectedPath().clearSelection();
-            }
-        });
-        originView.getView().setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY
-                    && this.documentManager.getIsDocumentOpen()
-                    && this.documentManager.getDocument().isPathSelected()) {
-                this.documentManager.getDocument().getSelectedPath().clearSelection();
-            }
-        });
+        imageView.setOnMouseClicked(this.documentManager.actions()::handleMouseClickedAsClearSelection);
+        originView.getView().setOnMouseClicked(this.documentManager.actions()::handleMouseClickedAsClearSelection);
+
+        loadDocument(this.documentManager.getDocument());
+        this.documentManager.documentProperty().addListener(this::documentChanged);
     }
 
     private void documentChanged(ObservableValue<? extends HDocument> currentDocument, HDocument oldDocument, HDocument newDocument) {
@@ -103,7 +82,11 @@ public class FieldImageLayer {
         }
     }
 
-    public ObservableList<? extends Node> getChildren() {
-        return childrenUnmodifiable;
+    public ImageView getImageView() {
+        return imageView;
+    }
+
+    public OriginView getOriginView() {
+        return originView;
     }
 }

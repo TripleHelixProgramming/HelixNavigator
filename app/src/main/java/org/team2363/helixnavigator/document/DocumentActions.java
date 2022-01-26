@@ -4,7 +4,6 @@ import org.team2363.helixnavigator.document.field.image.HFieldImage;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -31,11 +30,12 @@ public class DocumentActions {
         if (documentManager.getIsDocumentOpen()) {
             HDocument document = documentManager.getDocument();
             // This code allows for zooming in or out about a certain point
+            // xci and yci are the coordinates of the origin point relative to the path area
             double s = factor;
-            double xci = 0;// document.getZoomTranslateX();
+            double xci = document.getZoomTranslateX() + documentManager.getPathAreaWidth() / 2;
             double xp = pivotX;
             double xd = (1-s)*(xp-xci);
-            double yci = 0;// document.getZoomTranslateY();
+            double yci = document.getZoomTranslateY() + documentManager.getPathAreaHeight() / 2;
             double yp = pivotY;
             double yd = (1-s)*(yp-yci);
             document.setZoomTranslateX(document.getZoomTranslateX() + xd);
@@ -75,7 +75,7 @@ public class DocumentActions {
     private double lastBackgroundDragX;
     private double lastBackgroundDragY;
     public void handleMousePressedAsPan(MouseEvent event) {
-        if (!getLockZoom() && event.getButton() == MouseButton.MIDDLE) {
+        if (documentManager.getIsDocumentOpen() && !getLockZoom() && event.getButton() == MouseButton.MIDDLE) {
             lastBackgroundDragX = event.getSceneX();
             lastBackgroundDragY = event.getSceneY();
         }
@@ -98,9 +98,9 @@ public class DocumentActions {
                 factor = 1.005;
                 pixels = -pixels;
             }
+            System.out.println("X: " + event.getX() + " Y: " + event.getY());
             double pivotX = event.getX();
             double pivotY = event.getY();
-            System.out.println("X: " + event.getX() + " Y: " + event.getY());
             for (int i = 0; i < pixels; i++) {
                 zoom(factor, pivotX, pivotY);
             }
@@ -125,6 +125,14 @@ public class DocumentActions {
             document.getSelectedPath().moveSelectedElementsRelative(scaledDeltaX, scaledDeltaY);
             lastElementsDragX = event.getSceneX();
             lastElementsDragY = event.getSceneY();
+        }
+    }
+
+    public void handleMouseClickedAsClearSelection(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY
+                && this.documentManager.getIsDocumentOpen()
+                && this.documentManager.getDocument().isPathSelected()) {
+            this.documentManager.getDocument().getSelectedPath().clearSelection();
         }
     }
 
