@@ -3,6 +3,8 @@ package org.team2363.helixnavigator.global;
 import java.io.File;
 import java.util.regex.Pattern;
 
+import javafx.scene.paint.Color;
+
 public class Standards {
 
     /**
@@ -23,4 +25,5 @@ public class Standards {
     public static final int MAX_NAME_LENGTH = 50;
     public static final String DEFAULT_FIELD_IMAGE = "2022: Rapid React";
     public static final double DEFAULT_OBSTACLE_SAFETY_DISTANCE = 5.0;
+    public static final Color BACKGROUND_COLOR = Color.gray(0.85);
 }

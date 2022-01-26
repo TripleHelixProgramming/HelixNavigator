@@ -25,9 +25,9 @@ public class ObstaclesLayer implements PathLayer {
 
     private final DocumentManager documentManager;
 
+    private final ObservableList<PathElementView> obstacleViews = FXCollections.<PathElementView>observableArrayList();
     private final ObservableList<Node> children = FXCollections.observableArrayList();
     private final ObservableList<Node> childrenUnmodifiable = FXCollections.unmodifiableObservableList(children);
-    private final ObservableList<PathElementView> obstacleViews = FXCollections.<PathElementView>observableArrayList();
 
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
     private final ListChangeListener<? super HObstacle> onObstaclesChanged = this::obstaclesChanged;
@@ -66,8 +66,8 @@ public class ObstaclesLayer implements PathLayer {
 
     private void unloadSelectedPath(HPath oldPath) {
         if (oldPath != null) {
-            children.clear();
             obstacleViews.clear();
+            children.clear();
             oldPath.getObstacles().removeListener(onObstaclesChanged);
             oldPath.getObstaclesSelectionModel().getSelectedIndices().removeListener(onObstaclesSelectedIndicesChanged);
         }
@@ -87,8 +87,8 @@ public class ObstaclesLayer implements PathLayer {
     }
 
     private void updateObstacles(List<? extends HObstacle> list) {
-        children.clear();
         obstacleViews.clear();
+        children.clear();
         for (int i = 0; i < list.size(); i++) {
             HObstacle obstacle = list.get(i);
             PathElementView obstacleView;
@@ -107,8 +107,8 @@ public class ObstaclesLayer implements PathLayer {
                     break;
 
             }
-            children.add(i, obstacleView.getView());
             obstacleViews.add(i, obstacleView);
+            children.add(i, obstacleView.getView());
         }
     }
 
@@ -130,10 +130,6 @@ public class ObstaclesLayer implements PathLayer {
         circleObstacleView.centerXProperty().bind(circleObstacle.centerXProperty());
         circleObstacleView.centerYProperty().bind(circleObstacle.centerYProperty());
         circleObstacleView.radiusProperty().bind(circleObstacle.radiusProperty());
-        circleObstacleView.pathAreaWidthProperty().bind(documentManager.pathAreaWidthProperty());
-        circleObstacleView.pathAreaHeightProperty().bind(documentManager.pathAreaHeightProperty());
-        circleObstacleView.zoomTranslateXProperty().bind(documentManager.getDocument().zoomTranslateXProperty());
-        circleObstacleView.zoomTranslateYProperty().bind(documentManager.getDocument().zoomTranslateYProperty());
         circleObstacleView.zoomScaleProperty().bind(documentManager.getDocument().zoomScaleProperty());
 
         EventHandler<MouseEvent> onMousePressed = event -> {

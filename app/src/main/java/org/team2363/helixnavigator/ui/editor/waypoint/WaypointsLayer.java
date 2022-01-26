@@ -6,7 +6,6 @@ import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
-import org.team2363.helixnavigator.ui.editor.PathLayer;
 import org.team2363.lib.ui.MouseEventWrapper;
 
 import javafx.beans.value.ChangeListener;
@@ -19,13 +18,13 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
-public class WaypointsLayer implements PathLayer {
+public class WaypointsLayer {
 
     private final DocumentManager documentManager;
 
+    private final ObservableList<WaypointView> waypointViews = FXCollections.<WaypointView>observableArrayList();
     private final ObservableList<Node> children = FXCollections.observableArrayList();
     private final ObservableList<Node> childrenUnmodifiable = FXCollections.unmodifiableObservableList(children);
-    private final ObservableList<WaypointView> waypointViews = FXCollections.<WaypointView>observableArrayList();
 
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
     private final ListChangeListener<? super HWaypoint> onWaypointsChanged = this::waypointsChanged;
@@ -82,7 +81,6 @@ public class WaypointsLayer implements PathLayer {
 
     private void waypointsChanged(ListChangeListener.Change<? extends HWaypoint> change) {
         updateWaypoints(change.getList());
-        // updateSelectedWaypoints();
     }
 
     private void updateWaypoints(List<? extends HWaypoint> list) {
@@ -110,15 +108,10 @@ public class WaypointsLayer implements PathLayer {
         }
     }
 
-    // Index needs to be dynamically updated
     private void linkWaypointView(int index, WaypointView waypointView, HWaypoint waypoint) {
         waypointView.waypointTypeProperty().bind(waypoint.waypointTypeProperty());
         waypointView.xProperty().bind(waypoint.xProperty());
         waypointView.yProperty().bind(waypoint.yProperty());
-        waypointView.pathAreaWidthProperty().bind(documentManager.pathAreaWidthProperty());
-        waypointView.pathAreaHeightProperty().bind(documentManager.pathAreaHeightProperty());
-        waypointView.zoomTranslateXProperty().bind(documentManager.getDocument().zoomTranslateXProperty());
-        waypointView.zoomTranslateYProperty().bind(documentManager.getDocument().zoomTranslateYProperty());
         waypointView.zoomScaleProperty().bind(documentManager.getDocument().zoomScaleProperty());
 
         EventHandler<MouseEvent> onMousePressed = event -> {

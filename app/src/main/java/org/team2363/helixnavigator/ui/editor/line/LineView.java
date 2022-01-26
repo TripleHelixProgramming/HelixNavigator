@@ -6,134 +6,92 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
-public class LineView extends Pane {
+public class LineView {
 
     private final Line bottomLine = new Line();
     private final Line topLine = new Line();
+    
+    private final Line clip = new Line();
 
-    private final DoubleProperty initialPointX = new SimpleDoubleProperty(this, "initialPointX", 0.0);
-    private final DoubleProperty initialPointY = new SimpleDoubleProperty(this, "initialPointY", 0.0);
-    private final DoubleProperty finalPointX = new SimpleDoubleProperty(this, "finalPointX", 0.0);
-    private final DoubleProperty finalPointY = new SimpleDoubleProperty(this, "finalPointY", 0.0);
-    private final DoubleProperty pathAreaWidth = new SimpleDoubleProperty(this, "pathAreaWidth", 0.0);
-    private final DoubleProperty pathAreaHeight = new SimpleDoubleProperty(this, "pathAreaHeight", 0.0);
-    private final DoubleProperty zoomTranslateX = new SimpleDoubleProperty(this, "zoomTranslateX", 0.0);
-    private final DoubleProperty zoomTranslateY = new SimpleDoubleProperty(this, "zoomTranslateY", 0.0);
+    private final DoubleProperty startPointX = new SimpleDoubleProperty(this, "startPointX", 0.0);
+    private final DoubleProperty startPointY = new SimpleDoubleProperty(this, "startPointY", 0.0);
+    private final DoubleProperty endPointX = new SimpleDoubleProperty(this, "endPointX", 0.0);
+    private final DoubleProperty endPointY = new SimpleDoubleProperty(this, "endPointY", 0.0);
     private final DoubleProperty zoomScale = new SimpleDoubleProperty(this, "zoomScale", 1.0);
 
-    public LineView() {
-        bottomLine.startXProperty().bind(pathAreaWidth.multiply(0.5).add(zoomTranslateX).add(initialPointX.multiply(zoomScale)));  // sx = 0.5*paw + ztx + ipx*zs
-        bottomLine.startYProperty().bind(pathAreaHeight.multiply(0.5).add(zoomTranslateY).subtract(initialPointY.multiply(zoomScale))); // sy = 0.5*pah + zty + ipy*zs
-        bottomLine.endXProperty().bind(pathAreaWidth.multiply(0.5).add(zoomTranslateX).add(finalPointX.multiply(zoomScale)));  // sx = 0.5*paw + ztx + fpx*zs
-        bottomLine.endYProperty().bind(pathAreaHeight.multiply(0.5).add(zoomTranslateY).subtract(finalPointY.multiply(zoomScale))); // sy = 0.5*pah + zty + fpy*zs
+    private final Pane pane = new Pane(bottomLine, topLine);
 
-        topLine.startXProperty().bind(pathAreaWidth.multiply(0.5).add(zoomTranslateX).add(initialPointX.multiply(zoomScale)));  // sx = 0.5*paw + ztx + ipx*zs
-        topLine.startYProperty().bind(pathAreaHeight.multiply(0.5).add(zoomTranslateY).subtract(initialPointY.multiply(zoomScale))); // sy = 0.5*pah + zty + ipy*zs
-        topLine.endXProperty().bind(pathAreaWidth.multiply(0.5).add(zoomTranslateX).add(finalPointX.multiply(zoomScale)));  // sx = 0.5*paw + ztx + fpx*zs
-        topLine.endYProperty().bind(pathAreaHeight.multiply(0.5).add(zoomTranslateY).subtract(finalPointY.multiply(zoomScale))); // sy = 0.5*pah + zty + fpy*zs
+    public LineView() {
+        bottomLine.startXProperty().bind(startPointX.multiply(zoomScale));
+        bottomLine.startYProperty().bind(startPointY.multiply(zoomScale).negate());
+        bottomLine.endXProperty().bind(endPointX.multiply(zoomScale));
+        bottomLine.endYProperty().bind(endPointY.multiply(zoomScale).negate());
+
+        topLine.startXProperty().bind(startPointX.multiply(zoomScale));
+        topLine.startYProperty().bind(startPointY.multiply(zoomScale).negate());
+        topLine.endXProperty().bind(endPointX.multiply(zoomScale));
+        topLine.endYProperty().bind(endPointY.multiply(zoomScale).negate());
+
+        clip.startXProperty().bind(startPointX.multiply(zoomScale));
+        clip.startYProperty().bind(startPointY.multiply(zoomScale).negate());
+        clip.endXProperty().bind(endPointX.multiply(zoomScale));
+        clip.endYProperty().bind(endPointY.multiply(zoomScale).negate());
 
         bottomLine.setStrokeWidth(5);
         bottomLine.setStroke(Color.gray(0.6));
         topLine.setStrokeWidth(3);
         topLine.setStroke(Color.BLACK);
-
-        getChildren().addAll(bottomLine, topLine);
+        clip.setStrokeWidth(5);
+        
+        pane.setClip(clip);
     }
 
-    public final DoubleProperty initialPointXProperty() {
-        return initialPointX;
+    public final DoubleProperty startPointXProperty() {
+        return startPointX;
     }
 
-    public final void setInitialPointX(double value) {
-        initialPointX.set(value);
+    public final void setStartPointX(double value) {
+        startPointX.set(value);
     }
 
-    public final double getInitialPointX() {
-        return initialPointX.get();
+    public final double getStartPointX() {
+        return startPointX.get();
     }
 
-    public final DoubleProperty initialPointYProperty() {
-        return initialPointY;
+    public final DoubleProperty startPointYProperty() {
+        return startPointY;
     }
 
-    public final void setInitialPointY(double value) {
-        initialPointY.set(value);
+    public final void setStartPointY(double value) {
+        startPointY.set(value);
     }
 
-    public final double getInitialPointY() {
-        return initialPointY.get();
+    public final double getStartPointY() {
+        return startPointY.get();
     }
 
-    public final DoubleProperty finalPointXProperty() {
-        return finalPointX;
+    public final DoubleProperty endPointXProperty() {
+        return endPointX;
     }
     
-    public final void setFinalPointX(double value) {
-        finalPointX.set(value);
+    public final void setEndPointX(double value) {
+        endPointX.set(value);
     }
     
-    public final double getFinalPointX() {
-        return finalPointX.get();
+    public final double getEndPointX() {
+        return endPointX.get();
     }
     
-    public final DoubleProperty finalPointYProperty() {
-        return finalPointY;
+    public final DoubleProperty endPointYProperty() {
+        return endPointY;
     }
     
-    public final void setFinalPointY(double value) {
-        finalPointY.set(value);
+    public final void setEndPointY(double value) {
+        endPointY.set(value);
     }
     
-    public final double getFinalPointY() {
-        return finalPointY.get();
-    }
-
-    public final DoubleProperty pathAreaWidthProperty() {
-        return pathAreaWidth;
-    }
-
-    public final void setPathAreaWidth(double value) {
-        pathAreaWidth.set(value);
-    }
-
-    public final double getPathAreaWidth() {
-        return pathAreaWidth.get();
-    }
-
-    public final DoubleProperty pathAreaHeightProperty() {
-        return pathAreaHeight;
-    }
-
-    public final void setPathAreaHeight(double value) {
-        pathAreaHeight.set(value);
-    }
-
-    public final double getPathAreaHeight() {
-        return pathAreaHeight.get();
-    }
-
-    public final DoubleProperty zoomTranslateXProperty() {
-        return zoomTranslateX;
-    }
-
-    public final void setZoomTranslateX(double value) {
-        zoomTranslateX.set(value);
-    }
-
-    public final double getZoomTranslateX() {
-        return zoomTranslateX.get();
-    }
-
-    public final DoubleProperty zoomTranslateYProperty() {
-        return zoomTranslateY;
-    }
-
-    public final void setZoomTranslateY(double value) {
-        zoomTranslateY.set(value);
-    }
-
-    public final double getZoomTranslateY() {
-        return zoomTranslateY.get();
+    public final double getEndPointY() {
+        return endPointY.get();
     }
 
     public final DoubleProperty zoomScaleProperty() {
@@ -146,5 +104,9 @@ public class LineView extends Pane {
 
     public final double getZoomScale() {
         return zoomScale.get();
+    }
+
+    public Pane getView() {
+        return pane;
     }
 }

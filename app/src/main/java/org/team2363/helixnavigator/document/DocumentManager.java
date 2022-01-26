@@ -112,6 +112,7 @@ public class DocumentManager {
         if (requestCloseDocument()) {
             logger.info("Document succesfully closed, setting to new blank document.");
             setDocument(new HDocument());
+            actions.zoomToFit();
             return true;
         } else {
             return false;

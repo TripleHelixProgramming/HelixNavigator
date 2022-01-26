@@ -1,4 +1,4 @@
-package org.team2363.helixnavigator.ui.editor;
+package org.team2363.helixnavigator.ui.editor.toolbar;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 
@@ -16,7 +16,7 @@ public class PathToolBar extends ToolBar {
         this.documentManager = documentManager;
 
         lockZoom.setOnAction(this::lockZoomToggled);
-        this.documentManager.actions().lockZoomProperty().bind(lockZoom.selectedProperty());
+        this.documentManager.actions().lockZoomProperty().bindBidirectional(lockZoom.selectedProperty());
 
         getItems().add(lockZoom);
     }

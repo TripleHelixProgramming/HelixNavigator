@@ -6,7 +6,6 @@ import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
-import org.team2363.helixnavigator.ui.editor.PathLayer;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -15,13 +14,13 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 
-public class LinesLayer implements PathLayer {
+public class LinesLayer {
 
     private final DocumentManager documentManager;
 
+    private final ObservableList<LineView> lineViews = FXCollections.<LineView>observableArrayList();
     private final ObservableList<Node> children = FXCollections.observableArrayList();
     private final ObservableList<Node> childrenUnmodifiable = FXCollections.unmodifiableObservableList(children);
-    private final ObservableList<LineView> lineViews = FXCollections.<LineView>observableArrayList();
 
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
     private final ListChangeListener<? super HWaypoint> onWaypointsChanged = this::waypointsChanged;
@@ -83,23 +82,17 @@ public class LinesLayer implements PathLayer {
             LineView lineView = new LineView();
             linkLineView(lineView, list.get(i), list.get(i + 1));
             lineViews.add(i, lineView);
-            children.add(i, lineView);
+            children.add(i, lineView.getView());
         }
     }
 
     private void linkLineView(LineView lineView, HWaypoint initialWaypoint, HWaypoint finalWaypoint) {
-        lineView.initialPointXProperty().bind(initialWaypoint.xProperty());
-        lineView.initialPointYProperty().bind(initialWaypoint.yProperty());
-        lineView.finalPointXProperty().bind(finalWaypoint.xProperty());
-        lineView.finalPointYProperty().bind(finalWaypoint.yProperty());
-        lineView.pathAreaWidthProperty().bind(documentManager.pathAreaWidthProperty());
-        lineView.pathAreaHeightProperty().bind(documentManager.pathAreaHeightProperty());
-        lineView.zoomTranslateXProperty().bind(documentManager.getDocument().zoomTranslateXProperty());
-        lineView.zoomTranslateYProperty().bind(documentManager.getDocument().zoomTranslateYProperty());
+        lineView.startPointXProperty().bind(initialWaypoint.xProperty());
+        lineView.startPointYProperty().bind(initialWaypoint.yProperty());
+        lineView.endPointXProperty().bind(finalWaypoint.xProperty());
+        lineView.endPointYProperty().bind(finalWaypoint.yProperty());
         lineView.zoomScaleProperty().bind(documentManager.getDocument().zoomScaleProperty());
-        lineView.setOnMouseClicked(event -> {
-            documentManager.getDocument().getSelectedPath().clearSelection();
-        });
+        lineView.getView().setOnMouseClicked(documentManager.actions()::handleMouseClickedAsClearSelection);
     }
 
     public ObservableList<Node> getChildren() {
