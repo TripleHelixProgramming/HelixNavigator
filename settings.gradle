@@ -1,2 +1,2 @@
-rootProject.name = 'helixnavigator'
+rootProject.name = 'HelixNavigator'
 include('app')

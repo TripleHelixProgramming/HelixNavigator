@@ -1,6 +1,6 @@
 /*
  * The build configuration of HelixNavigator. This includes options to build
- * excecutables with launch4j.
+ * excecutables with launch4j and jpackage.
  */
 
 plugins {
@@ -11,6 +11,12 @@ plugins {
 }
 
 version = '0.0.0'
+def applicationName = rootProject.name
+
+archivesBaseName = applicationName
+def packageName = "${applicationName}-${version}"
+
+mainClassName = 'org.team2363.helixnavigator.Main'
 
 repositories {
     mavenCentral()
@@ -22,8 +28,9 @@ dependencies {
 }
 
 application {
-    mainClass = 'org.team2363.helixnavigator.Main'
     mainModule = 'org.team2363.helixnavigator'
+    mainClass = mainClassName
+    applicationName = project.applicationName
 }
 
 javafx {
@@ -31,10 +38,36 @@ javafx {
     modules = [ 'javafx.controls' ]
 }
 
+shadowJar {
+    // minimize()
+
+    archiveClassifier.set('')
+}
+
 launch4j {
     mainClassName = 'org.team2363.helixnavigator.Main'
     version = project.version
-    outfile = 'HelixNavigator_' + version + '.exe'
+    outfile = "${packageName}.exe"
     bundledJrePath = 'C:\\Program Files\\Java\\jdk-17.0.2\\bin'
     jarTask = project.tasks.shadowJar
+}
+
+task createDmg {
+    dependsOn shadowJar
+    
+    doLast {
+        def jarDir = "${buildDir}/libs"
+        def jarName = "${packageName}.jar"
+        def jarFile = "${buildDir}/libs/${jarName}"
+        def dest = "${buildDir}/package"
+        project.exec {
+            commandLine('jpackage',
+                    '--input', jarDir,
+                    '--main-jar', jarName,
+                    '--dest', dest,
+                    '--name', rootProject.name,
+                    // '--app-version', project.version
+                    )
+        }
+    }
 }
