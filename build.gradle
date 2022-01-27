@@ -11,10 +11,8 @@ plugins {
 }
 
 version = '0.0.0'
-def applicationName = rootProject.name
 
-archivesBaseName = applicationName
-def packageName = "${applicationName}-${version}"
+def packageName = "${name}-${version}"
 
 mainClassName = 'org.team2363.helixnavigator.Main'
 
@@ -30,7 +28,6 @@ dependencies {
 application {
     mainModule = 'org.team2363.helixnavigator'
     mainClass = mainClassName
-    applicationName = project.applicationName
 }
 
 javafx {
@@ -45,7 +42,7 @@ shadowJar {
 }
 
 launch4j {
-    mainClassName = 'org.team2363.helixnavigator.Main'
+    mainClassName = project.mainClassName
     version = project.version
     outfile = "${packageName}.exe"
     bundledJrePath = 'C:\\Program Files\\Java\\jdk-17.0.2\\bin'
@@ -65,8 +62,7 @@ task createDmg {
                     '--input', jarDir,
                     '--main-jar', jarName,
                     '--dest', dest,
-                    '--name', rootProject.name,
-                    // '--app-version', project.version
+                    '--name', project.name,
                     )
         }
     }
