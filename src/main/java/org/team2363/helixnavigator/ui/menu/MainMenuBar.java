@@ -3,6 +3,7 @@ package org.team2363.helixnavigator.ui.menu;
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.ui.menu.edit.EditMenu;
 import org.team2363.helixnavigator.ui.menu.file.FileMenu;
+import org.team2363.helixnavigator.ui.menu.help.HelpMenu;
 import org.team2363.helixnavigator.ui.menu.view.ViewMenu;
 
 import javafx.scene.control.MenuBar;
@@ -14,6 +15,7 @@ public class MainMenuBar extends MenuBar {
     private final FileMenu fileMenu;
     private final EditMenu editMenu;
     private final ViewMenu viewMenu;
+    private final HelpMenu helpMenu;
 
     public MainMenuBar(DocumentManager documentManager) {
         this.documentManager = documentManager;
@@ -26,9 +28,8 @@ public class MainMenuBar extends MenuBar {
         fileMenu = new FileMenu(this.documentManager);
         editMenu = new EditMenu(this.documentManager);
         viewMenu = new ViewMenu(this.documentManager);
+        helpMenu = new HelpMenu();
 
-        getMenus().add(fileMenu);
-        getMenus().add(editMenu);
-        getMenus().add(viewMenu);
+        getMenus().addAll(fileMenu, editMenu, viewMenu, helpMenu);
     }    
 }

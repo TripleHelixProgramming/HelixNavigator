@@ -12,6 +12,10 @@ public class Standards {
      */
     public static final String APPLICATION_NAME = "HelixNavigator";
     /**
+     * The current version of this application
+     */
+    public static final String APPLICATION_VERSION = "0.0.0";
+    /**
      * The location of the "Documents" folder for the user
      */
     public static final File USER_DOCUMENTS_DIR = new File(System.getProperty("user.home") + File.separator + "Documents"); // TODO: make this work for every platform

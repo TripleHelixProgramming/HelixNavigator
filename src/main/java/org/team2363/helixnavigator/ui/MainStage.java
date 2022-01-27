@@ -1,6 +1,7 @@
 package org.team2363.helixnavigator.ui;
 
 import org.team2363.helixnavigator.document.DocumentManager;
+import org.team2363.helixnavigator.global.Standards;
 
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -15,7 +16,7 @@ public class MainStage {
         this.stage = stage;
         documentManager = new DocumentManager(this.stage);
         mainScene = new MainScene(documentManager);
-        this.stage.setTitle("Helix Navigator");
+        this.stage.setTitle(Standards.APPLICATION_NAME);
         this.stage.setHeight(700);
         this.stage.setWidth(1200);
         this.stage.setMinWidth(400);
