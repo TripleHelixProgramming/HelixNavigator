@@ -57,12 +57,15 @@ task createDmg {
         def jarName = "${packageName}.jar"
         def jarFile = "${buildDir}/libs/${jarName}"
         def dest = "${buildDir}/package"
+        def iconFile = "${buildDir}/resources/main/icon.icns"
         project.exec {
             commandLine('jpackage',
                     '--input', jarDir,
                     '--main-jar', jarName,
                     '--dest', dest,
                     '--name', project.name,
+                    '--type', 'pkg',
+                    '--icon', iconFile
                     )
         }
     }
