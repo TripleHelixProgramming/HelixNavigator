@@ -14,7 +14,7 @@ public class Standards {
     /**
      * The current version of this application
      */
-    public static final String APPLICATION_VERSION = "0.0.0";
+    public static final String APPLICATION_VERSION = "0.0.1";
     /**
      * The location of the "Documents" folder for the user
      */
