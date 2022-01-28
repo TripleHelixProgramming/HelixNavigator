@@ -64,7 +64,7 @@ task createDmg {
                     '--main-jar', jarName,
                     '--dest', dest,
                     '--name', project.name,
-                    '--type', 'pkg',
+                    '--type', 'dmg',
                     '--icon', iconFile
                     )
         }
