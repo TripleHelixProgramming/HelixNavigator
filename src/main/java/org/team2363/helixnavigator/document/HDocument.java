@@ -101,6 +101,10 @@ public class HDocument {
      */
     private final ReadOnlyObjectWrapper<HPath> selectedPath = new ReadOnlyObjectWrapper<>(this, "selectedPath", null);
     /**
+     * The robot configuration for this document
+     */
+    private final HRobotConfiguration robotConfiguration = new HRobotConfiguration();
+    /**
      * The file path that this document should be saved to
      */
     private final ObjectProperty<File> saveLocation = new SimpleObjectProperty<>(this, "saveLocation", null);
@@ -285,6 +289,16 @@ public class HDocument {
 
     public final HPath getSelectedPath() {
         return selectedPath.get();
+    }
+
+    @DeserializedJSONTarget
+    public final void importRobotConfiguration(@DeserializedJSONObjectValue(key = "robot_configuration") HRobotConfiguration otherConfiguration) {
+        robotConfiguration.importConfiguration(otherConfiguration);
+    }
+
+    @SerializedJSONObjectValue(key = "robot_configuration")
+    public final HRobotConfiguration getRobotConfiguration() {
+        return robotConfiguration;
     }
 
     public final ObjectProperty<File> saveLocationProperty() {

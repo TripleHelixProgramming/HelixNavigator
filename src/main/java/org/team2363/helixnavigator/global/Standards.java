@@ -30,4 +30,16 @@ public class Standards {
     public static final String DEFAULT_FIELD_IMAGE = "2022: Rapid React";
     public static final double DEFAULT_OBSTACLE_SAFETY_DISTANCE = 5.0;
     public static final Color BACKGROUND_COLOR = Color.gray(0.85);
+
+    public static final class DefaultRobotConfiguration {
+        public static final int TEAM_NUMBER = 2363;
+        public static final double BUMPER_LENGTH = 37;
+        public static final double BUMPER_WIDTH = 37;
+        public static final double WHEEL_HORIZONTAL_DISTANCE = 24;
+        public static final double WHEEL_VERTICAL_DISTANCE = 24;
+        public static final double MASS = 100;
+        public static final double MOMENT_OF_INERTIA = 100;
+        public static final double MOTOR_MAX_ANGULAR_SPEED = 1000;
+        public static final double MOTOR_MAX_TORQUE = 1000;
+    }
 }
