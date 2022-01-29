@@ -99,7 +99,7 @@ public class DocumentActions {
                 factor = 1.005;
                 pixels = -pixels;
             }
-            System.out.println("X: " + event.getX() + " Y: " + event.getY());
+            // System.out.println("X: " + event.getX() + " Y: " + event.getY());
             double pivotX = event.getX();
             double pivotY = event.getY();
             for (int i = 0; i < pixels; i++) {
