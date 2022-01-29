@@ -15,7 +15,6 @@ import javafx.scene.transform.Translate;
 public class CircleObstacleView implements PathElementView {
 
     private final Circle circle = new Circle();
-    private final Circle clip = new Circle();
     private final Pane pane = new Pane();
 
     private final DoubleProperty centerX = new SimpleDoubleProperty(this, "centerX", 0.0);
@@ -34,13 +33,13 @@ public class CircleObstacleView implements PathElementView {
         circle.setFill(Color.CYAN);
 
         pane.getChildren().addAll(circle);
+        pane.setPickOnBounds(false);
+
         centerTranslate.xProperty().bind(centerX.multiply(zoomScale));
         centerTranslate.yProperty().bind(centerY.multiply(zoomScale).negate());
         pane.getTransforms().addAll(centerTranslate);
 
         circle.radiusProperty().bind(radius.multiply(zoomScale));
-        clip.radiusProperty().bind(radius.multiply(zoomScale).add(2.0));
-        pane.setClip(clip);
         
         selected.addListener((currentValue, oldValue, newValue) -> {
             circle.setStrokeWidth(newValue ? 2.0 : 0.0);

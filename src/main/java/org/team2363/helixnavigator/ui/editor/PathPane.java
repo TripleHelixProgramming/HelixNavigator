@@ -2,14 +2,12 @@ package org.team2363.helixnavigator.ui.editor;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
-import org.team2363.helixnavigator.ui.editor.field.FieldImageLayer;
-import org.team2363.helixnavigator.ui.editor.line.LinesLayer;
-import org.team2363.helixnavigator.ui.editor.obstacle.ObstaclesLayer;
-import org.team2363.helixnavigator.ui.editor.waypoint.WaypointsLayer;
+import org.team2363.helixnavigator.ui.editor.field.FieldImagePane;
+import org.team2363.helixnavigator.ui.editor.line.LinesPane;
+import org.team2363.helixnavigator.ui.editor.obstacle.ObstaclesPane;
+import org.team2363.helixnavigator.ui.editor.waypoint.WaypointsPane;
 
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
-import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.transform.Translate;
 
@@ -18,10 +16,10 @@ public class PathPane extends Pane {
     private final DocumentManager documentManager;
 
     private final BackgroundRectangle backgroundRectangle;
-    private final FieldImageLayer fieldImageLayer;
-    private final ObstaclesLayer obstaclesLayer;
-    private final LinesLayer linesLayer;
-    private final WaypointsLayer waypointsLayer;
+    private final FieldImagePane fieldImagePane;
+    private final ObstaclesPane obstaclesPane;
+    private final LinesPane linesPane;
+    private final WaypointsPane waypointsPane;
 
     private final Translate pathAreaTranslate = new Translate();
     private final Translate zoomTranslateTranslate = new Translate();
@@ -30,15 +28,12 @@ public class PathPane extends Pane {
         this.documentManager = documentManager;
 
         backgroundRectangle = new BackgroundRectangle(this.documentManager);
-        fieldImageLayer = new FieldImageLayer(this.documentManager);
-        obstaclesLayer = new ObstaclesLayer(this.documentManager);
-        linesLayer = new LinesLayer(this.documentManager);
-        waypointsLayer = new WaypointsLayer(this.documentManager);
+        fieldImagePane = new FieldImagePane(this.documentManager);
+        obstaclesPane = new ObstaclesPane(this.documentManager);
+        linesPane = new LinesPane(this.documentManager);
+        waypointsPane = new WaypointsPane(this.documentManager);
 
-        updateLayers();
-        // This next line also accounts for the line layer since they both change simultaneously
-        waypointsLayer.getChildren().addListener((ListChangeListener.Change<? extends Node> change) -> updateLayers());
-        obstaclesLayer.getChildren().addListener((ListChangeListener.Change<? extends Node> change) -> updateLayers());
+        getChildren().addAll(backgroundRectangle.getRectangle(), fieldImagePane, obstaclesPane, linesPane, waypointsPane);
 
         pathAreaTranslate.xProperty().bind(this.documentManager.pathAreaWidthProperty().multiply(0.5));
         pathAreaTranslate.yProperty().bind(this.documentManager.pathAreaHeightProperty().multiply(0.5));
@@ -47,16 +42,6 @@ public class PathPane extends Pane {
 
         loadDocument(this.documentManager.getDocument());
         this.documentManager.documentProperty().addListener(this::documentChanged); //TODO: move all of these things to end of constructor
-    }
-
-    private void updateLayers() {
-        getChildren().clear();
-        getChildren().add(backgroundRectangle.getRectangle());
-        getChildren().add(fieldImageLayer.getImageView());
-        getChildren().add(fieldImageLayer.getOriginView().getView());
-        getChildren().addAll(obstaclesLayer.getChildren());
-        getChildren().addAll(linesLayer.getChildren());
-        getChildren().addAll(waypointsLayer.getChildren());
     }
 
     private void documentChanged(ObservableValue<? extends HDocument> currentDocument, HDocument oldDocument, HDocument newDocument) {

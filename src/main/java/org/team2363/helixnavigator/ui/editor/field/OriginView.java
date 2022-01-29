@@ -46,10 +46,6 @@ public class OriginView {
         });
     }
 
-    public Pane getView() {
-        return pane;
-    }
-
     public final BooleanProperty enableProperty() {
         return enable;
     }
@@ -60,5 +56,9 @@ public class OriginView {
 
     public final boolean isEnable() {
         return enable.get();
+    }
+
+    public Pane getView() {
+        return pane;
     }
 }

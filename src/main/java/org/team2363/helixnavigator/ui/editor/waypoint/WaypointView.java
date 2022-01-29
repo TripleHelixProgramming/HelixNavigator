@@ -22,7 +22,6 @@ public class WaypointView implements PathElementView {
     private final Circle waypointCircle = new Circle(10.0);
     private final Line cross1 = new Line(-4, 4, 4, -4);
     private final Line cross2 = new Line(-4, -4, 4, 4);
-    private final Circle clip = new Circle(12.0);
     private final Pane pane = new Pane();
 
     private final ObjectProperty<WaypointType> waypointType = new SimpleObjectProperty<>(this, "waypointType", WaypointType.HARD);
@@ -46,7 +45,7 @@ public class WaypointView implements PathElementView {
         cross1.setStroke(Color.RED);
         cross2.setStroke(Color.RED);
         pane.getChildren().addAll(selectionCircle, waypointCircle, cross1, cross2);
-        pane.setClip(clip);
+        pane.setPickOnBounds(false);
 
         waypointType.addListener((currentValue, oldValue, newValue) -> {
             switch (newValue) {
