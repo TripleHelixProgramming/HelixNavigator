@@ -13,6 +13,7 @@ public class DocumentActions {
     private final DocumentManager documentManager;
 
     private final BooleanProperty lockZoom = new SimpleBooleanProperty(this, "lockZoom", false);
+    private final BooleanProperty showOrigin = new SimpleBooleanProperty(this, "showOrigin", false);
 
     DocumentActions(DocumentManager documentManager) {
         this.documentManager = documentManager;
@@ -152,5 +153,17 @@ public class DocumentActions {
 
     public final boolean getLockZoom() {
         return lockZoom.get();
+    }
+
+    public final BooleanProperty showOriginProperty() {
+        return showOrigin;
+    }
+
+    public final void setShowOrigin(boolean value) {
+        showOrigin.set(value);
+    }
+
+    public final boolean getShowOrigin() {
+        return showOrigin.get();
     }
 }

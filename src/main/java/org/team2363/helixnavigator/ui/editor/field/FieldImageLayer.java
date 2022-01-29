@@ -30,6 +30,8 @@ public class FieldImageLayer {
         imageView.setOnMouseClicked(this.documentManager.actions()::handleMouseClickedAsClearSelection);
         originView.getView().setOnMouseClicked(this.documentManager.actions()::handleMouseClickedAsClearSelection);
 
+        originView.enableProperty().bind(this.documentManager.actions().showOriginProperty());
+
         loadDocument(this.documentManager.getDocument());
         this.documentManager.documentProperty().addListener(this::documentChanged);
     }
