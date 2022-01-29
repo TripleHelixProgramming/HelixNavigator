@@ -7,9 +7,11 @@ import org.team2363.helixnavigator.document.field.image.HFieldImage;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
-public class FieldImageLayer {
+
+public class FieldImagePane extends Pane {
 
     private final DocumentManager documentManager;
 
@@ -21,16 +23,16 @@ public class FieldImageLayer {
 
     private final ChangeListener<? super HFieldImage> onFieldImageChanged = this::fieldImageChanged;
 
-    public FieldImageLayer(DocumentManager documentManager) {
+    public FieldImagePane(DocumentManager documentManager) {
         this.documentManager = documentManager;
 
         // the first item in the list is the last translation applied:
         imageView.getTransforms().addAll(zoomScale, centerTranslate, unitsScale);
 
-        imageView.setOnMouseClicked(this.documentManager.actions()::handleMouseClickedAsClearSelection);
-        originView.getView().setOnMouseClicked(this.documentManager.actions()::handleMouseClickedAsClearSelection);
-
         originView.enableProperty().bind(this.documentManager.actions().showOriginProperty());
+
+        getChildren().addAll(imageView, originView.getView());
+        setMouseTransparent(true); // clicks go through field image and to the background rectangle
 
         loadDocument(this.documentManager.getDocument());
         this.documentManager.documentProperty().addListener(this::documentChanged);
@@ -82,13 +84,5 @@ public class FieldImageLayer {
             centerTranslate.setX(-fieldImage.getImageCenterX());
             centerTranslate.setY(-fieldImage.getImageCenterY());
         }
-    }
-
-    public ImageView getImageView() {
-        return imageView;
-    }
-
-    public OriginView getOriginView() {
-        return originView;
     }
 }

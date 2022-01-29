@@ -12,21 +12,21 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.scene.Node;
+import javafx.scene.layout.Pane;
 
-public class LinesLayer {
+public class LinesPane extends Pane{
 
     private final DocumentManager documentManager;
 
     private final ObservableList<LineView> lineViews = FXCollections.<LineView>observableArrayList();
-    private final ObservableList<Node> children = FXCollections.observableArrayList();
-    private final ObservableList<Node> childrenUnmodifiable = FXCollections.unmodifiableObservableList(children);
 
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
     private final ListChangeListener<? super HWaypoint> onWaypointsChanged = this::waypointsChanged;
     
-    public LinesLayer(DocumentManager documentManager) {
+    public LinesPane(DocumentManager documentManager) {
         this.documentManager = documentManager;
+
+        setMouseTransparent(true);
 
         loadDocument(this.documentManager.getDocument());
         this.documentManager.documentProperty().addListener(this::documentChanged);
@@ -59,7 +59,7 @@ public class LinesLayer {
     private void unloadSelectedPath(HPath oldPath) {
         if (oldPath != null) {
             lineViews.clear();
-            children.clear();
+            getChildren().clear();
             oldPath.getWaypoints().removeListener(onWaypointsChanged);
         }
     }
@@ -77,12 +77,12 @@ public class LinesLayer {
 
     private void updateWaypoints(List<? extends HWaypoint> list) {
         lineViews.clear();
-        children.clear();
+        getChildren().clear();
         for (int i = 0; i < list.size() - 1; i++) {
             LineView lineView = new LineView();
             linkLineView(lineView, list.get(i), list.get(i + 1));
             lineViews.add(i, lineView);
-            children.add(i, lineView.getView());
+            getChildren().add(i, lineView.getView());
         }
     }
 
@@ -93,9 +93,5 @@ public class LinesLayer {
         lineView.endPointYProperty().bind(finalWaypoint.yProperty());
         lineView.zoomScaleProperty().bind(documentManager.getDocument().zoomScaleProperty());
         lineView.getView().setOnMouseClicked(documentManager.actions()::handleMouseClickedAsClearSelection);
-    }
-
-    public ObservableList<Node> getChildren() {
-        return childrenUnmodifiable;
     }
 }

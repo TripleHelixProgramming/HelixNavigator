@@ -14,24 +14,24 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 
-public class WaypointsLayer {
+public class WaypointsPane extends Pane {
 
     private final DocumentManager documentManager;
 
     private final ObservableList<WaypointView> waypointViews = FXCollections.<WaypointView>observableArrayList();
-    private final ObservableList<Node> children = FXCollections.observableArrayList();
-    private final ObservableList<Node> childrenUnmodifiable = FXCollections.unmodifiableObservableList(children);
 
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
     private final ListChangeListener<? super HWaypoint> onWaypointsChanged = this::waypointsChanged;
     private final ListChangeListener<? super Integer> onWaypointsSelectedIndicesChanged = this::waypointsSelectedIndicesChanged;
     
-    public WaypointsLayer(DocumentManager documentManager) {
+    public WaypointsPane(DocumentManager documentManager) {
         this.documentManager = documentManager;
+
+        setPickOnBounds(false);
 
         loadDocument(this.documentManager.getDocument());
         this.documentManager.documentProperty().addListener(this::documentChanged);
@@ -64,7 +64,7 @@ public class WaypointsLayer {
     private void unloadSelectedPath(HPath oldPath) {
         if (oldPath != null) {
             waypointViews.clear();
-            children.clear();
+            getChildren().clear();
             oldPath.getWaypoints().removeListener(onWaypointsChanged);
             oldPath.getWaypointsSelectionModel().getSelectedIndices().removeListener(onWaypointsSelectedIndicesChanged);
         }
@@ -85,12 +85,12 @@ public class WaypointsLayer {
 
     private void updateWaypoints(List<? extends HWaypoint> list) {
         waypointViews.clear();
-        children.clear();
+        getChildren().clear();
         for (int i = 0; i < list.size(); i++) {
             WaypointView waypointView = new WaypointView();
             linkWaypointView(i, waypointView, list.get(i));
             waypointViews.add(i, waypointView);
-            children.add(i, waypointView.getView());
+            getChildren().add(i, waypointView.getView());
         }
     }
 
@@ -147,9 +147,5 @@ public class WaypointsLayer {
         waypointView.getView().setOnMousePressed(eventWrapper.getOnMousePressed());
         waypointView.getView().setOnMouseDragged(eventWrapper.getOnMouseDragged());
         waypointView.getView().setOnMouseReleased(eventWrapper.getOnMouseReleased());
-    }
-
-    public ObservableList<Node> getChildren() {
-        return childrenUnmodifiable;
     }
 }

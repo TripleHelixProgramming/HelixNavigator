@@ -8,7 +8,6 @@ import org.team2363.helixnavigator.document.HPath;
 import org.team2363.helixnavigator.document.obstacle.HCircleObstacle;
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.ui.editor.PathElementView;
-import org.team2363.helixnavigator.ui.editor.PathLayer;
 import org.team2363.lib.ui.MouseEventWrapper;
 
 import javafx.beans.value.ChangeListener;
@@ -17,24 +16,24 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 
-public class ObstaclesLayer implements PathLayer {
+public class ObstaclesPane extends Pane {
 
     private final DocumentManager documentManager;
 
     private final ObservableList<PathElementView> obstacleViews = FXCollections.<PathElementView>observableArrayList();
-    private final ObservableList<Node> children = FXCollections.observableArrayList();
-    private final ObservableList<Node> childrenUnmodifiable = FXCollections.unmodifiableObservableList(children);
 
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
     private final ListChangeListener<? super HObstacle> onObstaclesChanged = this::obstaclesChanged;
     private final ListChangeListener<? super Integer> onObstaclesSelectedIndicesChanged = this::obstaclesSelectedIndicesChanged;
     
-    public ObstaclesLayer(DocumentManager documentManager) {
+    public ObstaclesPane(DocumentManager documentManager) {
         this.documentManager = documentManager;
+
+        setPickOnBounds(false);
 
         loadDocument(this.documentManager.getDocument());
         this.documentManager.documentProperty().addListener(this::documentChanged);
@@ -67,7 +66,7 @@ public class ObstaclesLayer implements PathLayer {
     private void unloadSelectedPath(HPath oldPath) {
         if (oldPath != null) {
             obstacleViews.clear();
-            children.clear();
+            getChildren().clear();
             oldPath.getObstacles().removeListener(onObstaclesChanged);
             oldPath.getObstaclesSelectionModel().getSelectedIndices().removeListener(onObstaclesSelectedIndicesChanged);
         }
@@ -88,7 +87,7 @@ public class ObstaclesLayer implements PathLayer {
 
     private void updateObstacles(List<? extends HObstacle> list) {
         obstacleViews.clear();
-        children.clear();
+        getChildren().clear();
         for (int i = 0; i < list.size(); i++) {
             HObstacle obstacle = list.get(i);
             PathElementView obstacleView;
@@ -108,7 +107,7 @@ public class ObstaclesLayer implements PathLayer {
 
             }
             obstacleViews.add(i, obstacleView);
-            children.add(i, obstacleView.getView());
+            getChildren().add(i, obstacleView.getView());
         }
     }
 
@@ -165,9 +164,5 @@ public class ObstaclesLayer implements PathLayer {
         circleObstacleView.getView().setOnMousePressed(eventWrapper.getOnMousePressed());
         circleObstacleView.getView().setOnMouseDragged(eventWrapper.getOnMouseDragged());
         circleObstacleView.getView().setOnMouseReleased(eventWrapper.getOnMouseReleased());
-    }
-
-    public ObservableList<Node> getChildren() {
-        return childrenUnmodifiable;
     }
 }
