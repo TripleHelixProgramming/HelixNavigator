@@ -15,6 +15,7 @@ import com.jlbabilino.json.TypeMarker;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint.WaypointType;
 import org.team2363.helixnavigator.global.Standards;
+import org.team2363.helixnavigator.ui.editor.waypoint.WaypointView;
 import org.team2363.helixnavigator.ui.prompts.WaypointEditDialog;
 import org.team2363.lib.ui.OrderableListCell;
 import org.team2363.lib.ui.prompts.FilteredTextField;
@@ -32,15 +33,12 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.layout.HBox;
 import javafx.util.Callback;
 
 public class WaypointListCell extends OrderableListCell<HWaypoint> {
 
-    private static final Image SOFT;
-    private static final Image HARD;
     private static final Image ONE_DRAGGED;
     private static final Image TWO_DRAGGED;
     private static final Image THREE_DRAGGED;
@@ -55,10 +53,6 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
     };
 
     static {
-        InputStream streamSoft = WaypointListCell.class.getResourceAsStream("/waypoint_images/soft_waypoint_100px.png");
-        SOFT = new Image(streamSoft);
-        InputStream streamHard = WaypointListCell.class.getResourceAsStream("/waypoint_images/hard_waypoint_100px.png");
-        HARD = new Image(streamHard);
         InputStream stream1 = WaypointListCell.class.getResourceAsStream("/waypoint_images/waypoints_dragged_1.png");
         ONE_DRAGGED = new Image(stream1);
         InputStream stream2 = WaypointListCell.class.getResourceAsStream("/waypoint_images/waypoints_dragged_2.png");
@@ -71,8 +65,8 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
 
     private final ObjectProperty<WaypointType> waypointType = new SimpleObjectProperty<>(this, "waypointType", WaypointType.SOFT);
 
-    private final ImageView softView = new ImageView(SOFT);
-    private final ImageView hardView = new ImageView(HARD);
+    private final WaypointView softView = new WaypointView();
+    private final WaypointView hardView = new WaypointView();
     private final TextField textField = new FilteredTextField(Standards.MAX_NAME_LENGTH, Standards.VALID_NAME);
     private final HBox graphicBox = new HBox();
 
@@ -94,11 +88,16 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
     private final MenuItem deleteMultipleMenuItem = new MenuItem("Delete");
 
     public WaypointListCell() {
-        softView.setPreserveRatio(true);
-        softView.setFitHeight(20);
-        hardView.setPreserveRatio(true);
-        hardView.setFitHeight(20);
-        graphicBox.getChildren().add(softView); // have to use one image here even though we don't know which it is yet
+        softView.setWaypointType(WaypointType.SOFT);
+        hardView.setWaypointType(WaypointType.HARD);
+        double xt = softView.getView().getBoundsInLocal().getWidth() / 2;
+        double yt = softView.getView().getBoundsInLocal().getHeight() / 2;
+        softView.getView().setTranslateX(xt);
+        softView.getView().setTranslateY(yt);
+        hardView.getView().setTranslateX(xt);
+        hardView.getView().setTranslateY(yt);
+
+        graphicBox.getChildren().add(softView.getView()); // have to use one image here even though we don't know which it is yet
         setEditable(true);
         // cancel edit if clicked off of or ENTER is pressed:
         textField.setOnAction(event -> {
@@ -161,10 +160,10 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
     private void updateWaypointType(WaypointType newType) {
         switch (newType) {
             case SOFT:
-                graphicBox.getChildren().set(0, softView);
+                graphicBox.getChildren().set(0, softView.getView());
                 break;
             case HARD:
-                graphicBox.getChildren().set(0, hardView);
+                graphicBox.getChildren().set(0, hardView.getView());
                 break;
         }
     }
