@@ -12,17 +12,18 @@ import com.jlbabilino.json.JSONParserException;
 import com.jlbabilino.json.JSONSerializer;
 import com.jlbabilino.json.TypeMarker;
 
+import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
+import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint.WaypointType;
 import org.team2363.helixnavigator.global.Standards;
+import org.team2363.helixnavigator.ui.editor.waypoint.HardWaypointView;
+import org.team2363.helixnavigator.ui.editor.waypoint.SoftWaypointView;
 import org.team2363.helixnavigator.ui.editor.waypoint.WaypointView;
-import org.team2363.helixnavigator.ui.prompts.WaypointEditDialog;
+import org.team2363.helixnavigator.ui.prompts.waypoint.WaypointEditDialog;
 import org.team2363.lib.ui.OrderableListCell;
 import org.team2363.lib.ui.prompts.FilteredTextField;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.ContentDisplay;
@@ -63,10 +64,8 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
         FOUR_DRAGGED = new Image(stream4);
     }
 
-    private final ObjectProperty<WaypointType> waypointType = new SimpleObjectProperty<>(this, "waypointType", WaypointType.SOFT);
-
-    private final WaypointView softView = new WaypointView();
-    private final WaypointView hardView = new WaypointView();
+    private final WaypointView softView = new SoftWaypointView();
+    private final WaypointView hardView = new HardWaypointView();
     private final TextField textField = new FilteredTextField(Standards.MAX_NAME_LENGTH, Standards.VALID_NAME);
     private final HBox graphicBox = new HBox();
 
@@ -88,8 +87,6 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
     private final MenuItem deleteMultipleMenuItem = new MenuItem("Delete");
 
     public WaypointListCell() {
-        softView.setWaypointType(WaypointType.SOFT);
-        hardView.setWaypointType(WaypointType.HARD);
         double xt = softView.getView().getBoundsInLocal().getWidth() / 2;
         double yt = softView.getView().getBoundsInLocal().getHeight() / 2;
         softView.getView().setTranslateX(xt);
@@ -111,7 +108,6 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
                 cancelEdit();
             }
         });
-        waypointType.addListener(this::waypointTypeChanged);
 
         editMenuItem.setOnAction(this::edit);
         newSoftWaypointMenuItem.setOnAction(this::newSoftWaypoint);
@@ -141,20 +137,14 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
     public void updateItem(HWaypoint item, boolean empty) {
         super.updateItem(item, empty);
         textProperty().unbind();
-        waypointType.unbind();
         if (empty || item == null) {
             setText("");
             setGraphic(null);
         } else {
             updateWaypointType(item.getWaypointType());
-            waypointType.bind(item.waypointTypeProperty());
             textProperty().bind(item.nameProperty());
             setGraphic(graphicBox);
         }
-    }
-
-    private void waypointTypeChanged(ObservableValue<? extends WaypointType> currentType, WaypointType oldType, WaypointType newType) {
-        updateWaypointType(newType);
     }
 
     private void updateWaypointType(WaypointType newType) {
@@ -248,40 +238,40 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
 
     private void edit(ActionEvent event) {
         HWaypoint selectedWaypoint = getListView().getSelectionModel().getSelectedItems().get(0);
-        WaypointEditDialog dialog = new WaypointEditDialog(selectedWaypoint);
+        WaypointEditDialog dialog = WaypointEditDialog.dialog(selectedWaypoint);
         dialog.show();
     }
     private void newSoftWaypoint(ActionEvent event) {
-        HWaypoint newWaypoint = new HWaypoint(WaypointType.SOFT);
+        HWaypoint newWaypoint = new HSoftWaypoint();
         newWaypoint.setName(String.valueOf(getListView().getItems().size()));
         getListView().getItems().add(newWaypoint);
     }
     private void newHardWaypoint(ActionEvent event) {
-        HWaypoint newWaypoint = new HWaypoint(WaypointType.HARD);
+        HWaypoint newWaypoint = new HHardWaypoint();
         newWaypoint.setName(String.valueOf(getListView().getItems().size()));
         getListView().getItems().add(newWaypoint);
     }
     private void insertNewSoftWaypointBefore(ActionEvent event) {
         int insertIndex = getListView().getSelectionModel().getSelectedIndex();
-        HWaypoint newWaypoint = new HWaypoint(WaypointType.SOFT);
+        HWaypoint newWaypoint = new HSoftWaypoint();
         newWaypoint.setName(String.valueOf(getListView().getItems().size()));
         getListView().getItems().add(insertIndex, newWaypoint);
     }
     private void insertNewHardWaypointBefore(ActionEvent event) {
         int insertIndex = getListView().getSelectionModel().getSelectedIndex();
-        HWaypoint newWaypoint = new HWaypoint(WaypointType.HARD);
+        HWaypoint newWaypoint = new HHardWaypoint();
         newWaypoint.setName(String.valueOf(getListView().getItems().size()));
         getListView().getItems().add(insertIndex, newWaypoint);
     }
     private void insertNewSoftWaypointAfter(ActionEvent event) {
         int insertIndex = getListView().getSelectionModel().getSelectedIndex() + 1;
-        HWaypoint newWaypoint = new HWaypoint(WaypointType.SOFT);
+        HWaypoint newWaypoint = new HSoftWaypoint();
         newWaypoint.setName(String.valueOf(getListView().getItems().size()));
         getListView().getItems().add(insertIndex, newWaypoint);
     }
     private void insertNewHardWaypointAfter(ActionEvent event) {
         int insertIndex = getListView().getSelectionModel().getSelectedIndex() + 1;
-        HWaypoint newWaypoint = new HWaypoint(WaypointType.HARD);
+        HWaypoint newWaypoint = new HHardWaypoint();
         newWaypoint.setName(String.valueOf(getListView().getItems().size()));
         getListView().getItems().add(insertIndex, newWaypoint);
     }

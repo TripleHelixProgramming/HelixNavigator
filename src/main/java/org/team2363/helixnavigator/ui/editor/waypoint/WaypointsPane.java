@@ -5,6 +5,8 @@ import java.util.List;
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
+import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
+import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 import org.team2363.lib.ui.MouseEventWrapper;
 
@@ -87,8 +89,26 @@ public class WaypointsPane extends Pane {
         waypointViews.clear();
         getChildren().clear();
         for (int i = 0; i < list.size(); i++) {
-            WaypointView waypointView = new WaypointView();
-            linkWaypointView(i, waypointView, list.get(i));
+            HWaypoint waypoint = list.get(i);
+            WaypointView waypointView;
+            switch (waypoint.getWaypointType()) {
+                case SOFT:
+                    HSoftWaypoint softWaypoint = (HSoftWaypoint) waypoint;
+                    SoftWaypointView softWaypointView = new SoftWaypointView();
+                    linkSoftWaypointView(i, softWaypointView, softWaypoint);
+                    waypointView = softWaypointView;
+                    break;
+                case HARD:
+                    HHardWaypoint hardWaypoint = (HHardWaypoint) waypoint;
+                    HardWaypointView hardWaypointView = new HardWaypointView();
+                    linkHardWaypointView(i, hardWaypointView, hardWaypoint);
+                    waypointView = hardWaypointView;
+                    break;
+                default:
+                    waypointView = null;
+                    break;
+            }
+            linkWaypointView(i, waypointView, waypoint);
             waypointViews.add(i, waypointView);
             getChildren().add(i, waypointView.getView());
         }
@@ -109,7 +129,6 @@ public class WaypointsPane extends Pane {
     }
 
     private void linkWaypointView(int index, WaypointView waypointView, HWaypoint waypoint) {
-        waypointView.waypointTypeProperty().bind(waypoint.waypointTypeProperty());
         waypointView.xProperty().bind(waypoint.xProperty());
         waypointView.yProperty().bind(waypoint.yProperty());
         waypointView.zoomScaleProperty().bind(documentManager.getDocument().zoomScaleProperty());
@@ -147,5 +166,11 @@ public class WaypointsPane extends Pane {
         waypointView.getView().setOnMousePressed(eventWrapper.getOnMousePressed());
         waypointView.getView().setOnMouseDragged(eventWrapper.getOnMouseDragged());
         waypointView.getView().setOnMouseReleased(eventWrapper.getOnMouseReleased());
+    }
+    
+    private void linkSoftWaypointView(int index, SoftWaypointView softWaypointView, HSoftWaypoint softWaypoint) {
+    }
+
+    private void linkHardWaypointView(int index, HardWaypointView hardWaypointView, HHardWaypoint hardWaypoint) {
     }
 }
