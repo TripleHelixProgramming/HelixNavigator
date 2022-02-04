@@ -29,6 +29,7 @@ import javafx.stage.Stage;
 public class DocumentManager {
 
     private static final ExtensionFilter DOCUMENT_FILE_TYPE = new ExtensionFilter("HelixNavigator Document (*.json)", "*.json");
+    private static final ExtensionFilter WAYPOINT_BUNDLE_FILE_TYPE = new ExtensionFilter("Waypoint Bundle (*.json)", "*.json");
 
     private static final Logger logger = Logger.getLogger("org.team2363.helixnavigator.document");
 
@@ -309,6 +310,30 @@ public class DocumentManager {
             } else { // pressed x to close stage
                 return false;
             }
+        }
+    }
+
+    public final boolean requestExportWaypointBundle() {
+        logger.info("Export waypoint bundle requested.");
+        if (getIsDocumentOpen() && getDocument().isPathSelected()) {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().add(WAYPOINT_BUNDLE_FILE_TYPE);
+            File saveLocation = fileChooser.showSaveDialog(stage);
+            if (saveLocation != null) {
+                HPath selectedPath = getDocument().getSelectedPath();
+                HWaypointBundle waypointBundle = new HWaypointBundle(selectedPath);
+                try {
+                    JSONSerializer.serializeFile(waypointBundle, saveLocation);
+                    return true;
+                } catch (IOException e) {
+                    logger.finer("Error while saving waypoint bundle");
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
         }
     }
 

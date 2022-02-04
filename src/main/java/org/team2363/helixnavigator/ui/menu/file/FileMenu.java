@@ -14,7 +14,7 @@ public class FileMenu extends Menu {
     private final SaveMenuItem saveMenuItem;
     private final SaveAsMenuItem saveAsMenuItem;
     private final ImportMenuItem importMenuItem;
-    private final ExportMenuItem exportMenuItem;
+    private final ExportMenu exportMenu;
     private final CloseDocumentMenuItem closeDocumentMenuItem;
 
     public FileMenu(DocumentManager documentManager) {
@@ -27,7 +27,7 @@ public class FileMenu extends Menu {
         saveMenuItem = new SaveMenuItem(this.documentManager);
         saveAsMenuItem = new SaveAsMenuItem(this.documentManager);
         importMenuItem = new ImportMenuItem(this.documentManager);
-        exportMenuItem = new ExportMenuItem(this.documentManager);
+        exportMenu = new ExportMenu(this.documentManager);
         closeDocumentMenuItem = new CloseDocumentMenuItem(this.documentManager);
 
         getItems().add(newDocumentMenuItem);
@@ -37,7 +37,7 @@ public class FileMenu extends Menu {
         getItems().add(saveAsMenuItem);
         getItems().add(new SeparatorMenuItem());
         getItems().add(importMenuItem);
-        getItems().add(exportMenuItem);
+        getItems().add(exportMenu);
         getItems().add(new SeparatorMenuItem());
         getItems().add(closeDocumentMenuItem);
     }
