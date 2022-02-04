@@ -4,9 +4,7 @@ import org.team2363.helixnavigator.global.Standards;
 
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 public class InfoText extends StackPane {

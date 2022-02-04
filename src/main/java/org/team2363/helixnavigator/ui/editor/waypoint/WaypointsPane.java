@@ -28,7 +28,6 @@ public class WaypointsPane extends Pane {
 
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
     private final ListChangeListener<? super HWaypoint> onWaypointsChanged = this::waypointsChanged;
-    private final ListChangeListener<? super Integer> onWaypointsSelectedIndicesChanged = this::waypointsSelectedIndicesChanged;
     
     public WaypointsPane(DocumentManager documentManager) {
         this.documentManager = documentManager;
@@ -68,16 +67,13 @@ public class WaypointsPane extends Pane {
             waypointViews.clear();
             getChildren().clear();
             oldPath.getWaypoints().removeListener(onWaypointsChanged);
-            oldPath.getWaypointsSelectionModel().getSelectedIndices().removeListener(onWaypointsSelectedIndicesChanged);
         }
     }
 
     private void loadSelectedPath(HPath newPath) {
         if (newPath != null) {
             updateWaypoints(newPath.getWaypoints());
-            updateSelectedWaypoints();
             newPath.getWaypoints().addListener(onWaypointsChanged);
-            newPath.getWaypointsSelectionModel().getSelectedIndices().addListener(onWaypointsSelectedIndicesChanged);
         }
     }
 
@@ -94,14 +90,14 @@ public class WaypointsPane extends Pane {
             switch (waypoint.getWaypointType()) {
                 case SOFT:
                     HSoftWaypoint softWaypoint = (HSoftWaypoint) waypoint;
-                    SoftWaypointView softWaypointView = new SoftWaypointView();
-                    linkSoftWaypointView(i, softWaypointView, softWaypoint);
+                    SoftWaypointView softWaypointView = new SoftWaypointView(softWaypoint);
                     waypointView = softWaypointView;
                     break;
                 case HARD:
                     HHardWaypoint hardWaypoint = (HHardWaypoint) waypoint;
-                    HardWaypointView hardWaypointView = new HardWaypointView();
-                    linkHardWaypointView(i, hardWaypointView, hardWaypoint);
+                    HardWaypointView hardWaypointView = new HardWaypointView(hardWaypoint);
+                    hardWaypointView.bumperLengthProperty().bind(this.documentManager.getDocument().getRobotConfiguration().bumperLengthProperty());
+                    hardWaypointView.bumperWidthProperty().bind(this.documentManager.getDocument().getRobotConfiguration().bumperWidthProperty());
                     waypointView = hardWaypointView;
                     break;
                 default:
@@ -114,23 +110,7 @@ public class WaypointsPane extends Pane {
         }
     }
 
-    private void waypointsSelectedIndicesChanged(ListChangeListener.Change<? extends Integer> change) {
-        updateSelectedWaypoints();
-    }
-
-    private void updateSelectedWaypoints() {
-        for (WaypointView waypointView : waypointViews) {
-            waypointView.setSelected(false);
-        }
-        for (int i : documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().getSelectedIndices()) {
-            WaypointView waypointView = waypointViews.get(i);
-            waypointView.setSelected(true);
-        }
-    }
-
     private void linkWaypointView(int index, WaypointView waypointView, HWaypoint waypoint) {
-        waypointView.xProperty().bind(waypoint.xProperty());
-        waypointView.yProperty().bind(waypoint.yProperty());
         waypointView.zoomScaleProperty().bind(documentManager.getDocument().zoomScaleProperty());
 
         EventHandler<MouseEvent> onMousePressed = event -> {
@@ -163,14 +143,8 @@ public class WaypointsPane extends Pane {
         };
 
         MouseEventWrapper eventWrapper = new MouseEventWrapper(onMousePressed, onMouseDragBegin, onMouseDragged, onMouseDragEnd, onMouseReleased);
-        waypointView.getView().setOnMousePressed(eventWrapper.getOnMousePressed());
-        waypointView.getView().setOnMouseDragged(eventWrapper.getOnMouseDragged());
-        waypointView.getView().setOnMouseReleased(eventWrapper.getOnMouseReleased());
-    }
-    
-    private void linkSoftWaypointView(int index, SoftWaypointView softWaypointView, HSoftWaypoint softWaypoint) {
-    }
-
-    private void linkHardWaypointView(int index, HardWaypointView hardWaypointView, HHardWaypoint hardWaypoint) {
+        waypointView.getWaypointView().setOnMousePressed(eventWrapper.getOnMousePressed());
+        waypointView.getWaypointView().setOnMouseDragged(eventWrapper.getOnMouseDragged());
+        waypointView.getWaypointView().setOnMouseReleased(eventWrapper.getOnMouseReleased());
     }
 }

@@ -6,6 +6,8 @@ import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.JSONSerializer;
 import com.jlbabilino.json.SerializedJSONObjectValue;
 
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -13,6 +15,7 @@ import javafx.beans.property.StringProperty;
 public abstract class HPathElement {
 
     private final StringProperty name = new SimpleStringProperty(this, "name", "");
+    private final ReadOnlyBooleanWrapper selected = new ReadOnlyBooleanWrapper(this, "selected", false);
 
     protected HPathElement() {
     }
@@ -38,6 +41,18 @@ public abstract class HPathElement {
     @SerializedJSONObjectValue(key = "name")
     public final String getName() {
         return name.get();
+    }
+
+    public final ReadOnlyBooleanProperty selectedProperty() {
+        return selected.getReadOnlyProperty();
+    }
+
+    final void setSelected(boolean value) {
+        selected.set(value);
+    }
+
+    public final boolean isSelected() {
+        return selected.get();
     }
 
     @Override

@@ -61,6 +61,9 @@ public class HSelectionModel<E extends HPathElement> {
         for (int i = 0; i < selectedIndices.size(); i++) {
             if (selectedIndices.get(i).intValue() >= items.size()) {
                 selectedIndices.remove(i, selectedIndices.size());
+                for (int j = i; i < selectedItems.size(); i++) {
+                    selectedItems.get(j).setSelected(false);
+                }
                 selectedItems.remove(i, selectedItems.size());
                 break;
             }
@@ -74,8 +77,13 @@ public class HSelectionModel<E extends HPathElement> {
      */
     private void updateSelectedItems() {
         List<E> newSelectedItems = new ArrayList<>();
+        for (E item : selectedItems) {
+            item.setSelected(false);
+        }
         for (Integer index : selectedIndices) {
-            newSelectedItems.add(items.get(index));
+            E item = items.get(index);
+            item.setSelected(true);
+            newSelectedItems.add(item);
         }
         selectedItems.setAll(newSelectedItems);
     }
@@ -147,6 +155,8 @@ public class HSelectionModel<E extends HPathElement> {
         if (index >= 0 && index < items.size()) {
             if (selectedIndices.size() == 0) {
                 selectedIndices.add(index);
+                E item = items.get(index);
+                item.setSelected(true);
                 selectedItems.add(items.get(index));
             } else {
                 boolean found = false;
@@ -177,7 +187,9 @@ public class HSelectionModel<E extends HPathElement> {
                 }
                 if (foundIndex != -1) {
                     selectedIndices.add(foundIndex, index);
-                    selectedItems.add(foundIndex, items.get(index));
+                    E item = items.get(index);
+                    item.setSelected(true);
+                    selectedItems.add(foundIndex, item);
                 }
             }
         }
@@ -212,6 +224,8 @@ public class HSelectionModel<E extends HPathElement> {
             int indexOfItem = selectedIndices.indexOf(index);
             if (indexOfItem != -1) {
                 selectedIndices.remove(indexOfItem);
+                E item = items.get(index);
+                item.setSelected(false);
                 selectedItems.remove(indexOfItem);
             }
         }
@@ -290,6 +304,9 @@ public class HSelectionModel<E extends HPathElement> {
      */
     public void clear() {
         selectedIndices.clear();
+        for (E item : selectedItems) {
+            item.setSelected(false);
+        }
         selectedItems.clear();
     }
 

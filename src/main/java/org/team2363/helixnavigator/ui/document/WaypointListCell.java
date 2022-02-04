@@ -64,8 +64,8 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
         FOUR_DRAGGED = new Image(stream4);
     }
 
-    private final WaypointView softView = new SoftWaypointView();
-    private final WaypointView hardView = new HardWaypointView();
+    private final SoftWaypointView softView = new SoftWaypointView(new HSoftWaypoint());
+    private final HardWaypointView hardView = new HardWaypointView(new HHardWaypoint());
     private final TextField textField = new FilteredTextField(Standards.MAX_NAME_LENGTH, Standards.VALID_NAME);
     private final HBox graphicBox = new HBox();
 
@@ -87,14 +87,14 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
     private final MenuItem deleteMultipleMenuItem = new MenuItem("Delete");
 
     public WaypointListCell() {
-        double xt = softView.getView().getBoundsInLocal().getWidth() / 2;
-        double yt = softView.getView().getBoundsInLocal().getHeight() / 2;
-        softView.getView().setTranslateX(xt);
-        softView.getView().setTranslateY(yt);
-        hardView.getView().setTranslateX(xt);
-        hardView.getView().setTranslateY(yt);
+        double xt = softView.getWaypointView().getBoundsInLocal().getWidth() / 2;
+        double yt = softView.getWaypointView().getBoundsInLocal().getHeight() / 2;
+        softView.getWaypointView().setTranslateX(xt);
+        softView.getWaypointView().setTranslateY(yt);
+        hardView.getWaypointView().setTranslateX(xt);
+        hardView.getWaypointView().setTranslateY(yt);
 
-        graphicBox.getChildren().add(softView.getView()); // have to use one image here even though we don't know which it is yet
+        graphicBox.getChildren().add(softView.getWaypointView()); // have to use one image here even though we don't know which it is yet
         setEditable(true);
         // cancel edit if clicked off of or ENTER is pressed:
         textField.setOnAction(event -> {
@@ -150,10 +150,10 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
     private void updateWaypointType(WaypointType newType) {
         switch (newType) {
             case SOFT:
-                graphicBox.getChildren().set(0, softView.getView());
+                graphicBox.getChildren().set(0, softView.getWaypointView());
                 break;
             case HARD:
-                graphicBox.getChildren().set(0, hardView.getView());
+                graphicBox.getChildren().set(0, hardView.getWaypointView());
                 break;
         }
     }
