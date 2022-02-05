@@ -4,13 +4,13 @@ import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
 
 public class SoftWaypointEditDialog extends WaypointEditDialog {
 
-    private HSoftWaypoint softWaypoint;
-    private HSoftWaypoint backupSoftWaypoint;
+    // private HSoftWaypoint softWaypoint;
+    // private HSoftWaypoint backupSoftWaypoint;
 
     public SoftWaypointEditDialog(HSoftWaypoint softWaypoint) {
         super(softWaypoint, new HSoftWaypoint());
-        this.softWaypoint = (HSoftWaypoint) super.waypoint;
-        this.backupSoftWaypoint = (HSoftWaypoint) super.backupWaypoint;
+        // this.softWaypoint = (HSoftWaypoint) super.waypoint;
+        // this.backupSoftWaypoint = (HSoftWaypoint) super.backupWaypoint;
 
         backupWaypoint();
         // Set ui to values of HWaypoint:

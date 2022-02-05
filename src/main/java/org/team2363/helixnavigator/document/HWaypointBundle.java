@@ -3,9 +3,9 @@ package org.team2363.helixnavigator.document;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jlbabilino.json.JSONEntry.JSONType;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONEntry;
-import com.jlbabilino.json.JSONEntry.JSONType;
 
 import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
@@ -19,7 +19,10 @@ public class HWaypointBundle {
         for (HWaypoint waypoint : path.getWaypoints()) {
             if (waypoint.isHard()) {
                 HHardWaypoint hardWaypoint = (HHardWaypoint) waypoint;
-                double[] bundleWaypoint = {hardWaypoint.getX(), hardWaypoint.getY(), hardWaypoint.getHeading()};
+                double convertedX = hardWaypoint.getX() * 0.0254;
+                double convertedY = hardWaypoint.getY() * 0.0254;
+                double convertedHeading = Math.toRadians(hardWaypoint.getHeading());
+                double[] bundleWaypoint = {convertedX, convertedY, convertedHeading};
                 bundleWaypoints.add(bundleWaypoint);
             }
         }

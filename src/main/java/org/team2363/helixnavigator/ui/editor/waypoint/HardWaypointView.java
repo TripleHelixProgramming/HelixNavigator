@@ -32,7 +32,7 @@ public class HardWaypointView extends WaypointView {
         robotView.getView().setOnMouseDragged(event -> {
             System.out.println("Dot dragged");
             double x = event.getX();
-            double y = -event.getY();
+            double y = event.getY();
             double[] lockAngles = {-180, -90, 0, 90, 180};
             double lockRadius = 10;
             double angle = Math.toDegrees(Math.atan2(y, x));

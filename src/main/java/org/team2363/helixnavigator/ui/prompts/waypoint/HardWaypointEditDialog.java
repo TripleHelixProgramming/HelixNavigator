@@ -3,7 +3,6 @@ package org.team2363.helixnavigator.ui.prompts.waypoint;
 import java.util.List;
 
 import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
-import org.team2363.lib.ui.prompts.DecimalTextField;
 
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
@@ -14,7 +13,7 @@ public class HardWaypointEditDialog extends WaypointEditDialog {
     private HHardWaypoint backupHardWaypoint;
 
     private final Text headingText = new Text("Heading:");
-    private final DecimalTextField headingTextField = new DecimalTextField();
+    private final HeadingTextField headingTextField = new HeadingTextField();
 
     public HardWaypointEditDialog(HHardWaypoint hardWaypoint) {
         super(hardWaypoint, new HHardWaypoint());

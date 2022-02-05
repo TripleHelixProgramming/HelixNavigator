@@ -13,7 +13,9 @@ import javafx.util.StringConverter;
 
 public class DecimalTextField extends TextField {
 
-    public static final StringConverter<Double> DECIMAL_CONVERTER = new StringConverter<Double>() {
+    public static final Pattern DECIMAL_VALIDATOR = Pattern.compile("-?\\d*(\\.\\d*)?");
+    public static final UnaryOperator<TextFormatter.Change> DECIMAL_FILTER = filterFor(Integer.MAX_VALUE, DECIMAL_VALIDATOR);
+    private final StringConverter<Double> decimalConverter = new StringConverter<Double>() {
 
         @Override
         public String toString(Double object) {
@@ -29,17 +31,15 @@ public class DecimalTextField extends TextField {
             if (string.length() == 0 || string.equals("-")) {
                 return 0.0;
             } else {
-                return Double.parseDouble(string);
+                double rawValue = Double.parseDouble(string);
+                return transformInput(rawValue);
             }
         }
     };
-    public static final Pattern DECIMAL_VALIDATOR = Pattern.compile("-?\\d*(\\.\\d*)?");
-    public static final UnaryOperator<TextFormatter.Change> DECIMAL_FILTER = filterFor(Integer.MAX_VALUE, DECIMAL_VALIDATOR);
-
     private final ObjectProperty<Double> value;
 
     public DecimalTextField() {
-        TextFormatter<Double> formatter = new TextFormatter<Double>(DECIMAL_CONVERTER, 0.0, DECIMAL_FILTER);
+        TextFormatter<Double> formatter = new TextFormatter<Double>(decimalConverter, 0.0, DECIMAL_FILTER);
         value = formatter.valueProperty();
         setTextFormatter(formatter);
         setText("0.0");
@@ -60,5 +60,9 @@ public class DecimalTextField extends TextField {
     
     public final double getValue() {
         return value.get();
+    }
+
+    protected double transformInput(double input) {
+        return input;
     }
 }

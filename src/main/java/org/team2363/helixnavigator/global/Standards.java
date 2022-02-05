@@ -42,4 +42,7 @@ public class Standards {
         public static final double MOTOR_MAX_ANGULAR_SPEED = 1000;
         public static final double MOTOR_MAX_TORQUE = 1000;
     }
+
+    public static final double MIN_HEADING = -180;
+    public static final double MAX_HEADING = 180;
 }

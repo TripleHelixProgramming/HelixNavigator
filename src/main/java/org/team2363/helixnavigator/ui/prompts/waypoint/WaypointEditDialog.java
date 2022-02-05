@@ -55,7 +55,7 @@ public abstract class WaypointEditDialog {
         this.waypoint = waypoint;
         this.backupWaypoint = backupWaypoint;
 
-        okButton.setDefaultButton(true);
+        // okButton.setDefaultButton(true);
         GridPane.setConstraints(nameText, 0, 0);
         GridPane.setConstraints(nameTextField, 1, 0);
         GridPane.setConstraints(xText, 0, 1);
