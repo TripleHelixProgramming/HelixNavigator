@@ -16,12 +16,14 @@ import javafx.beans.property.SimpleDoubleProperty;
 
 public abstract class HObstacle extends HPathElement {
 
-    private static final TypeMarker<HPolygonObstacle> polygonType = new TypeMarker<HPolygonObstacle>() {};
-    private static final TypeMarker<HCircleObstacle> circleType = new TypeMarker<HCircleObstacle>() {};
+    private static final TypeMarker<HCircleObstacle> CIRCLE_TYPE = new TypeMarker<HCircleObstacle>() {};
+    private static final TypeMarker<HPolygonObstacle> POLYGON_TYPE = new TypeMarker<HPolygonObstacle>() {};
+    private static final TypeMarker<HRectangleObstacle> RECTANGLE_TYPE = new TypeMarker<HRectangleObstacle>() {};
 
     public static enum ObstacleType {
+        CIRCLE,
         POLYGON,
-        CIRCLE;
+        RECTANGLE;
 
         @Override
         public String toString() {
@@ -51,14 +53,18 @@ public abstract class HObstacle extends HPathElement {
     @SerializedJSONObjectValue(key = "obstacle_type")
     public abstract ObstacleType getObstacleType();
 
+    public boolean isCircle() {
+        return false;
+    }
+
     public boolean isPolygon() {
         return false;
     }
 
-    public boolean isCircle() {
+    public boolean isRectangle() {
         return false;
     }
-    
+
     @DeserializedJSONDeterminer
     public static final TypeMarker<? extends HObstacle> abstractDeterminer(JSONObject jsonEntry) throws JSONDeserializerException {
         if (!jsonEntry.containsKey("obstacle_type")) {
@@ -66,10 +72,12 @@ public abstract class HObstacle extends HPathElement {
         }
         String typeString = ((JSONString) jsonEntry.get("obstacle_type")).getString();
         switch (typeString.trim().toLowerCase()) {
-            case "polygon":
-                return polygonType;
             case "circle":
-                return circleType;
+                return CIRCLE_TYPE;
+            case "polygon":
+                return POLYGON_TYPE;
+            case "rectangle":
+                return RECTANGLE_TYPE;
             default:
                 throw new JSONDeserializerException("Unrecognized obstacle type string: \"" + typeString + "\"");
         }
