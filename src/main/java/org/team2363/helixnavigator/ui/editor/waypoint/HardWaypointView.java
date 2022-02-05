@@ -1,6 +1,7 @@
 package org.team2363.helixnavigator.ui.editor.waypoint;
 
 import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
+import org.team2363.helixnavigator.global.Standards;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -34,12 +35,11 @@ public class HardWaypointView extends WaypointView {
             double x = event.getX();
             double y = event.getY();
             double[] lockAngles = {-180, -90, 0, 90, 180};
-            double lockRadius = 10;
+            double lockRadius = Standards.HEADING_LOCK_RADIUS;
             double angle = Math.toDegrees(Math.atan2(y, x));
             System.out.println(angle);
             for (double lockAngle : lockAngles) {
                 if (!event.isShiftDown() && Math.abs(angle - lockAngle) <= lockRadius) {
-                    System.out.println("Snaped to " + lockAngle);
                     angle = lockAngle;
                     break;
                 }

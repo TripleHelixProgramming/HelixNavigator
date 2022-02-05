@@ -45,4 +45,5 @@ public class Standards {
 
     public static final double MIN_HEADING = -180;
     public static final double MAX_HEADING = 180;
+    public static final double HEADING_LOCK_RADIUS = 5;
 }
