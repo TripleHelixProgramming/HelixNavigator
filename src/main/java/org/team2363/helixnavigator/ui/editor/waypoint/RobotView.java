@@ -29,7 +29,8 @@ public class RobotView {
         robotRectangle.setMouseTransparent(true);
         robotRectangle.setStrokeLineCap(StrokeLineCap.ROUND);
         robotRectangle.setStrokeType(StrokeType.INSIDE);
-        robotRectangle.strokeWidthProperty().bind(zoomScale.multiply(4));
+        robotRectangle.setStrokeWidth(5);
+        // robotRectangle.strokeWidthProperty().bind(zoomScale.multiply(4));
         robotRectangle.setStroke(Color.DEEPSKYBLUE);
         robotRectangle.setArcWidth(6);
         robotRectangle.setArcHeight(6);
@@ -38,7 +39,8 @@ public class RobotView {
         robotRectangle.widthProperty().bind(bumperLength.multiply(zoomScale));
         robotRectangle.heightProperty().bind(bumperWidth.multiply(zoomScale));
         headingDot.setFill(Color.DEEPSKYBLUE);
-        headingDot.radiusProperty().bind(zoomScale.multiply(4));
+        headingDot.setRadius(8);
+        //headingDot.radiusProperty().bind(zoomScale.multiply(4));
         headingDot.centerXProperty().bind(bumperLength.multiply(0.5).multiply(zoomScale).subtract(robotRectangle.strokeWidthProperty().multiply(0.5)));
         headingRotate.angleProperty().bind(heading);
         robotPane.getTransforms().add(headingRotate);

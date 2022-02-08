@@ -56,7 +56,6 @@ public class HardWaypointView extends WaypointView {
         });
 
         waypointPane.getChildren().addAll(cross1, cross2);
-        // pane.getChildren().addAll(robotView.getView());
     }
 
     public final DoubleProperty bumperLengthProperty() {

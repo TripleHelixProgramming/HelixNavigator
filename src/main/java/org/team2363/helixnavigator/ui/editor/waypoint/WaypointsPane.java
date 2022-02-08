@@ -30,8 +30,8 @@ public class WaypointsPane extends Pane {
 
     private final DocumentManager documentManager;
 
-    // private final Pane waypointsPane = new Pane();
-    // private final Pane 
+    private final Pane waypointsPane = new Pane();
+    private final Pane robotsPane = new Pane();
 
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
     private final ListChangeListener<? super HWaypoint> onWaypointsChanged = this::waypointsChanged;
@@ -39,6 +39,9 @@ public class WaypointsPane extends Pane {
     public WaypointsPane(DocumentManager documentManager) {
         this.documentManager = documentManager;
 
+        waypointsPane.setPickOnBounds(false);
+        robotsPane.setPickOnBounds(false);
+        getChildren().addAll(waypointsPane, robotsPane);
         setPickOnBounds(false);
 
         loadDocument(this.documentManager.getDocument());
@@ -88,7 +91,8 @@ public class WaypointsPane extends Pane {
     }
 
     private void updateWaypoints(List<? extends HWaypoint> list) {
-        getChildren().clear();
+        waypointsPane.getChildren().clear();
+        robotsPane.getChildren().clear();
         for (int i = 0; i < list.size(); i++) {
             HWaypoint waypoint = list.get(i);
             WaypointView waypointView;
@@ -103,7 +107,7 @@ public class WaypointsPane extends Pane {
                     HardWaypointView hardWaypointView = new HardWaypointView(hardWaypoint);
                     hardWaypointView.bumperLengthProperty().bind(this.documentManager.getDocument().getRobotConfiguration().bumperLengthProperty());
                     hardWaypointView.bumperWidthProperty().bind(this.documentManager.getDocument().getRobotConfiguration().bumperWidthProperty());
-                    getChildren().add(i, hardWaypointView.getRobotView().getView());
+                    robotsPane.getChildren().add(hardWaypointView.getRobotView().getView());
                     waypointView = hardWaypointView;
                     break;
                 default:
@@ -111,7 +115,7 @@ public class WaypointsPane extends Pane {
                     break;
             }
             linkWaypointView(i, waypointView, waypoint);
-            getChildren().add(i, waypointView.getView());
+            waypointsPane.getChildren().add(i, waypointView.getView());
         }
     }
 
