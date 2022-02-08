@@ -28,6 +28,7 @@ public class HardWaypointView extends WaypointView {
         cross1.setStroke(Color.RED);
         cross2.setStroke(Color.RED);
 
+        robotView.getView().getTransforms().add(centerTranslate);
         robotView.headingProperty().bind(this.hardWaypoint.headingProperty());
         robotView.zoomScaleProperty().bind(zoomScaleProperty());
         robotView.getView().setOnMouseDragged(event -> {
@@ -55,7 +56,7 @@ public class HardWaypointView extends WaypointView {
         });
 
         waypointPane.getChildren().addAll(cross1, cross2);
-        pane.getChildren().addAll(robotView.getView());
+        // pane.getChildren().addAll(robotView.getView());
     }
 
     public final DoubleProperty bumperLengthProperty() {
@@ -96,6 +97,10 @@ public class HardWaypointView extends WaypointView {
 
     public final BooleanProperty robotShownProperty() {
         return robotShown;
+    }
+
+    public RobotView getRobotView() {
+        return robotView;
     }
 
     public final void setRobotShown(boolean value) {

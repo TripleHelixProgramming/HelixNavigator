@@ -21,7 +21,7 @@ public abstract class WaypointView {
 
     private final DoubleProperty zoomScale = new SimpleDoubleProperty(this, "zoomScale", 1.0);
 
-    private final Translate centerTranslate = new Translate();
+    protected final Translate centerTranslate = new Translate();
 
     public WaypointView(HWaypoint waypoint) {
         this.waypoint = waypoint;
@@ -40,7 +40,7 @@ public abstract class WaypointView {
         // For y you must subtract to flip the coordinates, in graphics +y is down but in math/engineering/robotics +y is up (i think):
         centerTranslate.xProperty().bind(this.waypoint.xProperty().multiply(zoomScale));
         centerTranslate.yProperty().bind(this.waypoint.yProperty().negate().multiply(zoomScale));
-        pane.getTransforms().add(centerTranslate);
+        waypointPane.getTransforms().add(centerTranslate);
         this.waypoint.selectedProperty().addListener((currentValue, oldValue, newValue) -> {
             selectionCircle.setOpacity(newValue ? 1.0 : 0.0);
         });

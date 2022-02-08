@@ -14,6 +14,7 @@ public class HRectangleObstacle extends HObstacle {
     private final DoubleProperty centerY = new SimpleDoubleProperty(this, "centerY", 0.0);
     private final DoubleProperty length = new SimpleDoubleProperty(this, "length", 20.0);
     private final DoubleProperty width = new SimpleDoubleProperty(this, "width", 10.0);
+    private final DoubleProperty rotateAngle = new SimpleDoubleProperty(this, "rotateAngle", 0.0);
 
     @DeserializedJSONConstructor
     public HRectangleObstacle() {
@@ -83,6 +84,20 @@ public class HRectangleObstacle extends HObstacle {
     @SerializedJSONObjectValue(key = "length")
     public final double getWidth() {
         return width.get();
+    }
+
+    public final DoubleProperty rotateAngleProperty() {
+        return rotateAngle;
+    }
+
+    @DeserializedJSONTarget
+    public final void setRotateAngle(@DeserializedJSONObjectValue(key = "rotate_angle") double value) {
+        rotateAngle.set(value);
+    }
+
+    @SerializedJSONObjectValue(key = "rotate_angle")
+    public final double getRotateAngle() {
+        return rotateAngle.get();
     }
 
     @Override

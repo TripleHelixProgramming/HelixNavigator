@@ -68,6 +68,19 @@ public class HPath {
         getObstaclesSelectionModel().getSelectedItems().forEach(element -> element.translateRelative(deltaX, deltaY));
     }
 
+    public void moveSelectedElementsRelative(double deltaX, double deltaY, HPathElement excludedElement) {
+        getWaypointsSelectionModel().getSelectedItems().forEach(element -> {
+            if (element != excludedElement) {
+                element.translateRelative(deltaX, deltaY);
+            }
+        });
+        getObstaclesSelectionModel().getSelectedItems().forEach(element -> {
+            if (element != excludedElement) {
+                element.translateRelative(deltaX, deltaY);
+            }
+        });
+    }
+
     public void clearSelection() {
         waypointsSelectionModel.clear();
         obstaclesSelectionModel.clear();

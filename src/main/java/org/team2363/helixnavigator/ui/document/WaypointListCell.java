@@ -19,7 +19,6 @@ import org.team2363.helixnavigator.document.waypoint.HWaypoint.WaypointType;
 import org.team2363.helixnavigator.global.Standards;
 import org.team2363.helixnavigator.ui.editor.waypoint.HardWaypointView;
 import org.team2363.helixnavigator.ui.editor.waypoint.SoftWaypointView;
-import org.team2363.helixnavigator.ui.editor.waypoint.WaypointView;
 import org.team2363.helixnavigator.ui.prompts.waypoint.WaypointEditDialog;
 import org.team2363.lib.ui.OrderableListCell;
 import org.team2363.lib.ui.prompts.FilteredTextField;

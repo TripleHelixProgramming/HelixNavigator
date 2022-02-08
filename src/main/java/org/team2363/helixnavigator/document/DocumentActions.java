@@ -1,6 +1,7 @@
 package org.team2363.helixnavigator.document;
 
 import org.team2363.helixnavigator.document.field.image.HFieldImage;
+import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -118,6 +119,7 @@ public class DocumentActions {
     }
     public void handleMouseDraggedAsElementsDragged(MouseEvent event) {
         if (documentManager.getIsDocumentOpen() && event.getButton() == MouseButton.PRIMARY) {
+            System.out.println("X: " + event.getX() + " Y: " + event.getY());
             HDocument document = documentManager.getDocument();
             double deltaX = event.getSceneX() - lastElementsDragX;
             double deltaY = event.getSceneY() - lastElementsDragY;
@@ -126,6 +128,24 @@ public class DocumentActions {
             document.getSelectedPath().moveSelectedElementsRelative(scaledDeltaX, scaledDeltaY);
             lastElementsDragX = event.getSceneX();
             lastElementsDragY = event.getSceneY();
+        }
+    }
+
+    public void handleMouseDraggedAsWaypointDragged(MouseEvent event, HWaypoint triggeringWaypoint) {
+        if (documentManager.getIsDocumentOpen() && event.getButton() == MouseButton.PRIMARY) {
+            System.out.println("X: " + event.getX() + " Y: " + event.getY());
+            HDocument document = documentManager.getDocument();
+            double newX = event.getX() / document.getZoomScale();
+            double newY = -event.getY() / document.getZoomScale();
+            if (Math.hypot(event.getX(), event.getY()) <= 10) {
+                newX = 0;
+                newY = 0;
+            }
+            double deltaX = newX - triggeringWaypoint.getX();
+            double deltaY = newY - triggeringWaypoint.getY();
+            triggeringWaypoint.setX(newX);
+            triggeringWaypoint.setY(newY);
+            document.getSelectedPath().moveSelectedElementsRelative(deltaX, deltaY, triggeringWaypoint);
         }
     }
 
