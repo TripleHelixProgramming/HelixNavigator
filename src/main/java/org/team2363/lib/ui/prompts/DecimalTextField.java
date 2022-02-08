@@ -50,6 +50,10 @@ public class DecimalTextField extends TextField {
         });
     }
 
+    protected double transformInput(double input) {
+        return input;
+    }
+
     public final ObjectProperty<Double> valueProperty() {
         return value;
     }
@@ -60,9 +64,5 @@ public class DecimalTextField extends TextField {
     
     public final double getValue() {
         return value.get();
-    }
-
-    protected double transformInput(double input) {
-        return input;
     }
 }
