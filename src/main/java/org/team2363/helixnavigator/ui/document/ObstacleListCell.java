@@ -16,6 +16,7 @@ import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HObstacle.ObstacleType;
 import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
 import org.team2363.helixnavigator.global.Standards;
+import org.team2363.helixnavigator.ui.prompts.obstacle.ObstacleEditDialog;
 import org.team2363.lib.ui.OrderableListCell;
 import org.team2363.lib.ui.prompts.FilteredTextField;
 
@@ -38,6 +39,7 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
 
     private static final Image CIRCLE;
     private static final Image POLYGON;
+    private static final Image RECTANGLE;
     private static final Image ANY_DRAGGED;
 
     public static final Callback<ListView<HObstacle>, ListCell<HObstacle>> obstacleCellFactory =
@@ -51,11 +53,13 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
     static {
         CIRCLE = null;
         POLYGON = null;
+        RECTANGLE = null;
         ANY_DRAGGED = null;
     }
 
     private final ImageView circleView = new ImageView(CIRCLE);
     private final ImageView polygonView = new ImageView(POLYGON);
+    private final ImageView rectangleView = new ImageView(RECTANGLE);
     private final TextField textField = new FilteredTextField(Standards.MAX_NAME_LENGTH, Standards.VALID_NAME);
     private final HBox graphicBox = new HBox();
 
@@ -144,6 +148,9 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
             case POLYGON:
                 graphicBox.getChildren().set(0, polygonView);
                 break;
+            case RECTANGLE:
+                graphicBox.getChildren().set(0, rectangleView);
+                break;
         }
     }
 
@@ -217,9 +224,8 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
     }
 
     private void edit(ActionEvent event) {
-        // HObstacle selectedWaypoint = getListView().getSelectionModel().getSelectedItems().get(0);
-        System.out.println("Editing not yet implemented...");
-        // dialog.show();
+        ObstacleEditDialog dialog = ObstacleEditDialog.dialog(getItem());
+        dialog.show();
     }
     private void newCircleObstacle(ActionEvent event) {
         HObstacle newObstacle = new HCircleObstacle();

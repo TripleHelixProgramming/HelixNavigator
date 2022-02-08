@@ -236,8 +236,7 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
     }
 
     private void edit(ActionEvent event) {
-        HWaypoint selectedWaypoint = getListView().getSelectionModel().getSelectedItems().get(0);
-        WaypointEditDialog dialog = WaypointEditDialog.dialog(selectedWaypoint);
+        WaypointEditDialog dialog = WaypointEditDialog.dialog(getItem());
         dialog.show();
     }
     private void newSoftWaypoint(ActionEvent event) {

@@ -48,6 +48,9 @@ public class DecimalTextField extends TextField {
                 Platform.runLater(this::selectAll);
             }
         });
+        setOnAction(event -> {
+            selectAll();
+        });
     }
 
     protected double transformInput(double input) {

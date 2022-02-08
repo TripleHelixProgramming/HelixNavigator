@@ -17,8 +17,8 @@ public class HardWaypointEditDialog extends WaypointEditDialog {
 
     public HardWaypointEditDialog(HHardWaypoint hardWaypoint) {
         super(hardWaypoint, new HHardWaypoint());
-        this.hardWaypoint = (HHardWaypoint) super.waypoint;
-        this.backupHardWaypoint = (HHardWaypoint) super.backupWaypoint;
+        this.hardWaypoint = (HHardWaypoint) waypoint;
+        this.backupHardWaypoint = (HHardWaypoint) backupWaypoint;
         GridPane.setConstraints(headingText, 0, 3);
         GridPane.setConstraints(headingTextField, 1, 3);
 
