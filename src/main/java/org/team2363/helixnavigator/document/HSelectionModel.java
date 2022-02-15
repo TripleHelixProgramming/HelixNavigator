@@ -8,7 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
-public class HSelectionModel<E extends HPathElement> {
+public class HSelectionModel<E extends HSelectableElement> {
 
     /**
      * The list of items that can be selected. This field is immutable, but the contents of
