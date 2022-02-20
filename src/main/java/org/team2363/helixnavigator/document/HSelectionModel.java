@@ -7,8 +7,9 @@ import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.control.MultipleSelectionModel;
 
-public class HSelectionModel<E extends HSelectableElement> {
+public class HSelectionModel<E extends HSelectableElement> extends MultipleSelectionModel<E> {
 
     /**
      * The list of items that can be selected. This field is immutable, but the contents of
@@ -93,6 +94,7 @@ public class HSelectionModel<E extends HSelectableElement> {
      * 
      * @return the list of selected indices
      */
+    @Override
     public ObservableList<Integer> getSelectedIndices() {
         return unmodifiableSelectedIndices;
     }
@@ -102,6 +104,7 @@ public class HSelectionModel<E extends HSelectableElement> {
      * 
      * @return the list of selected items
      */
+    @Override
     public ObservableList<E> getSelectedItems() {
         return unmodifiableSelectedItems;
     }
@@ -151,8 +154,11 @@ public class HSelectionModel<E extends HSelectableElement> {
      * 
      * @param index the index to select
      */
+    @Override
     public void select(int index) {
         if (index >= 0 && index < items.size()) {
+            setSelectedIndex(index);
+            setSelectedItem(items.get(index));
             if (selectedIndices.size() == 0) {
                 selectedIndices.add(index);
                 E item = items.get(index);
@@ -229,6 +235,19 @@ public class HSelectionModel<E extends HSelectableElement> {
                 selectedItems.remove(indexOfItem);
             }
         }
+    }
+
+    /**
+     * This method will clear the selection of the item in the given index.
+     * If the given index is not selected, nothing will happen.
+     * 
+     * @param index The selected item to deselect.
+     * @implNote This implementation of HelixNavigator uses deselect(int) rather than this method.
+     * They both do the same thing.
+     */
+    @Override
+    public void clearSelection(int index) {
+        deselect(index);
     }
 
     /**
@@ -310,12 +329,23 @@ public class HSelectionModel<E extends HSelectableElement> {
         selectedItems.clear();
     }
 
+    @Override
+    public void clearAndSelect(int index) {
+        clear();
+        select(index);
+    }
+
     /**
      * Selects all possible indices. After this method is called, it is
      * guaranteed that {@code items.equals(getSelectedItems()) == true}
      */
     public void selectAll() {
         selectRange(0, items.size());
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return selectedIndices.size() == 0;
     }
 
     /**
@@ -388,5 +418,34 @@ public class HSelectionModel<E extends HSelectableElement> {
         for (E item : items) {
             deselect(item);
         }
+    }
+
+    @Override
+    public void selectPrevious() {
+        select(getSelectedIndex() - 1);
+    }
+
+    @Override
+    public void selectNext() {
+        select(getSelectedIndex() + 1);
+    }
+
+    @Override
+    public void selectFirst() {
+        select(0);
+    }
+
+    @Override
+    public void selectLast() {
+        select(items.size() - 1);
+    }
+
+    /**
+     * Returns the list this selection model is based on.
+     * 
+     * @return the items this selection model is based on
+     */
+    public ObservableList<E> getItems() {
+        return items;
     }
 }
