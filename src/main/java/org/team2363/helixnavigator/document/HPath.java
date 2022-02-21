@@ -82,8 +82,8 @@ public class HPath {
     }
 
     public void clearSelection() {
-        waypointsSelectionModel.clear();
-        obstaclesSelectionModel.clear();
+        waypointsSelectionModel.clearSelection();
+        obstaclesSelectionModel.clearSelection();
     }
 
     public final StringProperty nameProperty() {

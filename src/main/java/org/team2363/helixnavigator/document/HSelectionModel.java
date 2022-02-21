@@ -7,8 +7,10 @@ import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.control.MultipleSelectionModel;
+import javafx.scene.control.SelectionMode;
 
-public class HSelectionModel<E extends HPathElement> {
+public class HSelectionModel<E extends HSelectableElement> extends MultipleSelectionModel<E> {
 
     /**
      * The list of items that can be selected. This field is immutable, but the contents of
@@ -48,6 +50,7 @@ public class HSelectionModel<E extends HPathElement> {
     public HSelectionModel(ObservableList<E> items) {
         this.items = items;
         items.addListener(this::itemsChanged);
+        setSelectionMode(SelectionMode.MULTIPLE);
     }
 
     /**
@@ -93,6 +96,7 @@ public class HSelectionModel<E extends HPathElement> {
      * 
      * @return the list of selected indices
      */
+    @Override
     public ObservableList<Integer> getSelectedIndices() {
         return unmodifiableSelectedIndices;
     }
@@ -102,6 +106,7 @@ public class HSelectionModel<E extends HPathElement> {
      * 
      * @return the list of selected items
      */
+    @Override
     public ObservableList<E> getSelectedItems() {
         return unmodifiableSelectedItems;
     }
@@ -151,8 +156,14 @@ public class HSelectionModel<E extends HPathElement> {
      * 
      * @param index the index to select
      */
+    @Override
     public void select(int index) {
         if (index >= 0 && index < items.size()) {
+            if (getSelectionMode() == SelectionMode.SINGLE) {
+                clearSelection();
+            }
+            setSelectedIndex(index);
+            setSelectedItem(items.get(index));
             if (selectedIndices.size() == 0) {
                 selectedIndices.add(index);
                 E item = items.get(index);
@@ -232,6 +243,19 @@ public class HSelectionModel<E extends HPathElement> {
     }
 
     /**
+     * This method will clear the selection of the item in the given index.
+     * If the given index is not selected, nothing will happen.
+     * 
+     * @param index The selected item to deselect.
+     * @implNote This implementation of HelixNavigator uses deselect(int) rather than this method.
+     * They both do the same thing.
+     */
+    @Override
+    public void clearSelection(int index) {
+        deselect(index);
+    }
+
+    /**
      * Deselects an item if and only if it exists in the list of items.
      * 
      * @param item the item to deselect
@@ -302,12 +326,21 @@ public class HSelectionModel<E extends HPathElement> {
     /**
      * Clears the selection by removing all selected indices and selected items.
      */
-    public void clear() {
+    @Override
+    public void clearSelection() {
         selectedIndices.clear();
         for (E item : selectedItems) {
             item.setSelected(false);
         }
         selectedItems.clear();
+        setSelectedIndex(-1);
+        setSelectedItem(null);
+    }
+
+    @Override
+    public void clearAndSelect(int index) {
+        clearSelection();
+        select(index);
     }
 
     /**
@@ -318,15 +351,21 @@ public class HSelectionModel<E extends HPathElement> {
         selectRange(0, items.size());
     }
 
+    @Override
+    public boolean isEmpty() {
+        return selectedIndices.size() == 0;
+    }
+
     /**
      * Selects an array of indices. This method iterates over the array of indices
      * and selects each.
      * 
      * @param indices the indices to select
      */
-    public void selectIndices(int... indices) {
-        for (int index : indices) {
-            select(index);
+    public void selectIndices(int index, int... indices) {
+        select(index);
+        for (int i : indices) {
+            select(i);
         }
     }
 
@@ -388,5 +427,34 @@ public class HSelectionModel<E extends HPathElement> {
         for (E item : items) {
             deselect(item);
         }
+    }
+
+    @Override
+    public void selectPrevious() {
+        select(getSelectedIndex() - 1);
+    }
+
+    @Override
+    public void selectNext() {
+        select(getSelectedIndex() + 1);
+    }
+
+    @Override
+    public void selectFirst() {
+        select(0);
+    }
+
+    @Override
+    public void selectLast() {
+        select(items.size() - 1);
+    }
+
+    /**
+     * Returns the list this selection model is based on.
+     * 
+     * @return the items this selection model is based on
+     */
+    public ObservableList<E> getItems() {
+        return items;
     }
 }
