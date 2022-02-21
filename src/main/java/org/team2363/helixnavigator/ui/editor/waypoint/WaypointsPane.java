@@ -74,7 +74,8 @@ public class WaypointsPane extends Pane {
 
     private void unloadSelectedPath(HPath oldPath) {
         if (oldPath != null) {
-            getChildren().clear();
+            waypointsPane.getChildren().clear();
+            robotsPane.getChildren().clear();
             oldPath.getWaypoints().removeListener(onWaypointsChanged);
         }
     }

@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.control.MultipleSelectionModel;
+import javafx.scene.control.SelectionMode;
 
 public class HSelectionModel<E extends HSelectableElement> extends MultipleSelectionModel<E> {
 
@@ -49,6 +50,7 @@ public class HSelectionModel<E extends HSelectableElement> extends MultipleSelec
     public HSelectionModel(ObservableList<E> items) {
         this.items = items;
         items.addListener(this::itemsChanged);
+        setSelectionMode(SelectionMode.MULTIPLE);
     }
 
     /**
@@ -157,6 +159,9 @@ public class HSelectionModel<E extends HSelectableElement> extends MultipleSelec
     @Override
     public void select(int index) {
         if (index >= 0 && index < items.size()) {
+            if (getSelectionMode() == SelectionMode.SINGLE) {
+                clearSelection();
+            }
             setSelectedIndex(index);
             setSelectedItem(items.get(index));
             if (selectedIndices.size() == 0) {
@@ -321,17 +326,20 @@ public class HSelectionModel<E extends HSelectableElement> extends MultipleSelec
     /**
      * Clears the selection by removing all selected indices and selected items.
      */
-    public void clear() {
+    @Override
+    public void clearSelection() {
         selectedIndices.clear();
         for (E item : selectedItems) {
             item.setSelected(false);
         }
         selectedItems.clear();
+        setSelectedIndex(-1);
+        setSelectedItem(null);
     }
 
     @Override
     public void clearAndSelect(int index) {
-        clear();
+        clearSelection();
         select(index);
     }
 
@@ -354,9 +362,10 @@ public class HSelectionModel<E extends HSelectableElement> extends MultipleSelec
      * 
      * @param indices the indices to select
      */
-    public void selectIndices(int... indices) {
-        for (int index : indices) {
-            select(index);
+    public void selectIndices(int index, int... indices) {
+        select(index);
+        for (int i : indices) {
+            select(i);
         }
     }
 

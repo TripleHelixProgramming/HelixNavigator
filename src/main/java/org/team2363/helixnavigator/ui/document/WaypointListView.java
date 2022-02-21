@@ -3,6 +3,7 @@ package org.team2363.helixnavigator.ui.document;
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
+import org.team2363.helixnavigator.document.HSelectionModel;
 import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
@@ -10,17 +11,17 @@ import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.SelectionMode;
+import javafx.scene.control.MultipleSelectionModel;
 
 public class WaypointListView extends ListView<HWaypoint> {
 
-    private static final ObservableList<HWaypoint> BLANK = FXCollections.<HWaypoint>observableArrayList();
+    private final ObservableList<HWaypoint> blankItems = FXCollections.<HWaypoint>observableArrayList();
+    private final MultipleSelectionModel<HWaypoint> blankSelecitonModel = new HSelectionModel<>(blankItems);
 
     private final DocumentManager documentManager;
 
@@ -28,34 +29,23 @@ public class WaypointListView extends ListView<HWaypoint> {
     private final MenuItem newSoftWaypointMenuItem = new MenuItem("New soft waypoint");
     private final MenuItem newHardWaypointMenuItem = new MenuItem("New hard waypoint");
 
-    private final ListChangeListener<? super Integer> onListViewSelectedIndicesChanged = this::listViewSelectedIndicesChanged;
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
-    private final ListChangeListener<? super Integer> onPathSelectedWaypointsIndicesChanged = this::pathSelectedWaypointsIndicesChanged;
 
     public WaypointListView(DocumentManager documentManager) {
         this.documentManager = documentManager;
-        loadDocument(this.documentManager.getDocument());
-        this.documentManager.documentProperty().addListener(this::documentChanged);
 
         setEditable(true);
-        setItems(BLANK);
+        setItems(blankItems);
+        setSelectionModel(blankSelecitonModel);
         setContextMenu(null);
-        getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        getSelectionModel().getSelectedIndices().addListener(onListViewSelectedIndicesChanged);
         setCellFactory(WaypointListCell.WAYPOINT_CELL_FACTORY);
         noneSelectedContextMenu.getItems().addAll(newSoftWaypointMenuItem, newHardWaypointMenuItem);
         newSoftWaypointMenuItem.setOnAction(this::newSoftWaypoint);
         newHardWaypointMenuItem.setOnAction(this::newHardWaypoint);
         noneSelectedContextMenu.setAutoHide(true);
-    }
 
-    private void listViewSelectedIndicesChanged(ListChangeListener.Change<? extends Integer> change) {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().getSelectedIndices().removeListener(onPathSelectedWaypointsIndicesChanged);
-            documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().clear();
-            documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().selectIndices(getSelectionModel().getSelectedIndices());
-            documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().getSelectedIndices().addListener(onPathSelectedWaypointsIndicesChanged);
-        }
+        loadDocument(this.documentManager.getDocument());
+        this.documentManager.documentProperty().addListener(this::documentChanged);
     }
 
     private void newSoftWaypoint(ActionEvent event) {
@@ -92,29 +82,16 @@ public class WaypointListView extends ListView<HWaypoint> {
     }
     private void unloadSelectedPath(HPath oldPath) {
         if (oldPath != null) {
-            getSelectionModel().getSelectedIndices().removeListener(onListViewSelectedIndicesChanged);
-            setItems(BLANK);
+            setItems(blankItems);
+            setSelectionModel(blankSelecitonModel);
             setContextMenu(null);
-            getSelectionModel().getSelectedIndices().addListener(onListViewSelectedIndicesChanged);
-            oldPath.getWaypointsSelectionModel().getSelectedIndices().removeListener(onPathSelectedWaypointsIndicesChanged);
         }
     }
     private void loadSelectedPath(HPath newPath) {
         if (newPath != null) {
             setItems(newPath.getWaypoints());
+            setSelectionModel(newPath.getWaypointsSelectionModel());
             setContextMenu(noneSelectedContextMenu);
-            for (int index : documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().getSelectedIndices()) {
-                getSelectionModel().select(index);
-            }
-            newPath.getWaypointsSelectionModel().getSelectedIndices().addListener(onPathSelectedWaypointsIndicesChanged);
         }
-    }
-    private void pathSelectedWaypointsIndicesChanged(ListChangeListener.Change<? extends Integer> change) {
-        getSelectionModel().getSelectedIndices().removeListener(onListViewSelectedIndicesChanged);
-        getSelectionModel().clearSelection();
-        for (int index : change.getList()) {
-            getSelectionModel().select(index);
-        }
-        getSelectionModel().getSelectedIndices().addListener(onListViewSelectedIndicesChanged);
     }
 }

@@ -119,7 +119,7 @@ public class DocumentActions {
     }
     public void handleMouseDraggedAsElementsDragged(MouseEvent event) {
         if (documentManager.getIsDocumentOpen() && event.getButton() == MouseButton.PRIMARY) {
-            System.out.println("X: " + event.getX() + " Y: " + event.getY());
+            // System.out.println("X: " + event.getX() + " Y: " + event.getY());
             HDocument document = documentManager.getDocument();
             double deltaX = event.getSceneX() - lastElementsDragX;
             double deltaY = event.getSceneY() - lastElementsDragY;
@@ -133,7 +133,7 @@ public class DocumentActions {
 
     public void handleMouseDraggedAsWaypointDragged(MouseEvent event, HWaypoint triggeringWaypoint) {
         if (documentManager.getIsDocumentOpen() && event.getButton() == MouseButton.PRIMARY) {
-            System.out.println("X: " + event.getX() + " Y: " + event.getY());
+            // System.out.println("X: " + event.getX() + " Y: " + event.getY());
             HDocument document = documentManager.getDocument();
             double newX = event.getX() / document.getZoomScale();
             double newY = -event.getY() / document.getZoomScale();

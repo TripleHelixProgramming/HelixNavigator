@@ -41,9 +41,15 @@ public abstract class WaypointView {
         centerTranslate.xProperty().bind(this.waypoint.xProperty().multiply(zoomScale));
         centerTranslate.yProperty().bind(this.waypoint.yProperty().negate().multiply(zoomScale));
         waypointPane.getTransforms().add(centerTranslate);
-        this.waypoint.selectedProperty().addListener((currentValue, oldValue, newValue) -> {
-            selectionCircle.setOpacity(newValue ? 1.0 : 0.0);
+
+        updateSelected(this.waypoint.isSelected());
+        this.waypoint.selectedProperty().addListener((currentValue, wasSelected, isSelected) -> {
+            updateSelected(isSelected);
         });
+    }
+
+    private void updateSelected(boolean isSelected) {
+        selectionCircle.setOpacity(isSelected ? 1.0 : 0.0);
     }
 
     public final DoubleProperty zoomScaleProperty() {

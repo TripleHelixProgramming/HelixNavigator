@@ -63,7 +63,7 @@ public class ObstacleListView extends ListView<HObstacle> {
     private void listViewSelectedIndicesChanged(ListChangeListener.Change<? extends Integer> change) {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
             documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().getSelectedIndices().removeListener(onPathSelectedObstaclesIndicesChanged);
-            documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().clear();
+            documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().clearSelection();
             documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().selectIndices(getSelectionModel().getSelectedIndices());
             documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().getSelectedIndices().addListener(onPathSelectedObstaclesIndicesChanged);
         }
