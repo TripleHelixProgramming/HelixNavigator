@@ -1,35 +1,14 @@
 package org.team2363.helixnavigator.ui.editor.obstacle;
 
-import org.team2363.helixnavigator.ui.editor.PathElementView;
+import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.scene.Node;
-import javafx.scene.layout.Pane;
+public class PolygonObstacleView extends ObstacleView {
 
-public class PolygonObstacleView extends Pane implements PathElementView {
-
-    @Override
-    public BooleanProperty selectedProperty() {
-        // TODO Auto-generated method stub
-        return null;
+    public PolygonObstacleView(HPolygonObstacle polygonObstacle) {
+        super(polygonObstacle);
     }
 
     @Override
-    public void setSelected(boolean value) {
-        // TODO Auto-generated method stub
-        
+    protected void updateSelected(boolean isSelected) {
     }
-
-    @Override
-    public boolean getSelected() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public Node getView() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
 }

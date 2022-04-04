@@ -23,7 +23,7 @@ public abstract class WaypointView {
 
     protected final Translate centerTranslate = new Translate();
 
-    public WaypointView(HWaypoint waypoint) {
+    protected WaypointView(HWaypoint waypoint) {
         this.waypoint = waypoint;
 
         selectionCircle.setFill(Color.ORANGE);
