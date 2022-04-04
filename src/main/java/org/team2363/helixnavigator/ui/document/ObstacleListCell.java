@@ -40,7 +40,6 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
     private static final Image CIRCLE;
     private static final Image POLYGON;
     private static final Image RECTANGLE;
-    private static final Image ANY_DRAGGED;
 
     public static final Callback<ListView<HObstacle>, ListCell<HObstacle>> obstacleCellFactory =
             new Callback<ListView<HObstacle>, ListCell<HObstacle>>() {
@@ -54,7 +53,6 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
         CIRCLE = null;
         POLYGON = null;
         RECTANGLE = null;
-        ANY_DRAGGED = null;
     }
 
     private final ImageView circleView = new ImageView(CIRCLE);
@@ -171,11 +169,6 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
         graphicBox.getChildren().remove(1);
         String newName = textField.getText();
         getItem().setName(newName);
-    }
-
-    @Override
-    protected Image dragView(int selectionSize) {
-        return ANY_DRAGGED;
     }
 
     @Override

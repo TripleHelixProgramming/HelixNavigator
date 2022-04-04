@@ -1,6 +1,5 @@
 package org.team2363.helixnavigator.ui.document;
 
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,17 +31,12 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.shape.Circle;
 import javafx.util.Callback;
 
 public class WaypointListCell extends OrderableListCell<HWaypoint> {
-
-    private static final Image ONE_DRAGGED;
-    private static final Image TWO_DRAGGED;
-    private static final Image THREE_DRAGGED;
-    private static final Image FOUR_DRAGGED;
 
     public static final Callback<ListView<HWaypoint>, ListCell<HWaypoint>> WAYPOINT_CELL_FACTORY =
             new Callback<ListView<HWaypoint>, ListCell<HWaypoint>>() {
@@ -51,17 +45,6 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
             return new WaypointListCell();
         }
     };
-
-    static {
-        InputStream stream1 = WaypointListCell.class.getResourceAsStream("/waypoint_images/waypoints_dragged_1.png");
-        ONE_DRAGGED = new Image(stream1);
-        InputStream stream2 = WaypointListCell.class.getResourceAsStream("/waypoint_images/waypoints_dragged_2.png");
-        TWO_DRAGGED = new Image(stream2);
-        InputStream stream3 = WaypointListCell.class.getResourceAsStream("/waypoint_images/waypoints_dragged_3.png");
-        THREE_DRAGGED = new Image(stream3);
-        InputStream stream4 = WaypointListCell.class.getResourceAsStream("/waypoint_images/waypoints_dragged_4.png");
-        FOUR_DRAGGED = new Image(stream4);
-    }
 
     private final SoftWaypointView softView = new SoftWaypointView(new HSoftWaypoint());
     private final HardWaypointView hardView = new HardWaypointView(new HHardWaypoint());
@@ -92,6 +75,9 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
         softView.getWaypointView().setTranslateY(yt);
         hardView.getWaypointView().setTranslateX(xt);
         hardView.getWaypointView().setTranslateY(yt);
+        softView.getWaypointView().setClip(new Circle(10));
+        hardView.getWaypointView().setClip(new Circle(10)); // these circles make snapshots of cells correct
+        // (see OrderableListCell)
 
         graphicBox.getChildren().add(softView.getWaypointView()); // have to use one image here even though we don't know which it is yet
         setEditable(true);
@@ -174,20 +160,6 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
         graphicBox.getChildren().remove(1);
         String newName = textField.getText();
         getItem().setName(newName);
-    }
-
-    @Override
-    protected Image dragView(int selectionSize) {
-        switch (selectionSize) {
-            case 1:
-                return ONE_DRAGGED;
-            case 2:
-                return TWO_DRAGGED;
-            case 3:
-                return THREE_DRAGGED;
-            default:
-                return FOUR_DRAGGED;
-        }
     }
 
     @Override

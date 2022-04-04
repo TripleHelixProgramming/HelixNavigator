@@ -7,13 +7,14 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListCell;
-import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -24,7 +25,7 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 
-public abstract class OrderableListCell<E> extends ListCell<E> {
+public class OrderableListCell<E> extends ListCell<E> {
 
     private static final Border NO_BORDER = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0.0, 0.0, 0.0, 0.0)));
     private static final Border TOP_BORDER = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1.0, 0.0, 0.0, 0.0)));
@@ -39,11 +40,13 @@ public abstract class OrderableListCell<E> extends ListCell<E> {
             if (getItem() == null) {
                 return;
             }
-            Dragboard dragboard = startDragAndDrop(TransferMode.COPY_OR_MOVE); //TODO: experiment with this
-            List<E> selectedItems = getListView().getSelectionModel().getSelectedItems();
-            dragboard.setDragView(dragView(selectedItems.size()));
-            dragboard.setDragViewOffsetX(50.0);
-            dragboard.setDragViewOffsetY(50.0);
+            Dragboard dragboard = startDragAndDrop(TransferMode.COPY_OR_MOVE); // TODO: experiment with this
+            // List<E> selectedItems = getListView().getSelectionModel().getSelectedItems();
+            // dragboard.setDragView(dragView(selectedItems.size()));
+            WritableImage dragImage = snapshot(null, null);
+            dragboard.setDragView(dragImage);
+            dragboard.setDragViewOffsetX(dragImage.getWidth() / 2);
+            dragboard.setDragViewOffsetY(-dragImage.getHeight() / 2);
             ClipboardContent clipboard = new ClipboardContent();
             File tempFile;
             try {
@@ -120,6 +123,7 @@ public abstract class OrderableListCell<E> extends ListCell<E> {
                         // before modifying the list so that ListView doesn't
                         // do it automatically. This should make the behavior
                         // more predictable
+                        // UPDATE -- this fixed literally everything
                         getListView().getSelectionModel().clearSelection();
                         items.removeAll(selectedItems);
                         index -= numSelectedLessThanIndex;
@@ -187,8 +191,13 @@ public abstract class OrderableListCell<E> extends ListCell<E> {
     public final boolean isOrderable() {
         return orderable.get();
     }
-    protected abstract Image dragView(int selectionSize);
-    protected abstract String fileName();
-    protected abstract String fileString();
-    protected abstract List<E> newItems(String fileString) throws IllegalArgumentException;
+    protected String fileName() {
+        return "obj";
+    }
+    protected String fileString() {
+        return "";
+    }
+    protected List<E> newItems(String fileString) throws IllegalArgumentException {
+        return Collections.<E>emptyList();
+    }
 }
