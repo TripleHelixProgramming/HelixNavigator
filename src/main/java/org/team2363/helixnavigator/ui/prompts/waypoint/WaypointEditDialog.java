@@ -6,8 +6,8 @@ import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 import org.team2363.helixnavigator.global.Standards;
-import org.team2363.lib.ui.prompts.DecimalTextField;
-import org.team2363.lib.ui.prompts.FilteredTextField;
+import org.team2363.lib.ui.validation.FilteredTextField;
+import org.team2363.lib.ui.validation.MathExpressionTextField;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -40,9 +40,9 @@ public abstract class WaypointEditDialog {
     private final Text nameText = new Text("Name:");
     private final FilteredTextField nameTextField = new FilteredTextField(Standards.MAX_NAME_LENGTH, Standards.VALID_NAME);
     private final Text xText = new Text("X:");
-    private final DecimalTextField xTextField = new DecimalTextField();
+    private final MathExpressionTextField xTextField = new MathExpressionTextField();
     private final Text yText = new Text("Y:");
-    private final DecimalTextField yTextField = new DecimalTextField();
+    private final MathExpressionTextField yTextField = new MathExpressionTextField();
     private final GridPane propertyGrid = new GridPane();
     private final Button okButton = new Button("OK");
     private final Button cancelButton = new Button("Cancel");

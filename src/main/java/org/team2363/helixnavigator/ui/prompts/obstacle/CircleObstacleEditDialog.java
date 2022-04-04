@@ -1,8 +1,7 @@
 package org.team2363.helixnavigator.ui.prompts.obstacle;
 
 import org.team2363.helixnavigator.document.obstacle.HCircleObstacle;
-import org.team2363.lib.ui.prompts.ConstrainedDecimalTextField;
-import org.team2363.lib.ui.prompts.DecimalTextField;
+import org.team2363.lib.ui.validation.DecimalTextField;
 
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
@@ -17,19 +16,19 @@ public class CircleObstacleEditDialog extends ObstacleEditDialog {
     private final Text centerYText = new Text("Center Y:");
     private final DecimalTextField centerYTextField = new DecimalTextField();
     private final Text radiusText = new Text("Radius:");
-    private final ConstrainedDecimalTextField radiusTextField = new ConstrainedDecimalTextField(0, Double.MAX_VALUE);
+    private final DecimalTextField radiusTextField = new DecimalTextField(0, Double.MAX_VALUE);
 
     public CircleObstacleEditDialog(HCircleObstacle circleObstacle) {
         super(circleObstacle, new HCircleObstacle());
         this.circleObstacle = (HCircleObstacle) obstacle;
         this.backupCircleObstacle = (HCircleObstacle) backupObstacle;
 
-        GridPane.setConstraints(centerXText, 0, additionalItemsRow);
-        GridPane.setConstraints(centerXTextField, 1, additionalItemsRow);
-        GridPane.setConstraints(centerYText, 0, additionalItemsRow + 1);
-        GridPane.setConstraints(centerYTextField, 1, additionalItemsRow + 1);
-        GridPane.setConstraints(radiusText, 0, additionalItemsRow + 2);
-        GridPane.setConstraints(radiusTextField, 1, additionalItemsRow + 2);
+        GridPane.setConstraints(centerXText, 0, ADDITIONAL_PROPERTIES_ROW);
+        GridPane.setConstraints(centerXTextField, 1, ADDITIONAL_PROPERTIES_ROW);
+        GridPane.setConstraints(centerYText, 0, ADDITIONAL_PROPERTIES_ROW + 1);
+        GridPane.setConstraints(centerYTextField, 1, ADDITIONAL_PROPERTIES_ROW + 1);
+        GridPane.setConstraints(radiusText, 0, ADDITIONAL_PROPERTIES_ROW + 2);
+        GridPane.setConstraints(radiusTextField, 1, ADDITIONAL_PROPERTIES_ROW + 2);
 
         propertyGrid.getChildren().addAll(centerXText, centerXTextField,
                 centerYText, centerYTextField, radiusText, radiusTextField);

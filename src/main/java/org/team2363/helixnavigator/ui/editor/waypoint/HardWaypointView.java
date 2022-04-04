@@ -32,15 +32,18 @@ public class HardWaypointView extends WaypointView {
         robotView.headingProperty().bind(this.hardWaypoint.headingProperty());
         robotView.zoomScaleProperty().bind(zoomScaleProperty());
         robotView.getView().setOnMouseDragged(event -> {
-            System.out.println("Dot dragged");
+            // System.out.println("Dot dragged");
             double x = event.getX();
             double y = event.getY();
             double[] lockAngles = {-180, -90, 0, 90, 180};
             double lockRadius = Standards.HEADING_LOCK_RADIUS;
             double angle = Math.toDegrees(Math.atan2(y, x));
-            System.out.println(angle);
+            // System.out.println(angle);
             for (double lockAngle : lockAngles) {
                 if (!event.isShiftDown() && Math.abs(angle - lockAngle) <= lockRadius) {
+                    if (lockAngle == -180) {
+                        lockAngle = 180;
+                    }
                     angle = lockAngle;
                     break;
                 }

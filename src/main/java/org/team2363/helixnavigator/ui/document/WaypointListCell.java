@@ -21,7 +21,7 @@ import org.team2363.helixnavigator.ui.editor.waypoint.HardWaypointView;
 import org.team2363.helixnavigator.ui.editor.waypoint.SoftWaypointView;
 import org.team2363.helixnavigator.ui.prompts.waypoint.WaypointEditDialog;
 import org.team2363.lib.ui.OrderableListCell;
-import org.team2363.lib.ui.prompts.FilteredTextField;
+import org.team2363.lib.ui.validation.FilteredTextField;
 
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;

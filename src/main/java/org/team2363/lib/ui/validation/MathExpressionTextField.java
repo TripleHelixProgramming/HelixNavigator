@@ -1,9 +1,11 @@
-package org.team2363.lib.ui.prompts;
+package org.team2363.lib.ui.validation;
 
-import static org.team2363.lib.ui.prompts.FilteredTextField.filterFor;
+import static org.team2363.lib.ui.validation.FilteredTextField.filterFor;
 
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
+
+import org.team2363.lib.math.ExpressionParser;
 
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -11,11 +13,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.util.StringConverter;
 
-public class DecimalTextField extends TextField {
+public class MathExpressionTextField extends TextField {
 
-    public static final Pattern DECIMAL_VALIDATOR = Pattern.compile("-?\\d*(\\.\\d*)?");
-    public static final UnaryOperator<TextFormatter.Change> DECIMAL_FILTER = filterFor(Integer.MAX_VALUE, DECIMAL_VALIDATOR);
-    private final StringConverter<Double> decimalConverter = new StringConverter<Double>() {
+    public static final Pattern EXPRESSION_VALIDATOR = Pattern.compile(".*");
+    public static final UnaryOperator<TextFormatter.Change> EXPRESSION_FILTER = filterFor(Integer.MAX_VALUE, EXPRESSION_VALIDATOR);
+    private final StringConverter<Double> expressionConverter = new StringConverter<Double>() {
 
         @Override
         public String toString(Double object) {
@@ -28,18 +30,19 @@ public class DecimalTextField extends TextField {
 
         @Override
         public Double fromString(String string) {
-            if (string.length() == 0 || string.equals("-")) {
-                return 0.0;
-            } else {
-                double rawValue = Double.parseDouble(string);
-                return transformInput(rawValue);
+            double rawValue;
+            try {
+                rawValue = ExpressionParser.eval(string);
+            } catch (Exception e) {
+                rawValue = 0.0;
             }
+            return transformInput(rawValue);
         }
     };
     private final ObjectProperty<Double> value;
 
-    public DecimalTextField() {
-        TextFormatter<Double> formatter = new TextFormatter<Double>(decimalConverter, 0.0, DECIMAL_FILTER);
+    public MathExpressionTextField() {
+        TextFormatter<Double> formatter = new TextFormatter<Double>(expressionConverter, 0.0, EXPRESSION_FILTER);
         value = formatter.valueProperty();
         setTextFormatter(formatter);
         setText("0.0");

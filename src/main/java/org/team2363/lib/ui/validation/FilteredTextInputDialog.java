@@ -1,6 +1,6 @@
-package org.team2363.lib.ui.prompts;
+package org.team2363.lib.ui.validation;
 
-import static org.team2363.lib.ui.prompts.FilteredTextField.filterFor;
+import static org.team2363.lib.ui.validation.FilteredTextField.filterFor;
 
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;

@@ -1,4 +1,4 @@
-package org.team2363.lib.ui.prompts;
+package org.team2363.lib.ui.validation;
 
 import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;

@@ -4,7 +4,7 @@ import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
 import org.team2363.helixnavigator.global.Standards;
-import org.team2363.lib.ui.prompts.FilteredTextInputDialog;
+import org.team2363.lib.ui.validation.FilteredTextInputDialog;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

@@ -5,8 +5,8 @@ import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
 import org.team2363.helixnavigator.document.obstacle.HRectangleObstacle;
 import org.team2363.helixnavigator.global.Standards;
-import org.team2363.lib.ui.prompts.ConstrainedDecimalTextField;
-import org.team2363.lib.ui.prompts.FilteredTextField;
+import org.team2363.lib.ui.validation.DecimalTextField;
+import org.team2363.lib.ui.validation.FilteredTextField;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -40,17 +40,18 @@ public abstract class ObstacleEditDialog {
     private final Text nameText = new Text("Name:");
     private final FilteredTextField nameTextField = new FilteredTextField(Standards.MAX_NAME_LENGTH, Standards.VALID_NAME);
     private final Text safetyDistanceText = new Text("Safety Distance:");
-    private final ConstrainedDecimalTextField safetyDistanceTextField = new ConstrainedDecimalTextField(0, Double.MAX_VALUE);
+    private final DecimalTextField safetyDistanceTextField = new DecimalTextField(0, Double.MAX_VALUE);
     protected final GridPane propertyGrid = new GridPane();
     /**
      * The index where new grid pane items can be added. For example, the circle obstacle
      * dialog can add the center x text field at this row.
      */
-    protected final int additionalItemsRow = 2;
+    protected final int ADDITIONAL_PROPERTIES_ROW = 2;
     private final Button okButton = new Button("OK");
     private final Button cancelButton = new Button("Cancel");
     private final HBox buttonBox = new HBox(okButton, cancelButton);
     protected final VBox vBox = new VBox(propertyGrid, buttonBox);
+    protected final int ADDITIONAL_NODES_ROW = 1;
     private final Scene scene = new Scene(vBox);
     private final Stage stage = new Stage();
 
@@ -71,6 +72,7 @@ public abstract class ObstacleEditDialog {
         vBox.setPadding(new Insets(10, 10, 10, 10));
         vBox.setSpacing(10);
         stage.setScene(scene);
+        stage.setWidth(250);
         stage.setResizable(false);
 
         okButton.setOnAction(event -> {

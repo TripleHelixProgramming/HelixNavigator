@@ -1,8 +1,8 @@
 package org.team2363.helixnavigator.ui.prompts;
 
 import org.team2363.helixnavigator.document.HRobotConfiguration;
-import org.team2363.lib.ui.prompts.DecimalTextField;
-import org.team2363.lib.ui.prompts.IntegerTextField;
+import org.team2363.lib.ui.validation.IntegerTextField;
+import org.team2363.lib.ui.validation.MathExpressionTextField;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -22,21 +22,21 @@ public class RobotConfigEditDialog {
     private final Text teamNumberText = new Text("Team Number:");
     private final IntegerTextField teamNumberTextField = new IntegerTextField();
     private final Text bumperLengthText = new Text("Bumper Length:");
-    private final DecimalTextField bumperLengthTextField = new DecimalTextField();
+    private final MathExpressionTextField bumperLengthTextField = new MathExpressionTextField();
     private final Text bumperWidthText = new Text("Bumper Width:");
-    private final DecimalTextField bumperWidthTextField = new DecimalTextField();
+    private final MathExpressionTextField bumperWidthTextField = new MathExpressionTextField();
     private final Text wheelHorizontalDistanceText = new Text("Wheel Horizontal Distance:");
-    private final DecimalTextField wheelHorizontalDistanceTextField = new DecimalTextField();
+    private final MathExpressionTextField wheelHorizontalDistanceTextField = new MathExpressionTextField();
     private final Text wheelVerticalDistanceText = new Text("Wheel Vertical Distance:");
-    private final DecimalTextField wheelVerticalDistanceTextField = new DecimalTextField();
+    private final MathExpressionTextField wheelVerticalDistanceTextField = new MathExpressionTextField();
     private final Text massText = new Text("Mass:");
-    private final DecimalTextField massTextField = new DecimalTextField();
+    private final MathExpressionTextField massTextField = new MathExpressionTextField();
     private final Text momentOfInertiaText = new Text("Moment of Inertia:");
-    private final DecimalTextField momentOfInertiaTextField = new DecimalTextField();
+    private final MathExpressionTextField momentOfInertiaTextField = new MathExpressionTextField();
     private final Text motorMaxAngularSpeedText = new Text("Motor Max Angular Speed:");
-    private final DecimalTextField motorMaxAngularSpeedTextField = new DecimalTextField();
+    private final MathExpressionTextField motorMaxAngularSpeedTextField = new MathExpressionTextField();
     private final Text motorMaxTorqueText = new Text("Motor Max Torque:");
-    private final DecimalTextField motorMaxTorqueTextField = new DecimalTextField();
+    private final MathExpressionTextField motorMaxTorqueTextField = new MathExpressionTextField();
     private final GridPane propertyGrid = new GridPane();
     private final Button okButton = new Button("OK");
     private final Button cancelButton = new Button("Cancel");

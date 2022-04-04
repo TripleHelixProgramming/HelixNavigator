@@ -41,7 +41,7 @@ public class WaypointsPane extends Pane {
 
         waypointsPane.setPickOnBounds(false);
         robotsPane.setPickOnBounds(false);
-        getChildren().addAll(waypointsPane, robotsPane);
+        getChildren().addAll(robotsPane, waypointsPane);
         setPickOnBounds(false);
 
         loadDocument(this.documentManager.getDocument());
