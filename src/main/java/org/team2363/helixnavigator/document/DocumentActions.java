@@ -1,6 +1,7 @@
 package org.team2363.helixnavigator.document;
 
 import org.team2363.helixnavigator.document.field.image.HFieldImage;
+import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 
 import javafx.beans.property.BooleanProperty;
@@ -146,6 +147,20 @@ public class DocumentActions {
             triggeringWaypoint.setX(newX);
             triggeringWaypoint.setY(newY);
             document.getSelectedPath().moveSelectedElementsRelative(deltaX, deltaY, triggeringWaypoint);
+        }
+    }
+
+    public void handleMouseDraggedAsPolygonPointDragged(MouseEvent event, HPolygonPoint triggeringPolygonPoint) {
+        if (documentManager.getIsDocumentOpen() && event.getButton() == MouseButton.PRIMARY) {
+            // System.out.println("X: " + event.getX() + " Y: " + event.getY());
+            HDocument document = documentManager.getDocument();
+            double newX = event.getX() / document.getZoomScale();
+            double newY = -event.getY() / document.getZoomScale();
+            double deltaX = newX - triggeringPolygonPoint.getX();
+            double deltaY = newY - triggeringPolygonPoint.getY();
+            triggeringPolygonPoint.setX(newX);
+            triggeringPolygonPoint.setY(newY);
+            document.getSelectedPath().moveSelectedPolygonPointsRelative(deltaX, deltaY, triggeringPolygonPoint);
         }
     }
 

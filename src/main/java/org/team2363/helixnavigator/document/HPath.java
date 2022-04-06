@@ -81,9 +81,23 @@ public class HPath {
         });
     }
 
+    public void moveSelectedPolygonPointsRelative(double deltaX, double deltaY, HPolygonPoint excludedPolygonPoint) {
+        getPolygonPointsSelectionModel().getSelectedItems().forEach(element -> {
+            if (element != excludedPolygonPoint) {
+                element.translateRelative(deltaX, deltaY);
+            }
+        });
+    }
+
     public void clearSelection() {
         waypointsSelectionModel.clearSelection();
         obstaclesSelectionModel.clearSelection();
+    }
+
+    public void clearPolygonPointSelection() {
+        if (getInPolygonPointMode()) {
+            getPolygonPointsSelectionModel().clearSelection();
+        }
     }
 
     public final StringProperty nameProperty() {

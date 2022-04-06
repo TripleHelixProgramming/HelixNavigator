@@ -1,6 +1,7 @@
 package org.team2363.helixnavigator.ui.editor.waypoint;
 
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+import org.team2363.helixnavigator.global.Standards;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -27,13 +28,13 @@ public abstract class WaypointView {
         this.waypoint = waypoint;
 
         selectionCircle.setFill(Color.ORANGE);
-        waypointCircle.setFill(Color.BLUE);
+        waypointCircle.setFill(Standards.COLOR_PALETTE[3]);
         
-        waypointCircle.setStroke(Color.BLACK);
+        waypointCircle.setStroke(Standards.COLOR_PALETTE[0]);
         waypointCircle.setStrokeType(StrokeType.INSIDE);
         waypointCircle.setStrokeWidth(3.0);
         selectionCircle.setOpacity(0.0);
-        
+
         waypointPane.setPickOnBounds(false);
         pane.setPickOnBounds(false);
 

@@ -9,16 +9,16 @@ import javafx.scene.layout.Pane;
 public abstract class ObstacleView {
 
     private final HObstacle obstacle;
-    protected final Pane obstaclePane = new Pane();
+
+    protected final Pane pane = new Pane();
 
     private final DoubleProperty zoomScale = new SimpleDoubleProperty(this, "zoomScale", 1.0);
 
     protected ObstacleView(HObstacle obstacle) {
         this.obstacle = obstacle;
 
-        obstaclePane.setPickOnBounds(false);
+        pane.setPickOnBounds(false);
 
-        updateSelected(this.obstacle.isSelected());
         this.obstacle.selectedProperty().addListener((currentValue, wasSelected, isSelected) -> {
             updateSelected(isSelected);
         });
@@ -38,7 +38,7 @@ public abstract class ObstacleView {
         return zoomScale.get();
     }
 
-    public Pane getObstacleView() {
-        return obstaclePane;
+    public Pane getView() {
+        return pane;
     }
 }

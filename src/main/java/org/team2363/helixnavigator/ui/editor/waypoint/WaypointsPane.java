@@ -131,7 +131,6 @@ public class WaypointsPane extends Pane {
                     documentManager.getDocument().getSelectedPath().clearSelection();
                 }
                 documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().select(index);
-                // documentManager.actions().handleMouseDragBeginAsElementsDragBegin(event);
             }
         };
         EventHandler<MouseEvent> onMouseDragged = event -> {

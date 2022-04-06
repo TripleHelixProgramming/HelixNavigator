@@ -1,5 +1,7 @@
 package org.team2363.helixnavigator.ui.editor.waypoint;
 
+import org.team2363.helixnavigator.global.Standards;
+
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.layout.Pane;
@@ -31,14 +33,14 @@ public class RobotView {
         robotRectangle.setStrokeType(StrokeType.INSIDE);
         robotRectangle.setStrokeWidth(5);
         // robotRectangle.strokeWidthProperty().bind(zoomScale.multiply(4));
-        robotRectangle.setStroke(Color.DEEPSKYBLUE);
+        robotRectangle.setStroke(Standards.COLOR_PALETTE[2]);
         robotRectangle.setArcWidth(6);
         robotRectangle.setArcHeight(6);
         robotRectangle.xProperty().bind(bumperLength.multiply(-0.5).multiply(zoomScale));
         robotRectangle.yProperty().bind(bumperWidth.multiply(-0.5).multiply(zoomScale));
         robotRectangle.widthProperty().bind(bumperLength.multiply(zoomScale));
         robotRectangle.heightProperty().bind(bumperWidth.multiply(zoomScale));
-        headingDot.setFill(Color.DEEPSKYBLUE);
+        headingDot.setFill(Standards.COLOR_PALETTE[2]);
         headingDot.setRadius(8);
         //headingDot.radiusProperty().bind(zoomScale.multiply(4));
         headingDot.centerXProperty().bind(bumperLength.multiply(0.5).multiply(zoomScale).subtract(robotRectangle.strokeWidthProperty().multiply(0.5)));

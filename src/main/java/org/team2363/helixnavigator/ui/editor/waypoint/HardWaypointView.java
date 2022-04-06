@@ -6,7 +6,6 @@ import org.team2363.helixnavigator.global.Standards;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
 public class HardWaypointView extends WaypointView {
@@ -25,8 +24,8 @@ public class HardWaypointView extends WaypointView {
         this.hardWaypoint = hardWaypoint;
         cross1.setStrokeWidth(3);
         cross2.setStrokeWidth(3);
-        cross1.setStroke(Color.RED);
-        cross2.setStroke(Color.RED);
+        cross1.setStroke(Standards.COLOR_PALETTE[4]);
+        cross2.setStroke(Standards.COLOR_PALETTE[4]);
 
         robotView.getView().getTransforms().add(centerTranslate);
         robotView.headingProperty().bind(this.hardWaypoint.headingProperty());

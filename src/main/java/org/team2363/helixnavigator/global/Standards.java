@@ -30,6 +30,14 @@ public class Standards {
     public static final String DEFAULT_FIELD_IMAGE = "2022: Rapid React";
     public static final double DEFAULT_OBSTACLE_SAFETY_DISTANCE = 5.0;
     public static final Color BACKGROUND_COLOR = Color.gray(0.85);
+    public static final Color[] COLOR_PALETTE = {
+        Color.valueOf("#343233"),
+        Color.valueOf("#399e5a"),
+        Color.valueOf("#47e3ff"),
+        Color.valueOf("#0E73AA"),
+        Color.valueOf("#ed1c24")
+    };
+    public static final Color OBSTACLE_COLOR = Standards.COLOR_PALETTE[2].deriveColor(0, 1, 1, .6);
 
     public static final class DefaultRobotConfiguration {
         public static final int TEAM_NUMBER = 2363;
