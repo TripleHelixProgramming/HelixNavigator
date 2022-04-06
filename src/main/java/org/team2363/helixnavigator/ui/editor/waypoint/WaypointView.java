@@ -2,9 +2,12 @@ package org.team2363.helixnavigator.ui.editor.waypoint;
 
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 import org.team2363.helixnavigator.global.Standards;
+import org.team2363.helixnavigator.ui.prompts.waypoint.WaypointEditDialog;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -24,6 +27,9 @@ public abstract class WaypointView {
 
     protected final Translate centerTranslate = new Translate();
 
+    private final MenuItem editMenuItem = new MenuItem("Edit...");
+    private final ContextMenu contextMenu = new ContextMenu(editMenuItem);
+
     protected WaypointView(HWaypoint waypoint) {
         this.waypoint = waypoint;
 
@@ -35,6 +41,10 @@ public abstract class WaypointView {
         waypointCircle.setStrokeWidth(3.0);
         selectionCircle.setOpacity(0.0);
 
+        pane.setOnContextMenuRequested(event -> {
+            contextMenu.show(pane, event.getScreenX(), event.getScreenY());
+        });
+        editMenuItem.setOnAction(event -> WaypointEditDialog.dialog(this.waypoint).show());
         waypointPane.setPickOnBounds(false);
         pane.setPickOnBounds(false);
 
