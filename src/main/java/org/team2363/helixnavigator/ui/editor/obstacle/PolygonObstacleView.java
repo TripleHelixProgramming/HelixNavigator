@@ -5,6 +5,7 @@ import org.team2363.helixnavigator.global.Standards;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeType;
 
 public class PolygonObstacleView extends ObstacleView {
@@ -26,6 +27,7 @@ public class PolygonObstacleView extends ObstacleView {
         polygon.setStroke(Color.ORANGE);
         polygon.setStrokeWidth(0.0);
         polygon.setStrokeType(StrokeType.OUTSIDE);
+        polygon.setStrokeLineCap(StrokeLineCap.ROUND);
 
         pane.getChildren().add(polygon);
         

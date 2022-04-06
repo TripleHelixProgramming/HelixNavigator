@@ -33,6 +33,7 @@ public class PolygonPointView {
         circle.translateXProperty().bind(this.polygonPoint.xProperty().multiply(zoomScale));
         circle.translateYProperty().bind(this.polygonPoint.yProperty().multiply(zoomScale).negate());
 
+        updateSelected(this.polygonPoint.isSelected());
         this.polygonPoint.selectedProperty().addListener((currentValue, wasSelected, isSelected) -> {
             updateSelected(isSelected);
         });

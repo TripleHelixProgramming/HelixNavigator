@@ -2,22 +2,22 @@ package org.team2363.helixnavigator.ui.menu.tools;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
-import org.team2363.helixnavigator.ui.prompts.RobotConfigDialog;
+import org.team2363.helixnavigator.ui.prompts.DocumentConfigDialog;
 
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.scene.control.MenuItem;
 
-public class EditRobotConfigurationMenuItem extends MenuItem {
+public class EditDocumentConfigurationMenuItem extends MenuItem {
 
     private final DocumentManager documentManager;
 
-    private RobotConfigDialog dialog;
+    private DocumentConfigDialog dialog;
     
-    public EditRobotConfigurationMenuItem(DocumentManager documentManager) {
+    public EditDocumentConfigurationMenuItem(DocumentManager documentManager) {
         this.documentManager = documentManager;
 
-        setText("Edit Robot Configuration...");
+        setText("Edit Document Configuration...");
         setOnAction(this::action);
         disableProperty().bind(this.documentManager.isDocumentOpenProperty().not());
 
@@ -43,7 +43,7 @@ public class EditRobotConfigurationMenuItem extends MenuItem {
 
     private void loadDocument(HDocument newDocument) {
         if (newDocument != null) {
-            dialog = new RobotConfigDialog(newDocument.getRobotConfiguration());
+            dialog = new DocumentConfigDialog(newDocument);
         }
     }
 }

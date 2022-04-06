@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import com.jlbabilino.json.JSONDeserializer;
@@ -12,6 +11,10 @@ import com.jlbabilino.json.JSONDeserializerException;
 import com.jlbabilino.json.JSONParserException;
 
 import org.team2363.helixnavigator.document.field.image.HDefaultFieldImage;
+import org.team2363.helixnavigator.document.field.image.HFieldImage;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class DefaultFieldImages {
 
@@ -19,6 +22,10 @@ public class DefaultFieldImages {
     private static final Logger LOGGER = Logger.getLogger("org.team2363.helixnavigator.global");
 
     private static final Map<String, HDefaultFieldImage> fieldImageMap = new HashMap<>();
+    private static final ObservableList<String> names = FXCollections.observableArrayList();
+    private static final ObservableList<String> namesUnmodifiable = FXCollections.unmodifiableObservableList(names);
+    private static final ObservableList<HFieldImage> fieldImages = FXCollections.observableArrayList();
+    private static final ObservableList<HFieldImage> fieldImagesUnmodifiable = FXCollections.unmodifiableObservableList(fieldImages);
 
     public static void loadDefaultFieldImages() {
         LOGGER.info("Loading default images...");
@@ -42,6 +49,8 @@ public class DefaultFieldImages {
                 index++;
             }
         }
+        names.addAll(fieldImageMap.keySet());
+        fieldImages.addAll(fieldImageMap.values());
     }
 
     public static boolean containsName(String name) {
@@ -55,7 +64,11 @@ public class DefaultFieldImages {
         return fieldImageMap.get(name);
     }
 
-    public static Set<String> listNames() {
-        return fieldImageMap.keySet();
+    public static ObservableList<String> listNames() {
+        return namesUnmodifiable;
+    }
+
+    public static ObservableList<HFieldImage> listImages() {
+        return fieldImagesUnmodifiable;
     }
 }

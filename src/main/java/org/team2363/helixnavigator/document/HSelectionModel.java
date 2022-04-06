@@ -51,6 +51,7 @@ public class HSelectionModel<E extends HSelectableElement> extends MultipleSelec
         this.items = items;
         items.addListener(this::itemsChanged);
         setSelectionMode(SelectionMode.MULTIPLE);
+        clearSelection();
     }
 
     /**
@@ -329,7 +330,7 @@ public class HSelectionModel<E extends HSelectableElement> extends MultipleSelec
     @Override
     public void clearSelection() {
         selectedIndices.clear();
-        for (E item : selectedItems) {
+        for (E item : items) {
             item.setSelected(false);
         }
         selectedItems.clear();

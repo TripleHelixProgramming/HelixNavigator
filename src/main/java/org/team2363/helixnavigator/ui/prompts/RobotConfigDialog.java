@@ -14,7 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class RobotConfigEditDialog {
+public class RobotConfigDialog {
 
     private final HRobotConfiguration backupRobotConfiguration;
     private final HRobotConfiguration robotConfiguration;
@@ -45,7 +45,7 @@ public class RobotConfigEditDialog {
     private final Scene scene = new Scene(vBox);
     private final Stage stage = new Stage();
 
-    public RobotConfigEditDialog(HRobotConfiguration robotConfiguration) {
+    public RobotConfigDialog(HRobotConfiguration robotConfiguration) {
         this.robotConfiguration = robotConfiguration;
 
         okButton.setDefaultButton(true);

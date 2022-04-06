@@ -83,6 +83,7 @@ public class FieldImagePane extends Pane {
             unitsScale.setY(fieldImage.getImageRes());
             centerTranslate.setX(-fieldImage.getImageCenterX());
             centerTranslate.setY(-fieldImage.getImageCenterY());
+            this.documentManager.actions().zoomToFit();
         }
     }
 }
