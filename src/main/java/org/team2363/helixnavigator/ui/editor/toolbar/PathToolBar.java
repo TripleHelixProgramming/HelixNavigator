@@ -13,6 +13,7 @@ public class PathToolBar extends ToolBar {
 
     private final ToggleButton lockZoom = new ToggleButton("Lock Zoom");
     private final ToggleButton showOrigin = new ToggleButton("Show Origin");
+    private final ToggleButton autoWaypoint = new ToggleButton("Auto Waypoint");
     private final Button debug = new Button("Debug");
 
     public PathToolBar(DocumentManager documentManager) {
@@ -21,6 +22,7 @@ public class PathToolBar extends ToolBar {
         lockZoom.setOnAction(this::lockZoomToggled);
         this.documentManager.actions().lockZoomProperty().bind(lockZoom.selectedProperty());
         this.documentManager.actions().showOriginProperty().bind(showOrigin.selectedProperty());
+        this.documentManager.actions().autoWaypointProperty().bind(autoWaypoint.selectedProperty());
         debug.setOnAction(event -> {
             if (this.documentManager.getIsDocumentOpen() &&
                     this.documentManager.getDocument().isPathSelected() &&
@@ -29,7 +31,7 @@ public class PathToolBar extends ToolBar {
             }
         });
 
-        getItems().addAll(lockZoom, showOrigin, debug);
+        getItems().addAll(lockZoom, showOrigin, autoWaypoint, debug);
     }
 
     public void lockZoomToggled(ActionEvent event) {

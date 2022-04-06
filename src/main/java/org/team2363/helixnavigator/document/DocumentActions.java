@@ -16,6 +16,7 @@ public class DocumentActions {
 
     private final BooleanProperty lockZoom = new SimpleBooleanProperty(this, "lockZoom", false);
     private final BooleanProperty showOrigin = new SimpleBooleanProperty(this, "showOrigin", false);
+    private final BooleanProperty autoWaypoint = new SimpleBooleanProperty(this, "autoWaypoint", false);
 
     DocumentActions(DocumentManager documentManager) {
         this.documentManager = documentManager;
@@ -200,5 +201,17 @@ public class DocumentActions {
 
     public final boolean getShowOrigin() {
         return showOrigin.get();
+    }
+
+    public final BooleanProperty autoWaypointProperty() {
+        return autoWaypoint;
+    }
+
+    public final void setAutoWaypoint(boolean value) {
+        autoWaypoint.set(value);
+    }
+
+    public final boolean getAutoWaypoint() {
+        return autoWaypoint.get();
     }
 }
