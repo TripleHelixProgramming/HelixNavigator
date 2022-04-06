@@ -15,6 +15,7 @@ import org.team2363.helixnavigator.document.obstacle.HCircleObstacle;
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HObstacle.ObstacleType;
 import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
+import org.team2363.helixnavigator.document.obstacle.HRectangleObstacle;
 import org.team2363.helixnavigator.global.Standards;
 import org.team2363.helixnavigator.ui.prompts.obstacle.ObstacleEditDialog;
 import org.team2363.lib.ui.OrderableListCell;
@@ -64,14 +65,17 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
     private final ContextMenu noneSelectedContextMenu = new ContextMenu();
     private final MenuItem newCircleObstacleMenuItem = new MenuItem("New circle obstacle");
     private final MenuItem newPolygonObstacleMenuItem = new MenuItem("New polygon obstacle");
+    private final MenuItem newRectangleObstacleMenuItem = new MenuItem("New rectangle obstacle");
 
     private final ContextMenu singleSelectedContextMenu = new ContextMenu();
     private final MenuItem editMenuItem = new MenuItem("Edit...");
     private final Menu insertMenu = new Menu("Insert");
     private final MenuItem insertNewCircleObstacleBeforeMenuItem = new MenuItem("Insert new circle obstacle before");
     private final MenuItem insertNewPolygonObstacleBeforeMenuItem = new MenuItem("Insert new polygon obstacle before");
+    private final MenuItem insertNewRectangleObstacleBeforeMenuItem = new MenuItem("Insert new rectangle obstacle before");
     private final MenuItem insertNewCircleObstacleAfterMenuItem = new MenuItem("Insert new circle obstacle after");
     private final MenuItem insertNewPolygonObstacleAfterMenuItem = new MenuItem("Insert new polygon obstacle after");
+    private final MenuItem insertNewRectangleObstacleAfterMenuItem = new MenuItem("Insert new rectangle obstacle after");
     private final MenuItem renameMenuItem = new MenuItem("Rename");
     private final MenuItem deleteSingleMenuItem = new MenuItem("Delete");
 
@@ -103,17 +107,22 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
         editMenuItem.setOnAction(this::edit);
         newCircleObstacleMenuItem.setOnAction(this::newCircleObstacle);
         newPolygonObstacleMenuItem.setOnAction(this::newPolygonObstacle);
+        newRectangleObstacleMenuItem.setOnAction(this::newRectangleObstacle);
         insertNewCircleObstacleBeforeMenuItem.setOnAction(this::insertNewCircleObstacleBefore);
         insertNewPolygonObstacleBeforeMenuItem.setOnAction(this::insertNewPolygonObstacleBefore);
+        insertNewRectangleObstacleBeforeMenuItem.setOnAction(this::insertNewRectangleObstacleBefore);
         insertNewCircleObstacleAfterMenuItem.setOnAction(this::insertNewCircleObstacleAfter);
         insertNewPolygonObstacleAfterMenuItem.setOnAction(this::insertNewPolygonObstacleAfter);
+        insertNewRectangleObstacleAfterMenuItem.setOnAction(this::insertNewRectangleObstacleAfter);
         renameMenuItem.setOnAction(this::renameObstacle);
         deleteSingleMenuItem.setOnAction(this::deleteSelectedObstacles);
         deleteMultipleMenuItem.setOnAction(this::deleteSelectedObstacles);
 
-        insertMenu.getItems().addAll(insertNewCircleObstacleBeforeMenuItem, insertNewPolygonObstacleBeforeMenuItem, insertNewCircleObstacleAfterMenuItem, insertNewPolygonObstacleAfterMenuItem);
+        insertMenu.getItems().addAll(insertNewCircleObstacleBeforeMenuItem, insertNewPolygonObstacleBeforeMenuItem,
+                insertNewRectangleObstacleBeforeMenuItem, insertNewCircleObstacleAfterMenuItem,
+                insertNewPolygonObstacleAfterMenuItem, insertNewRectangleObstacleAfterMenuItem);
 
-        noneSelectedContextMenu.getItems().addAll(newCircleObstacleMenuItem, newPolygonObstacleMenuItem);
+        noneSelectedContextMenu.getItems().addAll(newCircleObstacleMenuItem, newPolygonObstacleMenuItem, newRectangleObstacleMenuItem);
         singleSelectedContextMenu.getItems().addAll(editMenuItem, insertMenu, renameMenuItem, deleteSingleMenuItem);
         multipleSelectedContextMenu.getItems().addAll(deleteMultipleMenuItem);
 
@@ -230,6 +239,11 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
         newObstacle.setName(String.valueOf(getListView().getItems().size()));
         getListView().getItems().add(newObstacle);
     }
+    private void newRectangleObstacle(ActionEvent event) {
+        HObstacle newObstacle = new HRectangleObstacle();
+        newObstacle.setName(String.valueOf(getListView().getItems().size()));
+        getListView().getItems().add(newObstacle);
+    }
     private void insertNewCircleObstacleBefore(ActionEvent event) {
         int insertIndex = getListView().getSelectionModel().getSelectedIndex();
         HObstacle newObstacle = new HCircleObstacle();
@@ -242,6 +256,12 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
         newObstacle.setName(String.valueOf(getListView().getItems().size()));
         getListView().getItems().add(insertIndex, newObstacle);
     }
+    private void insertNewRectangleObstacleBefore(ActionEvent event) {
+        int insertIndex = getListView().getSelectionModel().getSelectedIndex();
+        HObstacle newObstacle = new HRectangleObstacle();
+        newObstacle.setName(String.valueOf(getListView().getItems().size()));
+        getListView().getItems().add(insertIndex, newObstacle);
+    }
     private void insertNewCircleObstacleAfter(ActionEvent event) {
         int insertIndex = getListView().getSelectionModel().getSelectedIndex() + 1;
         HObstacle newObstacle = new HCircleObstacle();
@@ -251,6 +271,12 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
     private void insertNewPolygonObstacleAfter(ActionEvent event) {
         int insertIndex = getListView().getSelectionModel().getSelectedIndex() + 1;
         HObstacle newObstacle = new HPolygonObstacle();
+        newObstacle.setName(String.valueOf(getListView().getItems().size()));
+        getListView().getItems().add(insertIndex, newObstacle);
+    }
+    private void insertNewRectangleObstacleAfter(ActionEvent event) {
+        int insertIndex = getListView().getSelectionModel().getSelectedIndex() + 1;
+        HObstacle newObstacle = new HRectangleObstacle();
         newObstacle.setName(String.valueOf(getListView().getItems().size()));
         getListView().getItems().add(insertIndex, newObstacle);
     }

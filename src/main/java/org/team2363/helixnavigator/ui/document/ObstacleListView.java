@@ -6,6 +6,7 @@ import org.team2363.helixnavigator.document.HPath;
 import org.team2363.helixnavigator.document.obstacle.HCircleObstacle;
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
+import org.team2363.helixnavigator.document.obstacle.HRectangleObstacle;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -13,7 +14,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
@@ -27,6 +30,9 @@ public class ObstacleListView extends ListView<HObstacle> {
     private final ContextMenu noneSelectedContextMenu = new ContextMenu();
     private final MenuItem newCircleObstacleMenuItem = new MenuItem("New circle obstacle");
     private final MenuItem newPolygonObstacleMenuItem = new MenuItem("New polygon obstacle");
+    private final MenuItem newRectangleObstacleMenuItem = new MenuItem("New rectangle obstacle");
+
+    private final Label placeholder = new Label("RIGHT-CLICK TO CREATE AN OBSTACLE");
 
     private final ListChangeListener<? super Integer> onListViewSelectedIndicesChanged = this::listViewSelectedIndicesChanged;
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
@@ -38,14 +44,17 @@ public class ObstacleListView extends ListView<HObstacle> {
         this.documentManager.documentProperty().addListener(this::documentChanged);
 
         setEditable(true);
+        placeholder.setPadding(new Insets(0, 10, 0, 10));
+        setPlaceholder(placeholder);
         setItems(BLANK);
         setContextMenu(null);
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         getSelectionModel().getSelectedIndices().addListener(onListViewSelectedIndicesChanged);
         setCellFactory(ObstacleListCell.obstacleCellFactory);
-        noneSelectedContextMenu.getItems().addAll(newCircleObstacleMenuItem, newPolygonObstacleMenuItem);
+        noneSelectedContextMenu.getItems().addAll(newCircleObstacleMenuItem, newPolygonObstacleMenuItem, newRectangleObstacleMenuItem);
         newCircleObstacleMenuItem.setOnAction(this::newCircleObstacle);
         newPolygonObstacleMenuItem.setOnAction(this::newPolygonObstacle);
+        newRectangleObstacleMenuItem.setOnAction(this::newRectangleObstacle);
         noneSelectedContextMenu.setAutoHide(true);
     }
 
@@ -56,6 +65,11 @@ public class ObstacleListView extends ListView<HObstacle> {
     }
     private void newPolygonObstacle(ActionEvent event) {
         HObstacle newObstacle = new HPolygonObstacle();
+        newObstacle.setName(String.valueOf(getItems().size()));
+        getItems().add(newObstacle);
+    }
+    private void newRectangleObstacle(ActionEvent event) {
+        HObstacle newObstacle = new HRectangleObstacle();
         newObstacle.setName(String.valueOf(getItems().size()));
         getItems().add(newObstacle);
     }

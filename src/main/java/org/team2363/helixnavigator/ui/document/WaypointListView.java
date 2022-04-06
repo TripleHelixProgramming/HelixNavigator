@@ -13,7 +13,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.MultipleSelectionModel;
@@ -29,12 +31,16 @@ public class WaypointListView extends ListView<HWaypoint> {
     private final MenuItem newSoftWaypointMenuItem = new MenuItem("New soft waypoint");
     private final MenuItem newHardWaypointMenuItem = new MenuItem("New hard waypoint");
 
+    private final Label placeholder = new Label("RIGHT-CLICK TO CREATE A WAYPOINT");
+
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
 
     public WaypointListView(DocumentManager documentManager) {
         this.documentManager = documentManager;
 
         setEditable(true);
+        placeholder.setPadding(new Insets(0, 10, 0, 10));
+        setPlaceholder(placeholder);
         setItems(blankItems);
         setSelectionModel(blankSelecitonModel);
         setContextMenu(null);
