@@ -8,6 +8,7 @@ import org.team2363.helixnavigator.document.HPath;
 import org.team2363.helixnavigator.document.obstacle.HCircleObstacle;
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
+import org.team2363.helixnavigator.document.obstacle.HRectangleObstacle;
 import org.team2363.lib.ui.MouseEventWrapper;
 
 import javafx.beans.value.ChangeListener;
@@ -91,16 +92,15 @@ public class ObstaclesPane extends Pane {
             switch (obstacle.getObstacleType()) {
                 case CIRCLE:
                     HCircleObstacle circleObstacle = (HCircleObstacle) obstacle;
-                    CircleObstacleView circleObstacleView = new CircleObstacleView(circleObstacle);
-                    obstacleView = circleObstacleView;
+                    obstacleView = new CircleObstacleView(circleObstacle);
                     break;
                 case POLYGON:
                     HPolygonObstacle polygonObstacle = (HPolygonObstacle) obstacle;
-                    PolygonObstacleView polygonObstacleView = new PolygonObstacleView(polygonObstacle);
-                    obstacleView = polygonObstacleView;
+                    obstacleView = new PolygonObstacleView(polygonObstacle);
                     break;
                 case RECTANGLE:
-                    obstacleView = null;
+                    HRectangleObstacle rectangleObstacle = (HRectangleObstacle) obstacle;
+                    obstacleView = new RectangleObstacleView(rectangleObstacle);
                     break;
                 default:
                     obstacleView = null;
