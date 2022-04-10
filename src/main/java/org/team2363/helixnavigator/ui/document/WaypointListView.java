@@ -4,8 +4,6 @@ import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
 import org.team2363.helixnavigator.document.HSelectionModel;
-import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 
 import javafx.beans.value.ChangeListener;
@@ -55,14 +53,10 @@ public class WaypointListView extends ListView<HWaypoint> {
     }
 
     private void newSoftWaypoint(ActionEvent event) {
-        HWaypoint newWaypoint = new HSoftWaypoint();
-        newWaypoint.setName(String.valueOf(getItems().size()));
-        getItems().add(newWaypoint);
+        documentManager.actions().newSoftWaypoint();
     }
     private void newHardWaypoint(ActionEvent event) {
-        HWaypoint newWaypoint = new HHardWaypoint();
-        newWaypoint.setName(String.valueOf(getItems().size()));
-        getItems().add(newWaypoint);
+        documentManager.actions().newHardWaypoint();
     }
 
     private void documentChanged(ObservableValue<? extends HDocument> currentDocument, HDocument oldDocument, HDocument newDocument) {

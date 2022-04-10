@@ -29,7 +29,7 @@ public class BackgroundRectangle extends Rectangle {
                     newWaypoint.setX(x);
                     newWaypoint.setY(y);
                     int index = this.documentManager.getDocument().getSelectedPath().getWaypoints().size();
-                    newWaypoint.setName(String.valueOf(index));
+                    newWaypoint.setName("Hard Waypoint " + index);
                     this.documentManager.getDocument().getSelectedPath().getWaypoints().add(index, newWaypoint);
                     this.documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().select(index);
                 }

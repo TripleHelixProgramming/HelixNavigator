@@ -2,6 +2,8 @@ package org.team2363.helixnavigator.document;
 
 import org.team2363.helixnavigator.document.field.image.HFieldImage;
 import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
+import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
+import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 
 import javafx.beans.property.BooleanProperty;
@@ -79,13 +81,13 @@ public class DocumentActions {
     private double lastBackgroundDragX;
     private double lastBackgroundDragY;
     public void handleMousePressedAsPan(MouseEvent event) {
-        if (documentManager.getIsDocumentOpen() && !getLockZoom() && event.getButton() == MouseButton.MIDDLE) {
+        if (documentManager.getIsDocumentOpen() && !getLockZoom() && event.getButton() == MouseButton.SECONDARY) {
             lastBackgroundDragX = event.getSceneX();
             lastBackgroundDragY = event.getSceneY();
         }
     }
     public void handleMouseDraggedAsPan(MouseEvent event) {
-        if (documentManager.getIsDocumentOpen() && !getLockZoom() && event.getButton() == MouseButton.MIDDLE) {
+        if (documentManager.getIsDocumentOpen() && !getLockZoom() && event.getButton() == MouseButton.SECONDARY) {
             pan(event.getSceneX() - lastBackgroundDragX, event.getSceneY() - lastBackgroundDragY);
             lastBackgroundDragX = event.getSceneX();
             lastBackgroundDragY = event.getSceneY();
@@ -176,6 +178,34 @@ public class DocumentActions {
     public void clearSelection() {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
             documentManager.getDocument().getSelectedPath().clearSelection();
+        }
+    }
+
+    private void insertWaypoint(int index, HWaypoint waypoint) {
+        documentManager.getDocument().getSelectedPath().getWaypoints().add(index, waypoint);
+    }
+    public void newSoftWaypoint(int index) {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+            HWaypoint newWaypoint = new HSoftWaypoint();
+            newWaypoint.setName("Soft Waypoint " + index);
+            insertWaypoint(index, newWaypoint);
+        }
+    }
+    public void newHardWaypoint(int index) {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+            HWaypoint newWaypoint = new HHardWaypoint();
+            newWaypoint.setName("Hard Waypoint " + index);
+            insertWaypoint(index, newWaypoint);
+        }
+    }
+    public void newSoftWaypoint() {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+            newSoftWaypoint(documentManager.getDocument().getSelectedPath().getWaypoints().size());
+        }
+    }
+    public void newHardWaypoint() {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+            newHardWaypoint(documentManager.getDocument().getSelectedPath().getWaypoints().size());
         }
     }
 

@@ -211,38 +211,38 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
         WaypointEditDialog dialog = WaypointEditDialog.dialog(getItem());
         dialog.show();
     }
-    private void newSoftWaypoint(ActionEvent event) {
+    private void newSoftWaypoint(ActionEvent event) { // TODO: use DocumentActions for this
         HWaypoint newWaypoint = new HSoftWaypoint();
-        newWaypoint.setName(String.valueOf(getListView().getItems().size()));
+        newWaypoint.setName("Soft Waypoint " + getListView().getItems().size());
         getListView().getItems().add(newWaypoint);
     }
     private void newHardWaypoint(ActionEvent event) {
         HWaypoint newWaypoint = new HHardWaypoint();
-        newWaypoint.setName(String.valueOf(getListView().getItems().size()));
+        newWaypoint.setName("Hard Waypoint " + getListView().getItems().size());
         getListView().getItems().add(newWaypoint);
     }
     private void insertNewSoftWaypointBefore(ActionEvent event) {
         int insertIndex = getListView().getSelectionModel().getSelectedIndex();
         HWaypoint newWaypoint = new HSoftWaypoint();
-        newWaypoint.setName(String.valueOf(getListView().getItems().size()));
+        newWaypoint.setName("Soft Waypoint " + getListView().getItems().size());
         getListView().getItems().add(insertIndex, newWaypoint);
     }
     private void insertNewHardWaypointBefore(ActionEvent event) {
         int insertIndex = getListView().getSelectionModel().getSelectedIndex();
         HWaypoint newWaypoint = new HHardWaypoint();
-        newWaypoint.setName(String.valueOf(getListView().getItems().size()));
+        newWaypoint.setName("Hard Waypoint " + getListView().getItems().size());
         getListView().getItems().add(insertIndex, newWaypoint);
     }
     private void insertNewSoftWaypointAfter(ActionEvent event) {
         int insertIndex = getListView().getSelectionModel().getSelectedIndex() + 1;
         HWaypoint newWaypoint = new HSoftWaypoint();
-        newWaypoint.setName(String.valueOf(getListView().getItems().size()));
+        newWaypoint.setName("Soft Waypoint " + getListView().getItems().size());
         getListView().getItems().add(insertIndex, newWaypoint);
     }
     private void insertNewHardWaypointAfter(ActionEvent event) {
         int insertIndex = getListView().getSelectionModel().getSelectedIndex() + 1;
         HWaypoint newWaypoint = new HHardWaypoint();
-        newWaypoint.setName(String.valueOf(getListView().getItems().size()));
+        newWaypoint.setName("Hard Waypoint " + getListView().getItems().size());
         getListView().getItems().add(insertIndex, newWaypoint);
     }
     private void renameWaypoint(ActionEvent event) {
