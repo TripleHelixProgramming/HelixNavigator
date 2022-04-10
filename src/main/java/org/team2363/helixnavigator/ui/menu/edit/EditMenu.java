@@ -14,16 +14,20 @@ public class EditMenu extends Menu {
     private final CutMenuItem cutMenuItem;
     private final CopyMenuItem copyMenuItem;
     private final PasteMenuItem pasteMenuItem;
+    private final SelectAllMenuItem selectAllMenuItem;
+    private final DeselectAllMenuItem deselectAllMenuItem;
 
     public EditMenu(DocumentManager documentManager) {
         this.documentManager = documentManager;
 
         setText("_Edit");
-        undoMenuItem = new UndoMenuItem(documentManager);
-        redoMenuItem = new RedoMenuItem(documentManager);
-        cutMenuItem = new CutMenuItem(documentManager);
-        copyMenuItem = new CopyMenuItem(documentManager);
-        pasteMenuItem = new PasteMenuItem(documentManager);
+        undoMenuItem = new UndoMenuItem(this.documentManager);
+        redoMenuItem = new RedoMenuItem(this.documentManager);
+        cutMenuItem = new CutMenuItem(this.documentManager);
+        copyMenuItem = new CopyMenuItem(this.documentManager);
+        pasteMenuItem = new PasteMenuItem(this.documentManager);
+        selectAllMenuItem = new SelectAllMenuItem(this.documentManager);
+        deselectAllMenuItem = new DeselectAllMenuItem(this.documentManager);
 
         getItems().add(undoMenuItem);
         getItems().add(redoMenuItem);
@@ -32,5 +36,7 @@ public class EditMenu extends Menu {
         getItems().add(copyMenuItem);
         getItems().add(pasteMenuItem);
         getItems().add(new SeparatorMenuItem());
+        getItems().add(selectAllMenuItem);
+        getItems().add(deselectAllMenuItem);
     }
 }

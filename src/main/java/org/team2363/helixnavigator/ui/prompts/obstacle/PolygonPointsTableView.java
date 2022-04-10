@@ -2,7 +2,6 @@ package org.team2363.helixnavigator.ui.prompts.obstacle;
 
 import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
 
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;

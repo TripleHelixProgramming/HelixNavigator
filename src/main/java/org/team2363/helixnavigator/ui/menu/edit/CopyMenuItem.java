@@ -26,11 +26,12 @@ public class CopyMenuItem extends MenuItem {
         setText("Copy");
         setAccelerator(KeyCombination.keyCombination("shortcut+C"));
         setOnAction(this::action);
+        disableProperty().bind(this.documentManager.isDocumentOpenProperty().not());
     }
 
     public void action(ActionEvent event) {
-        String data = null;
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+            String data;
             HPath path = documentManager.getDocument().getSelectedPath();
             int selectedWaypointsCount = path.getWaypointsSelectionModel().getSelectedItems().size();
             int selectedObstaclesCount = path.getObstaclesSelectionModel().getSelectedItems().size();
@@ -51,8 +52,6 @@ public class CopyMenuItem extends MenuItem {
                 }
                 data = JSONSerializer.serializeString(list);
             }
-        }
-        if (data != null) {
             Clipboard systemClipboard = Clipboard.getSystemClipboard();
             ClipboardContent content = new ClipboardContent();
             content.putString(data);

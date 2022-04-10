@@ -72,6 +72,7 @@ public class HSelectionModel<E extends HSelectableElement> extends MultipleSelec
                 break;
             }
         }
+        checkSelectedIndex();
         updateSelectedItems();
     }
 
@@ -90,6 +91,19 @@ public class HSelectionModel<E extends HSelectableElement> extends MultipleSelec
             newSelectedItems.add(item);
         }
         selectedItems.setAll(newSelectedItems);
+    }
+
+    /**
+     * Checks if the selected index is within the bounds of the list of items.
+     * Updates the selected item if needed. Note that if the size of items is
+     * zero, then the selected index will become -1.
+     */
+    private void checkSelectedIndex() {
+        if (getSelectedIndex() >= items.size()) {
+            int correctIndex = items.size() - 1;
+            setSelectedIndex(correctIndex);
+            setSelectedItem(items.get(correctIndex));
+        }
     }
 
     /**

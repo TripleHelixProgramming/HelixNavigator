@@ -6,19 +6,19 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCombination;
 
-public class RedoMenuItem extends MenuItem {
+public class SelectAllMenuItem extends MenuItem {
 
     private final DocumentManager documentManager;
 
-    public RedoMenuItem(DocumentManager documentManager) {
+    public SelectAllMenuItem(DocumentManager documentManager) {
         this.documentManager = documentManager;
-        setText("Redo");
-        setAccelerator(KeyCombination.keyCombination("shortcut+Y"));
+        setText("Select All");
+        setAccelerator(KeyCombination.keyCombination("shortcut+A"));
         setOnAction(this::action);
         disableProperty().bind(this.documentManager.isDocumentOpenProperty().not());
     }
 
     public void action(ActionEvent event) {
-        System.out.println("Redoing");
+        documentManager.actions().selectAll();
     }
 }

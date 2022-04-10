@@ -89,9 +89,15 @@ public class HPath {
         });
     }
 
-    public void clearSelection() {
+    public void clearWaypointsSelection() {
         waypointsSelectionModel.clearSelection();
+    }
+    public void clearObstaclesSelection() {
         obstaclesSelectionModel.clearSelection();
+    }
+    public void clearSelection() {
+        clearWaypointsSelection();
+        clearObstaclesSelection();
     }
 
     public void clearPolygonPointSelection() {

@@ -28,6 +28,7 @@ public class PasteMenuItem extends MenuItem {
         setText("Paste");
         setAccelerator(KeyCombination.keyCombination("shortcut+V"));
         setOnAction(this::action);
+        disableProperty().bind(this.documentManager.isDocumentOpenProperty().not());
     }
 
     public void action(ActionEvent event) {
@@ -52,20 +53,22 @@ public class PasteMenuItem extends MenuItem {
                         HPath pastedPath = JSONDeserializer.deserialize(jsonEntry, HPath.class);
                         document.getPaths().add(pastedPath);
                         document.setSelectedPathIndex(document.getPaths().size() - 1);
-                    } else if (documentManager.getDocument().isPathSelected()) {
+                    } else if (document.isPathSelected()) {
+                        HPath path = document.getSelectedPath();
                         if (jsonObject.containsKey("waypoint_type")) {
                             HWaypoint waypoint = JSONDeserializer.deserialize(jsonEntry, HWaypoint.class);
-                            int index = document.getSelectedPath().getWaypointsSelectionModel().getSelectedIndex() + 1;
-                            document.getSelectedPath().getWaypoints().add(index, waypoint);
+                            int index = path.getWaypointsSelectionModel().getSelectedIndex() + 1;
+                            path.getWaypoints().add(index, waypoint);
+                            path.getWaypointsSelectionModel().select(index);
                         } else if (jsonObject.containsKey("obstacle_type")) {
                             HObstacle obstacle = JSONDeserializer.deserialize(jsonEntry, HObstacle.class);
-                            int index = document.getSelectedPath().getObstaclesSelectionModel().getSelectedIndex() + 1;
-                            document.getSelectedPath().getObstacles().add(index, obstacle);
+                            int index = path.getObstaclesSelectionModel().getSelectedIndex() + 1;
+                            path.getObstacles().add(index, obstacle);
+                            path.getObstaclesSelectionModel().select(index);
                         }
                     }
                 } else if (jsonEntry.isArray()) {
                     JSONArray jsonArray = (JSONArray) jsonEntry;
-                    System.out.println(jsonArray.toJSONText());
                     for (JSONEntry entry : jsonArray) {
                         // System.out.println(entry.toJSONText());
                         // System.out.println();

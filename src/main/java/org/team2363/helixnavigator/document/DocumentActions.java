@@ -181,6 +181,40 @@ public class DocumentActions {
         }
     }
 
+    public void selectAll() {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+            documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().selectAll();
+            documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().selectAll();
+        }
+    }
+
+    public void deleteSelectedWaypoints() {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+            HPath path = documentManager.getDocument().getSelectedPath();
+            Integer[] selectedIndices = path.getWaypointsSelectionModel().getSelectedIndices().toArray(new Integer[0]);
+            path.clearWaypointsSelection();
+            for (int i = selectedIndices.length - 1; i >= 0; i--) {
+                path.getWaypoints().remove(selectedIndices[i].intValue());
+            }
+        }
+    }
+
+    public void deleteSelectedObstacles() {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+            HPath path = documentManager.getDocument().getSelectedPath();
+            Integer[] selectedIndices = path.getObstaclesSelectionModel().getSelectedIndices().toArray(new Integer[0]);
+            path.clearObstaclesSelection();
+            for (int i = selectedIndices.length - 1; i >= 0; i--) {
+                path.getObstacles().remove(selectedIndices[i].intValue());
+            }
+        }
+    }
+
+    public void deleteSelection() {
+        deleteSelectedWaypoints();
+        deleteSelectedObstacles();
+    }
+
     private void insertWaypoint(int index, HWaypoint waypoint) {
         documentManager.getDocument().getSelectedPath().getWaypoints().add(index, waypoint);
     }
