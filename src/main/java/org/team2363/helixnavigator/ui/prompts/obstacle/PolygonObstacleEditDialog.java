@@ -59,10 +59,29 @@ public class PolygonObstacleEditDialog extends ObstacleEditDialog {
     @Override
     protected void backupObstacle() {
         super.backupObstacle();
+        backupPolygonObstaclePoints(polygonObstacle, backupPolygonObstacle);
     }
 
     @Override
     protected void restoreBackup() {
         super.restoreBackup();
+        restorePolygonObstaclePoints(polygonObstacle, backupPolygonObstacle);
+    }
+
+    private static void backupPolygonObstaclePoints(HPolygonObstacle polygonObstacle, HPolygonObstacle backupPolygonObstacle) {
+        backupPolygonObstacle.getPoints().clear();
+        for (HPolygonPoint point : polygonObstacle.getPoints()) {
+            HPolygonPoint backupPoint = new HPolygonPoint();
+            backupPoint.setX(point.getX());
+            backupPoint.setY(point.getY());
+            backupPolygonObstacle.getPoints().add(backupPoint);
+            // need to create new polygon point objects since they would update together if didn't
+        }
+    }
+
+    private static void restorePolygonObstaclePoints(HPolygonObstacle polygonObstacle, HPolygonObstacle backupPolygonObstacle) {
+        polygonObstacle.getPoints().clear();
+        polygonObstacle.getPoints().addAll(backupPolygonObstacle.getPoints());
+        // it's ok to use same objects here since they aren't used for anything else
     }
 }
