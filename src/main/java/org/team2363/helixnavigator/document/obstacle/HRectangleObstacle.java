@@ -81,7 +81,7 @@ public class HRectangleObstacle extends HObstacle {
         width.set(value);
     }
 
-    @SerializedJSONObjectValue(key = "length")
+    @SerializedJSONObjectValue(key = "width")
     public final double getWidth() {
         return width.get();
     }
