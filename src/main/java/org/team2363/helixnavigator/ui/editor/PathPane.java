@@ -20,7 +20,7 @@ public class PathPane extends Pane {
         backgroundRectangle = new BackgroundRectangle(this.documentManager);
         pathElementsPane = new PathElementsPane(this.documentManager);
 
-        getChildren().addAll(backgroundRectangle, pathElementsPane);
+        getChildren().addAll(backgroundRectangle, pathElementsPane, backgroundRectangle.getSelectionRectangle());
 
         setOnMousePressed(event -> {
             if (this.documentManager.getIsDocumentOpen() && !this.documentManager.actions().getLockZoom()
@@ -30,6 +30,9 @@ public class PathPane extends Pane {
             this.documentManager.actions().handleMousePressedAsPan(event);
         });
         setOnMouseDragged(this.documentManager.actions()::handleMouseDraggedAsPan);
+        setOnMouseDragged(event -> {
+            this.documentManager.actions().handleMouseDraggedAsPan(event);
+        });
         setOnMouseReleased(event -> {
             setCursor(Cursor.DEFAULT);
         });
