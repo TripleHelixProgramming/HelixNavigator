@@ -2,7 +2,7 @@ package org.team2363.helixnavigator.ui.menu.tools;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
-import org.team2363.helixnavigator.ui.prompts.DocumentConfigDialog;
+import org.team2363.helixnavigator.ui.prompts.documentconfig.DocumentConfigDialog;
 
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;

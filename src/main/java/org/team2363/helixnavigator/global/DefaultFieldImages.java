@@ -27,7 +27,7 @@ public class DefaultFieldImages {
     private static final ObservableList<HFieldImage> fieldImages = FXCollections.observableArrayList();
     private static final ObservableList<HFieldImage> fieldImagesUnmodifiable = FXCollections.unmodifiableObservableList(fieldImages);
 
-    public static void loadDefaultFieldImages() {
+    public static void loadDefaultFieldImages() { // TODO: make sure this is only able to be run once
         LOGGER.info("Loading default images...");
         int index = 0;
         InputStream currentStream;

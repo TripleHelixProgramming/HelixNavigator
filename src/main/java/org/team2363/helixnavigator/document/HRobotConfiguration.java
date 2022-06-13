@@ -30,10 +30,6 @@ public class HRobotConfiguration {
     public HRobotConfiguration() {
     }
 
-    public final DoubleProperty bumperLengthProperty() {
-        return bumperLength;
-    }
-
     public final IntegerProperty teamNumberProperty() {
         return teamNumber;
     }
@@ -46,6 +42,10 @@ public class HRobotConfiguration {
     @SerializedJSONObjectValue(key = "team_number")
     public final int getTeamNumber() {
         return teamNumber.get();
+    }
+
+    public final DoubleProperty bumperLengthProperty() {
+        return bumperLength;
     }
 
     @DeserializedJSONTarget

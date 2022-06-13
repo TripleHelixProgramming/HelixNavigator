@@ -15,7 +15,7 @@ public class IntegerTextField extends TextField {
 
     private final ObjectProperty<Integer> value;
 
-    public IntegerTextField(StringConverter<Integer> converter) {
+    private IntegerTextField(StringConverter<Integer> converter) {
         TextFormatter<Integer> formatter = new TextFormatter<Integer>(converter, 0, INTEGER_FILTER);
         value = formatter.valueProperty();
         setTextFormatter(formatter);

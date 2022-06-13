@@ -105,6 +105,10 @@ public class HDocument {
      */
     private final HRobotConfiguration robotConfiguration = new HRobotConfiguration();
     /**
+     * The default units to use in text input boxes
+     */
+    private final HUnitPreferences unitPreferences = new HUnitPreferences();
+    /**
      * The file path that this document should be saved to
      */
     private final ObjectProperty<File> saveLocation = new SimpleObjectProperty<>(this, "saveLocation", null);
@@ -295,10 +299,18 @@ public class HDocument {
     public final void importRobotConfiguration(@DeserializedJSONObjectValue(key = "robot_configuration") HRobotConfiguration otherConfiguration) {
         robotConfiguration.importConfiguration(otherConfiguration);
     }
+    @DeserializedJSONTarget
+    public final void importUnitPreferences(@DeserializedJSONObjectValue(key = "unit_preferences") HUnitPreferences otherPreferences) {
+        unitPreferences.importPreferences(otherPreferences);
+    }
 
     @SerializedJSONObjectValue(key = "robot_configuration")
     public final HRobotConfiguration getRobotConfiguration() {
         return robotConfiguration;
+    }
+    @SerializedJSONObjectValue(key = "unit_preferences")
+    public final HUnitPreferences getUnitPreferences() {
+        return unitPreferences;
     }
 
     public final ObjectProperty<File> saveLocationProperty() {
