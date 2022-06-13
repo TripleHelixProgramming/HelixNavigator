@@ -6,6 +6,7 @@ import static javafx.collections.FXCollections.unmodifiableObservableList;
 import java.io.File;
 import java.util.regex.Pattern;
 
+import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Acceleration;
 import javax.measure.quantity.Angle;
@@ -62,14 +63,15 @@ public class Standards {
 
     public static final class DefaultRobotConfiguration {
         public static final int TEAM_NUMBER = 2363;
-        public static final double BUMPER_LENGTH = 37;
-        public static final double BUMPER_WIDTH = 37;
-        public static final double WHEEL_HORIZONTAL_DISTANCE = 24;
-        public static final double WHEEL_VERTICAL_DISTANCE = 24;
-        public static final double MASS = 100;
-        public static final double MOMENT_OF_INERTIA = 100;
-        public static final double MOTOR_MAX_ANGULAR_SPEED = 1000;
-        public static final double MOTOR_MAX_TORQUE = 1000;
+        public static final double BUMPER_LENGTH = 0.954;
+        public static final double BUMPER_WIDTH = 0.903;
+        public static final double WHEEL_HORIZONTAL_DISTANCE = 0.622;
+        public static final double WHEEL_VERTICAL_DISTANCE = 0.572;
+        public static final double MASS = 46.7;
+        public static final double MOMENT_OF_INERTIA = 5.6;
+        public static final double MOTOR_MAX_ANGULAR_SPEED = 70;
+        public static final double MOTOR_MAX_TORQUE = 1.9;
+        public static final double WHEEL_RADIUS = 0.051;
     }
 
     public static final double MIN_HEADING = -180;
@@ -88,151 +90,259 @@ public class Standards {
         public static final Unit<MomentOfInertia> MOMENT_OF_INERTIA_UNIT = CustomUnits.KILOGRAM_SQUARE_METRE;
     }
 
+    public static interface SupportedUnit<T extends Quantity<T>> {
+        public Unit<T> unit();
+    }
     // @SuppressWarnings("unchecked")
     public static final class SupportedUnits {
-        public static enum SupportedTime {
+        public static enum SupportedTime implements SupportedUnit<Time> {
             SECOND(Units.SECOND);
 
-            public final Unit<Time> unit;
+            private final Unit<Time> unit;
             private SupportedTime(Unit<Time> unit) {
                 this.unit = unit;
             }
             @Override
-            public String toString() {
-                return unit.toString();
-            }
-            public static final ObservableList<SupportedTime> units =
-                    unmodifiableObservableList(observableArrayList(values()));
-        }
-        public static enum SupportedLength {
-            METRE(Units.METRE),
-            FOOT(USCustomary.FOOT),
-            INCH(USCustomary.INCH);
-
-            public final Unit<Length> unit;
-            private SupportedLength(Unit<Length> unit) {
-                this.unit = unit;
+            public Unit<Time> unit() {
+                return unit;
             }
             @Override
             public String toString() {
                 return unit.toString();
             }
-            public static final ObservableList<SupportedLength> units =
+            public static final ObservableList<SupportedTime> SUPPORTED_UNITS =
                     unmodifiableObservableList(observableArrayList(values()));
+            public static final ObservableList<Unit<Time>> UNITS;
+            static {
+                ObservableList<Unit<Time>> list = observableArrayList();
+                for (SupportedTime supportedUnit : values()) {
+                    list.add(supportedUnit.unit);
+                }
+                UNITS = unmodifiableObservableList(list);
+            }
         }
-        public static enum SupportedMass {
+        public static enum SupportedLength implements SupportedUnit<Length> {
+            METRE(Units.METRE),
+            FOOT(USCustomary.FOOT),
+            INCH(USCustomary.INCH);
+
+            private final Unit<Length> unit;
+            private SupportedLength(Unit<Length> unit) {
+                this.unit = unit;
+            }
+            @Override
+            public Unit<Length> unit() {
+                return unit;
+            }
+            @Override
+            public String toString() {
+                return unit.toString();
+            }
+            public static final ObservableList<SupportedLength> SUPPORTED_UNITS =
+                    unmodifiableObservableList(observableArrayList(values()));
+            public static final ObservableList<Unit<Length>> UNITS;
+            static {
+                ObservableList<Unit<Length>> list = observableArrayList();
+                for (SupportedLength supportedUnit : values()) {
+                    list.add(supportedUnit.unit);
+                }
+                UNITS = unmodifiableObservableList(list);
+            }
+        }
+        public static enum SupportedMass implements SupportedUnit<Mass> {
             KILOGRAM(Units.KILOGRAM),
             POUND(USCustomary.POUND),
             GRAM(Units.GRAM),
             OUNCE(USCustomary.OUNCE);
 
-            public final Unit<Mass> unit;
+            private final Unit<Mass> unit;
             private SupportedMass(Unit<Mass> unit) {
                 this.unit = unit;
+            }
+            @Override
+            public Unit<Mass> unit() {
+                return unit;
             }
             @Override
             public String toString() {
                 return unit.toString();
             }
-            public static final ObservableList<SupportedMass> units =
+            public static final ObservableList<SupportedMass> SUPPORTED_UNITS =
                     unmodifiableObservableList(observableArrayList(values()));
+            public static final ObservableList<Unit<Mass>> UNITS;
+            static {
+                ObservableList<Unit<Mass>> list = observableArrayList();
+                for (SupportedMass supportedUnit : values()) {
+                    list.add(supportedUnit.unit);
+                }
+                UNITS = unmodifiableObservableList(list);
+            }
         }
-        public static enum SupportedSpeed {
+        public static enum SupportedSpeed implements SupportedUnit<Speed> {
             METRE_PER_SECOND(Units.METRE_PER_SECOND),
             FOOT_PER_SECOND(USCustomary.FOOT_PER_SECOND),
             KILOMETRE_PER_HOUR(Units.KILOMETRE_PER_HOUR),
             MILE_PER_HOUR(USCustomary.MILE_PER_HOUR);
 
-            public final Unit<Speed> unit;
+            private final Unit<Speed> unit;
             private SupportedSpeed(Unit<Speed> unit) {
                 this.unit = unit;
             }
             @Override
+            public Unit<Speed> unit() {
+                return unit;
+            }
+            @Override
             public String toString() {
                 return unit.toString();
             }
-            public static final ObservableList<SupportedSpeed> units =
+            public static final ObservableList<SupportedSpeed> SUPPORTED_UNITS =
                     unmodifiableObservableList(observableArrayList(values()));
+            public static final ObservableList<Unit<Speed>> UNITS;
+            static {
+                ObservableList<Unit<Speed>> list = observableArrayList();
+                for (SupportedSpeed supportedUnit : values()) {
+                    list.add(supportedUnit.unit);
+                }
+                UNITS = unmodifiableObservableList(list);
+            }
         }
-        public static enum SupportedAcceleration {
+        public static enum SupportedAcceleration implements SupportedUnit<Acceleration> {
             METRE_PER_SECOND(Units.METRE_PER_SQUARE_SECOND),
             FOOT_PER_SECOND(CustomUnits.FOOT_PER_SQUARE_SECOND);
 
-            public final Unit<Acceleration> unit;
+            private final Unit<Acceleration> unit;
             private SupportedAcceleration(Unit<Acceleration> unit) {
                 this.unit = unit;
             }
             @Override
+            public Unit<Acceleration> unit() {
+                return unit;
+            }
+            @Override
             public String toString() {
                 return unit.toString();
             }
-            public static final ObservableList<SupportedAcceleration> units =
+            public static final ObservableList<SupportedAcceleration> SUPPORTED_UNITS =
                     unmodifiableObservableList(observableArrayList(values()));
+            public static final ObservableList<Unit<Acceleration>> UNITS;
+            static {
+                ObservableList<Unit<Acceleration>> list = observableArrayList();
+                for (SupportedAcceleration supportedUnit : values()) {
+                    list.add(supportedUnit.unit);
+                }
+                UNITS = unmodifiableObservableList(list);
+            }
         }
-        public static enum SupportedAngle {
+        public static enum SupportedAngle implements SupportedUnit<Angle> {
             DEGREE_ANGLE(NonSI.DEGREE_ANGLE),
             RADIAN(Units.RADIAN),
             REVOLUTION(NonSI.REVOLUTION);
 
-            public final Unit<Angle> unit;
+            private final Unit<Angle> unit;
             private SupportedAngle(Unit<Angle> unit) {
                 this.unit = unit;
             }
             @Override
+            public Unit<Angle> unit() {
+                return unit;
+            }
+            @Override
             public String toString() {
                 return unit.toString();
             }
-            public static final ObservableList<SupportedAngle> units =
+            public static final ObservableList<SupportedAngle> SUPPORTED_UNITS =
                     unmodifiableObservableList(observableArrayList(values()));
+            public static final ObservableList<Unit<Angle>> UNITS;
+            static {
+                ObservableList<Unit<Angle>> list = observableArrayList();
+                for (SupportedAngle supportedUnit : values()) {
+                    list.add(supportedUnit.unit);
+                }
+                UNITS = unmodifiableObservableList(list);
+            }
         }
-        public static enum SupportedAngularSpeed {
+        public static enum SupportedAngularSpeed implements SupportedUnit<AngularSpeed> {
             REVOLUTION_PER_MINUTE(CustomUnits.REVOLUTION_PER_MINUTE),
             RADIAN_PER_SECOND(SI.RADIAN_PER_SECOND),
             DEGREE_ANGLE_PER_SECOND(CustomUnits.DEGREE_ANGLE_PER_SECOND);
 
-            public final Unit<AngularSpeed> unit;
+            private final Unit<AngularSpeed> unit;
             private SupportedAngularSpeed(Unit<AngularSpeed> unit) {
                 this.unit = unit;
             }
             @Override
+            public Unit<AngularSpeed> unit() {
+                return unit;
+            }
+            @Override
             public String toString() {
                 return unit.toString();
             }
-            public static final ObservableList<SupportedAngularSpeed> units =
+            public static final ObservableList<SupportedAngularSpeed> SUPPORTED_UNITS =
                     unmodifiableObservableList(observableArrayList(values()));
+            public static final ObservableList<Unit<AngularSpeed>> UNITS;
+            static {
+                ObservableList<Unit<AngularSpeed>> list = observableArrayList();
+                for (SupportedAngularSpeed supportedUnit : values()) {
+                    list.add(supportedUnit.unit);
+                }
+                UNITS = unmodifiableObservableList(list);
+            }
         }
-        public static enum SupportedTorque {
+        public static enum SupportedTorque implements SupportedUnit<Torque> {
             NEWTON_METRE(CustomUnits.NEWTON_METRE),
             POUND_FOOT(CustomUnits.POUND_FOOT);
 
-            public final Unit<Torque> unit;
+            private final Unit<Torque> unit;
             private SupportedTorque(Unit<Torque> unit) {
                 this.unit = unit;
             }
             @Override
-            public String toString() {
-                return unit.toString();
-            }
-            public static final ObservableList<SupportedTorque> units =
-                    unmodifiableObservableList(observableArrayList(values()));
-        }
-        public static enum SupportedMomentOfInertia {
-            KILOGRAM_SQUARE_METRE(CustomUnits.KILOGRAM_SQUARE_METRE),
-            POUND_FOOT(CustomUnits.POUND_SQUARE_INCH);
-
-            public final Unit<MomentOfInertia> unit;
-            private SupportedMomentOfInertia(Unit<MomentOfInertia> unit) {
-                this.unit = unit;
+            public Unit<Torque> unit() {
+                return unit;
             }
             @Override
             public String toString() {
                 return unit.toString();
             }
-            public static final ObservableList<SupportedMomentOfInertia> units =
+            public static final ObservableList<SupportedTorque> SUPPORTED_UNITS =
                     unmodifiableObservableList(observableArrayList(values()));
+            public static final ObservableList<Unit<Torque>> UNITS;
+            static {
+                ObservableList<Unit<Torque>> list = observableArrayList();
+                for (SupportedTorque supportedUnit : values()) {
+                    list.add(supportedUnit.unit);
+                }
+                UNITS = unmodifiableObservableList(list);
+            }
         }
-    }
+        public static enum SupportedMomentOfInertia implements SupportedUnit<MomentOfInertia> {
+            KILOGRAM_SQUARE_METRE(CustomUnits.KILOGRAM_SQUARE_METRE),
+            POUND_FOOT(CustomUnits.POUND_SQUARE_INCH);
 
-    public static void main(String[] args) {
+            private final Unit<MomentOfInertia> unit;
+            private SupportedMomentOfInertia(Unit<MomentOfInertia> unit) {
+                this.unit = unit;
+            }
+            @Override
+            public Unit<MomentOfInertia> unit() {
+                return unit;
+            }
+            @Override
+            public String toString() {
+                return unit.toString();
+            }
+            public static final ObservableList<SupportedMomentOfInertia> SUPPORTED_UNITS =
+                    unmodifiableObservableList(observableArrayList(values()));
+            public static final ObservableList<Unit<MomentOfInertia>> UNITS;
+            static {
+                ObservableList<Unit<MomentOfInertia>> list = observableArrayList();
+                for (SupportedMomentOfInertia supportedUnit : values()) {
+                    list.add(supportedUnit.unit);
+                }
+                UNITS = unmodifiableObservableList(list);
+            }
+        }
     }
 }

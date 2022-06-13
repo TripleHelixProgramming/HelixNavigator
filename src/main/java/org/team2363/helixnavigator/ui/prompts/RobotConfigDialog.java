@@ -1,8 +1,18 @@
 package org.team2363.helixnavigator.ui.prompts;
 
+import javax.measure.quantity.Length;
+import javax.measure.quantity.Mass;
+
 import org.team2363.helixnavigator.document.HRobotConfiguration;
+import org.team2363.helixnavigator.global.Standards.ExportedUnits;
+import org.team2363.helixnavigator.global.Standards.SupportedUnits.SupportedAngularSpeed;
+import org.team2363.helixnavigator.global.Standards.SupportedUnits.SupportedLength;
+import org.team2363.helixnavigator.global.Standards.SupportedUnits.SupportedMass;
+import org.team2363.helixnavigator.global.Standards.SupportedUnits.SupportedMomentOfInertia;
+import org.team2363.helixnavigator.global.Standards.SupportedUnits.SupportedTorque;
 import org.team2363.lib.ui.validation.IntegerTextField;
-import org.team2363.lib.ui.validation.MathExpressionTextField;
+import org.team2363.lib.ui.validation.UnitTextField;
+import org.team2363.lib.unit.MomentOfInertia;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -13,6 +23,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import si.uom.quantity.AngularSpeed;
+import si.uom.quantity.Torque;
 
 public class RobotConfigDialog {
 
@@ -22,21 +34,21 @@ public class RobotConfigDialog {
     private final Text teamNumberText = new Text("Team Number:");
     private final IntegerTextField teamNumberTextField = new IntegerTextField();
     private final Text bumperLengthText = new Text("Bumper Length:");
-    private final MathExpressionTextField bumperLengthTextField = new MathExpressionTextField();
+    private final UnitTextField<Length> bumperLengthTextField = new UnitTextField<>(ExportedUnits.LENGTH_UNIT, SupportedLength.UNITS);
     private final Text bumperWidthText = new Text("Bumper Width:");
-    private final MathExpressionTextField bumperWidthTextField = new MathExpressionTextField();
+    private final UnitTextField<Length> bumperWidthTextField = new UnitTextField<>(ExportedUnits.LENGTH_UNIT, SupportedLength.UNITS);
     private final Text wheelHorizontalDistanceText = new Text("Wheel Horizontal Distance:");
-    private final MathExpressionTextField wheelHorizontalDistanceTextField = new MathExpressionTextField();
+    private final UnitTextField<Length> wheelHorizontalDistanceTextField = new UnitTextField<>(ExportedUnits.LENGTH_UNIT, SupportedLength.UNITS);
     private final Text wheelVerticalDistanceText = new Text("Wheel Vertical Distance:");
-    private final MathExpressionTextField wheelVerticalDistanceTextField = new MathExpressionTextField();
+    private final UnitTextField<Length> wheelVerticalDistanceTextField = new UnitTextField<>(ExportedUnits.LENGTH_UNIT, SupportedLength.UNITS);
     private final Text massText = new Text("Mass:");
-    private final MathExpressionTextField massTextField = new MathExpressionTextField();
+    private final UnitTextField<Mass> massTextField = new UnitTextField<>(ExportedUnits.MASS_UNIT, SupportedMass.UNITS);
     private final Text momentOfInertiaText = new Text("Moment of Inertia:");
-    private final MathExpressionTextField momentOfInertiaTextField = new MathExpressionTextField();
+    private final UnitTextField<MomentOfInertia> momentOfInertiaTextField = new UnitTextField<>(ExportedUnits.MOMENT_OF_INERTIA_UNIT, SupportedMomentOfInertia.UNITS);
     private final Text motorMaxAngularSpeedText = new Text("Motor Max Angular Speed:");
-    private final MathExpressionTextField motorMaxAngularSpeedTextField = new MathExpressionTextField();
+    private final UnitTextField<AngularSpeed> motorMaxAngularSpeedTextField = new UnitTextField<>(ExportedUnits.ANGULAR_SPEED_UNIT, SupportedAngularSpeed.UNITS);
     private final Text motorMaxTorqueText = new Text("Motor Max Torque:");
-    private final MathExpressionTextField motorMaxTorqueTextField = new MathExpressionTextField();
+    private final UnitTextField<Torque> motorMaxTorqueTextField = new UnitTextField<>(ExportedUnits.TORQUE_UNIT, SupportedTorque.UNITS);
     private final GridPane propertyGrid = new GridPane();
     private final Button okButton = new Button("OK");
     private final Button cancelButton = new Button("Cancel");

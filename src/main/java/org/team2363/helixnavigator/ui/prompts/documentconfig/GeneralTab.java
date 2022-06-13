@@ -38,23 +38,23 @@ public class GeneralTab extends Tab {
     private final ChoiceBox<String> fieldImageChoiceBox = new ChoiceBox<>();
 
     private final Text timeUnitText = new Text("Time Unit:");
-    private final ChoiceBox<SupportedTime> timeUnitChoiceBox = new ChoiceBox<>(SupportedTime.units);
+    private final ChoiceBox<SupportedTime> timeUnitChoiceBox = new ChoiceBox<>(SupportedTime.SUPPORTED_UNITS);
     private final Text lengthUnitText = new Text("Length Unit:");
-    private final ChoiceBox<SupportedLength> lengthUnitChoiceBox = new ChoiceBox<>(SupportedLength.units);
+    private final ChoiceBox<SupportedLength> lengthUnitChoiceBox = new ChoiceBox<>(SupportedLength.SUPPORTED_UNITS);
     private final Text massUnitText = new Text("Mass Unit:");
-    private final ChoiceBox<SupportedMass> massUnitChoiceBox = new ChoiceBox<>(SupportedMass.units);
+    private final ChoiceBox<SupportedMass> massUnitChoiceBox = new ChoiceBox<>(SupportedMass.SUPPORTED_UNITS);
     private final Text speedUnitText = new Text("Speed Unit:");
-    private final ChoiceBox<SupportedSpeed> speedUnitChoiceBox = new ChoiceBox<>(SupportedSpeed.units);
+    private final ChoiceBox<SupportedSpeed> speedUnitChoiceBox = new ChoiceBox<>(SupportedSpeed.SUPPORTED_UNITS);
     private final Text accelerationUnitText = new Text("Acceleration Unit:");
-    private final ChoiceBox<SupportedAcceleration> accelerationUnitChoiceBox = new ChoiceBox<>(SupportedAcceleration.units);
+    private final ChoiceBox<SupportedAcceleration> accelerationUnitChoiceBox = new ChoiceBox<>(SupportedAcceleration.SUPPORTED_UNITS);
     private final Text angleUnitText = new Text("Angle Unit:");
-    private final ChoiceBox<SupportedAngle> angleUnitChoiceBox = new ChoiceBox<>(SupportedAngle.units);
+    private final ChoiceBox<SupportedAngle> angleUnitChoiceBox = new ChoiceBox<>(SupportedAngle.SUPPORTED_UNITS);
     private final Text angularSpeedUnitText = new Text("Angular Speed Unit:");
-    private final ChoiceBox<SupportedAngularSpeed> angularSpeedUnitChoiceBox = new ChoiceBox<>(SupportedAngularSpeed.units);
+    private final ChoiceBox<SupportedAngularSpeed> angularSpeedUnitChoiceBox = new ChoiceBox<>(SupportedAngularSpeed.SUPPORTED_UNITS);
     private final Text torqueUnitText = new Text("Torque Unit:");
-    private final ChoiceBox<SupportedTorque> torqueUnitChoiceBox = new ChoiceBox<>(SupportedTorque.units);
+    private final ChoiceBox<SupportedTorque> torqueUnitChoiceBox = new ChoiceBox<>(SupportedTorque.SUPPORTED_UNITS);
     private final Text momentOfInertiaUnitText = new Text("Moment of Inertia Unit:");
-    private final ChoiceBox<SupportedMomentOfInertia> momentOfInertiaUnitChoiceBox = new ChoiceBox<>(SupportedMomentOfInertia.units);
+    private final ChoiceBox<SupportedMomentOfInertia> momentOfInertiaUnitChoiceBox = new ChoiceBox<>(SupportedMomentOfInertia.SUPPORTED_UNITS);
 
     private final GridPane optionsGrid = new GridPane();
     

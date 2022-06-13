@@ -2,12 +2,16 @@ package org.team2363.helixnavigator.ui.prompts.waypoint;
 
 import java.util.Collection;
 
+import javax.measure.quantity.Length;
+
 import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 import org.team2363.helixnavigator.global.Standards;
+import org.team2363.helixnavigator.global.Standards.ExportedUnits;
+import org.team2363.helixnavigator.global.Standards.SupportedUnits.SupportedLength;
 import org.team2363.lib.ui.validation.FilteredTextField;
-import org.team2363.lib.ui.validation.MathExpressionTextField;
+import org.team2363.lib.ui.validation.UnitTextField;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -40,9 +44,9 @@ public abstract class WaypointEditDialog {
     private final Text nameText = new Text("Name:");
     private final FilteredTextField nameTextField = new FilteredTextField(Standards.MAX_NAME_LENGTH, Standards.VALID_NAME);
     private final Text xText = new Text("X:");
-    private final MathExpressionTextField xTextField = new MathExpressionTextField();
+    private final UnitTextField<Length> xTextField = new UnitTextField<>(ExportedUnits.LENGTH_UNIT, SupportedLength.UNITS);
     private final Text yText = new Text("Y:");
-    private final MathExpressionTextField yTextField = new MathExpressionTextField();
+    private final UnitTextField<Length> yTextField = new UnitTextField<>(ExportedUnits.LENGTH_UNIT, SupportedLength.UNITS);
     private final GridPane propertyGrid = new GridPane();
     private final Button okButton = new Button("OK");
     private final Button cancelButton = new Button("Cancel");

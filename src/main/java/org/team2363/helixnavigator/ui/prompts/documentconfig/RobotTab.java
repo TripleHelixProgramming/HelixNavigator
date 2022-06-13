@@ -9,7 +9,7 @@ public class RobotTab extends Tab {
 
     private final HDocument document;
     private final Label content = new Label("beep boop");
-    
+
     public RobotTab(HDocument document) {
         this.document = document;
         setText("Robot");
