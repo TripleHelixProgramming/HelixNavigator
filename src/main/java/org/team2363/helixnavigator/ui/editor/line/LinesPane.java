@@ -14,11 +14,11 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.Pane;
 
-public class LinesPane extends Pane{
+public class LinesPane extends Pane {
 
     private final DocumentManager documentManager;
 
-    private final ObservableList<LineView> lineViews = FXCollections.<LineView>observableArrayList();
+    // private final ObservableList<LineView> lineViews = FXCollections.<LineView>observableArrayList();
 
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
     private final ListChangeListener<? super HWaypoint> onWaypointsChanged = this::waypointsChanged;
@@ -58,7 +58,7 @@ public class LinesPane extends Pane{
 
     private void unloadSelectedPath(HPath oldPath) {
         if (oldPath != null) {
-            lineViews.clear();
+            // lineViews.clear();
             getChildren().clear();
             oldPath.getWaypoints().removeListener(onWaypointsChanged);
         }
@@ -76,12 +76,12 @@ public class LinesPane extends Pane{
     }
 
     private void updateWaypoints(List<? extends HWaypoint> list) {
-        lineViews.clear();
+        // lineViews.clear();
         getChildren().clear();
         for (int i = 0; i < list.size() - 1; i++) {
             LineView lineView = new LineView();
             linkLineView(lineView, list.get(i), list.get(i + 1));
-            lineViews.add(i, lineView);
+            // lineViews.add(i, lineView);
             getChildren().add(i, lineView.getView());
         }
     }

@@ -5,6 +5,7 @@ import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.ui.editor.field.FieldImagePane;
 import org.team2363.helixnavigator.ui.editor.line.LinesPane;
 import org.team2363.helixnavigator.ui.editor.obstacle.ObstaclesPane;
+import org.team2363.helixnavigator.ui.editor.trajectory.TrajectoryPane;
 import org.team2363.helixnavigator.ui.editor.waypoint.WaypointsPane;
 
 import javafx.beans.value.ObservableValue;
@@ -16,6 +17,7 @@ public class PathElementsPane extends Pane {
     private final DocumentManager documentManager;
 
     private final FieldImagePane fieldImagePane;
+    private final TrajectoryPane trajectoryPane;
     private final ObstaclesPane obstaclesPane;
     private final LinesPane linesPane;
     private final WaypointsPane waypointsPane;
@@ -27,11 +29,12 @@ public class PathElementsPane extends Pane {
         this.documentManager = documentManager;
 
         fieldImagePane = new FieldImagePane(this.documentManager);
+        trajectoryPane = new TrajectoryPane(this.documentManager);
         obstaclesPane = new ObstaclesPane(this.documentManager);
         linesPane = new LinesPane(this.documentManager);
         waypointsPane = new WaypointsPane(this.documentManager);
 
-        getChildren().addAll(fieldImagePane, obstaclesPane, linesPane, waypointsPane);
+        getChildren().addAll(fieldImagePane, trajectoryPane, obstaclesPane, linesPane, waypointsPane);
         setPickOnBounds(false);
 
         pathAreaTranslate.xProperty().bind(this.documentManager.pathAreaWidthProperty().multiply(0.5));
@@ -40,7 +43,7 @@ public class PathElementsPane extends Pane {
         getTransforms().addAll(pathAreaTranslate, zoomTranslateTranslate);
 
         loadDocument(this.documentManager.getDocument());
-        this.documentManager.documentProperty().addListener(this::documentChanged); //TODO: move all of these things to end of constructor
+        this.documentManager.documentProperty().addListener(this::documentChanged); // TODO: move all of these things to end of constructor
     }
 
     private void documentChanged(ObservableValue<? extends HDocument> currentDocument, HDocument oldDocument, HDocument newDocument) {

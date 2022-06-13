@@ -32,6 +32,7 @@ public class LineView {
         topLine.endXProperty().bind(endPointX.multiply(zoomScale));
         topLine.endYProperty().bind(endPointY.multiply(zoomScale).negate());
 
+        // TODO: see if clip can be removed
         clip.startXProperty().bind(startPointX.multiply(zoomScale));
         clip.startYProperty().bind(startPointY.multiply(zoomScale).negate());
         clip.endXProperty().bind(endPointX.multiply(zoomScale));
