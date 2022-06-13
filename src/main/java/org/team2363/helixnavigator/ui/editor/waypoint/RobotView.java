@@ -44,7 +44,7 @@ public class RobotView {
         headingDot.setRadius(8);
         //headingDot.radiusProperty().bind(zoomScale.multiply(4));
         headingDot.centerXProperty().bind(bumperLength.multiply(0.5).multiply(zoomScale).subtract(robotRectangle.strokeWidthProperty().multiply(0.5)));
-        headingRotate.angleProperty().bind(heading);
+        headingRotate.angleProperty().bind(heading.multiply(-180/Math.PI));
         robotPane.getTransforms().add(headingRotate);
         robotPane.setPickOnBounds(false);
         pane.setPickOnBounds(false);

@@ -47,7 +47,7 @@ public class HardWaypointView extends WaypointView {
                     break;
                 }
             }
-            hardWaypoint.setHeading(angle);
+            hardWaypoint.setHeading(angle * (-Math.PI/180));
         });
         robotShown.addListener((obsVal, wasShown, isShown) -> {
             if (isShown) {

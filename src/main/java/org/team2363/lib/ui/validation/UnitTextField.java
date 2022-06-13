@@ -1,5 +1,8 @@
 package org.team2363.lib.ui.validation;
 
+import java.text.DecimalFormat;
+import java.util.function.UnaryOperator;
+
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
@@ -16,7 +19,9 @@ public class UnitTextField<T extends Quantity<T>> extends HBox {
 
     private final ChoiceBox<Unit<T>> unitChoiceBox = new ChoiceBox<>();
     private final MathExpressionTextField textField = new MathExpressionTextField();
-    
+
+    private UnaryOperator<Double> inputTransformation = input -> input;
+
     public UnitTextField(Unit<T> baseUnit, ObservableList<Unit<T>> unitChoices) {
         // System.out.println("TESTING: Instantiating unit text field");
         this.baseUnit = baseUnit;
@@ -35,15 +40,12 @@ public class UnitTextField<T extends Quantity<T>> extends HBox {
         });
 
         textField.setInputTransformation(input -> {
-            if (unitChoiceBox != null) {
-                Unit<T> chosenUnit = unitChoiceBox.getValue();
-                Quantity<T> quantity = Quantities.getQuantity(input, chosenUnit);
-                input = quantity.to(baseUnit).getValue().doubleValue();
-            }
-            return input;
+            Unit<T> chosenUnit = unitChoiceBox.getValue();
+            Quantity<T> quantity = Quantities.getQuantity(input, chosenUnit);
+            input = quantity.to(baseUnit).getValue().doubleValue();
+            return inputTransformation.apply(input);
         });
         textField.setOutputTransformation(output -> {
-            // System.out.println("TESTING: Transforming Output");
             Unit<T> chosenUnit = unitChoiceBox.getValue();
             Quantity<T> quantity = Quantities.getQuantity(output, this.baseUnit);
             output = quantity.to(chosenUnit).getValue().doubleValue();
@@ -64,5 +66,15 @@ public class UnitTextField<T extends Quantity<T>> extends HBox {
     public void setCurrentUnit(Unit<T> unit) {
         unitChoiceBox.getSelectionModel().select(unit);
         textField.setValue(textField.getValue());
+    }
+
+    public void setDecimalFormat(DecimalFormat decimalFormat) {
+        textField.setDecimalFormat(decimalFormat);
+    }
+    public void setInputTransformation(UnaryOperator<Double> transformation) {
+        //TODO: add null checks for MathExpressionTextField
+        if (transformation != null) {
+            inputTransformation = transformation;
+        }
     }
 }

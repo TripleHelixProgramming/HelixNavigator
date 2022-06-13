@@ -2,6 +2,7 @@ package org.team2363.lib.ui.validation;
 
 import static org.team2363.lib.ui.validation.FilteredTextField.filterFor;
 
+import java.text.DecimalFormat;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
@@ -17,7 +18,8 @@ public class MathExpressionTextField extends TextField {
 
     public static final Pattern EXPRESSION_VALIDATOR = Pattern.compile(".*");
     public static final UnaryOperator<TextFormatter.Change> EXPRESSION_FILTER = filterFor(Integer.MAX_VALUE, EXPRESSION_VALIDATOR);
-    
+
+    private DecimalFormat decimalFormat;
     private UnaryOperator<Double> inputTransformation = input -> input;
     private UnaryOperator<Double> outputTransformation = output -> output;
     private final StringConverter<Double> expressionConverter = new StringConverter<Double>() {
@@ -25,7 +27,12 @@ public class MathExpressionTextField extends TextField {
         @Override
         public String toString(Double object) {
             if (object != null) {
-                return Double.toString(outputTransformation.apply(object));
+                double transformed = outputTransformation.apply(object);
+                if (decimalFormat != null) {
+                    return decimalFormat.format(transformed);
+                } else {
+                    return Double.toString(transformed);
+                }
             } else {
                 return "";
             }
@@ -70,6 +77,9 @@ public class MathExpressionTextField extends TextField {
         return value.get();
     }
 
+    public void setDecimalFormat(DecimalFormat decimalFormat) {
+        this.decimalFormat = decimalFormat;
+    }
     public void setInputTransformation(UnaryOperator<Double> transformation) {
         inputTransformation = transformation;
     }

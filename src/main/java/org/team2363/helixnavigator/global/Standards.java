@@ -4,6 +4,7 @@ import static javafx.collections.FXCollections.observableArrayList;
 import static javafx.collections.FXCollections.unmodifiableObservableList;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.regex.Pattern;
 
 import javax.measure.Quantity;
@@ -74,9 +75,11 @@ public class Standards {
         public static final double WHEEL_RADIUS = 0.051;
     }
 
-    public static final double MIN_HEADING = -180;
-    public static final double MAX_HEADING = 180;
+    public static final double MIN_HEADING = -Math.PI;
+    public static final double MAX_HEADING = Math.PI;
     public static final double HEADING_LOCK_RADIUS = 5;
+
+    public static final DecimalFormat GUI_NUMBER_FORMAT = new DecimalFormat("#.######");
 
     public static final class ExportedUnits {
         public static final Unit<Time> TIME_UNIT = Units.SECOND;

@@ -4,6 +4,7 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 
 import org.team2363.helixnavigator.document.HRobotConfiguration;
+import org.team2363.helixnavigator.global.Standards;
 import org.team2363.helixnavigator.global.Standards.ExportedUnits;
 import org.team2363.helixnavigator.global.Standards.SupportedUnits.SupportedAngularSpeed;
 import org.team2363.helixnavigator.global.Standards.SupportedUnits.SupportedLength;
@@ -91,6 +92,16 @@ public class RobotConfigDialog {
         vBox.setSpacing(10);
         stage.setScene(scene);
         stage.setResizable(false);
+
+        bumperLengthTextField.setDecimalFormat(Standards.GUI_NUMBER_FORMAT);
+        bumperWidthTextField.setDecimalFormat(Standards.GUI_NUMBER_FORMAT);
+        wheelHorizontalDistanceTextField.setDecimalFormat(Standards.GUI_NUMBER_FORMAT);
+        wheelVerticalDistanceTextField.setDecimalFormat(Standards.GUI_NUMBER_FORMAT);
+        massTextField.setDecimalFormat(Standards.GUI_NUMBER_FORMAT);
+        momentOfInertiaTextField.setDecimalFormat(Standards.GUI_NUMBER_FORMAT);
+        motorMaxAngularSpeedTextField.setDecimalFormat(Standards.GUI_NUMBER_FORMAT);
+        motorMaxTorqueTextField.setDecimalFormat(Standards.GUI_NUMBER_FORMAT);
+
 
         backupRobotConfiguration = new HRobotConfiguration();
         backupRobotConfiguration.importConfiguration(robotConfiguration);
