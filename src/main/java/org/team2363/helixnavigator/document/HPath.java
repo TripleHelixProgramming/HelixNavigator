@@ -172,6 +172,19 @@ public class HPath {
     public final HSelectionModel<HPolygonPoint> getPolygonPointsSelectionModel() {
         return polygonPointsSelectionModel.get();
     }
+
+    public final ReadOnlyObjectProperty<HTrajectory> trajectoryProperty() {
+        return trajectory.getReadOnlyProperty();
+    }
+
+    // TODO: Make this private eventually
+    public final void setTrajectory(HTrajectory value) {
+        trajectory.set(value);
+    }
+
+    public final HTrajectory getTrajectory() {
+        return trajectory.get();
+    }
     
     @Override
     public String toString() {

@@ -3,6 +3,7 @@ package org.team2363.helixnavigator.ui.editor;
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.ui.editor.toolbar.PathToolBar;
+import org.team2363.helixnavigator.ui.editor.toolbar.TrajectoryToolBar;
 
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
@@ -18,7 +19,8 @@ public class EditorPane extends VBox {
     private final PathToolBar pathToolBar;
     private final PathPane pathPane;
     private final InfoText infoText;
-    private final StackPane bottomStack;
+    private final StackPane middleStack;
+    private final TrajectoryToolBar trajectoryToolBar;
 
     public EditorPane(DocumentManager documentManager) {
         this.documentManager = documentManager;
@@ -26,14 +28,15 @@ public class EditorPane extends VBox {
         pathToolBar = new PathToolBar(this.documentManager);
         pathPane = new PathPane(this.documentManager);
         infoText = new InfoText();
-        bottomStack = new StackPane(infoText);
+        middleStack = new StackPane(infoText);
+        trajectoryToolBar = new TrajectoryToolBar(this.documentManager);
 
-        setPadding(new Insets(0, 10, 10, 5));
+        setPadding(new Insets(0, 0, 10, 5));
         setSpacing(10.0);
-        VBox.setVgrow(bottomStack, Priority.ALWAYS);
+        VBox.setVgrow(middleStack, Priority.ALWAYS);
         setAlignment(Pos.CENTER);
 
-        bottomStack.layoutBoundsProperty().addListener((currentValue, oldValue, newValue) -> {
+        middleStack.layoutBoundsProperty().addListener((currentValue, oldValue, newValue) -> {
             this.documentManager.setPathAreaWidth(newValue.getWidth());
             this.documentManager.setPathAreaHeight(newValue.getHeight());
             if (this.documentManager.actions().getLockZoom()) {
@@ -41,7 +44,7 @@ public class EditorPane extends VBox {
             }
         });
 
-        getChildren().addAll(pathToolBar, bottomStack);
+        getChildren().addAll(pathToolBar, middleStack, trajectoryToolBar);
 
         loadDocument(this.documentManager.getDocument());
         this.documentManager.documentProperty().addListener(this::documentChanged); //TODO: move all of these things to end of constructor
@@ -60,9 +63,9 @@ public class EditorPane extends VBox {
     }
 
     private void disableInfoText() {
-        bottomStack.getChildren().set(0, pathPane);
+        middleStack.getChildren().set(0, pathPane);
     }
     private void enableInfoText() {
-        bottomStack.getChildren().set(0, infoText);
+        middleStack.getChildren().set(0, infoText);
     }
 }
