@@ -40,4 +40,16 @@ public class HTrajectorySample {
         this.vy = vy;
         this.omega = omega;
     }
+
+    public static HTrajectorySample interpolate(HTrajectorySample a, HTrajectorySample b, double ts) {
+        double ratioA = (b.ts - ts) / (b.ts - a.ts);
+        double ratioB = 1.0 - ratioA;
+        double x = ratioA * a.x + ratioB * b.x;
+        double y = ratioA * a.y + ratioB * b.y;
+        double heading = ratioA * a.heading + ratioB * b.heading;
+        double vx = ratioA * a.vx + ratioB * b.vx;
+        double vy = ratioA * a.vy + ratioB * b.vy;
+        double omega = ratioA * a.omega + ratioB * b.omega;
+        return new HTrajectorySample(ts, x, y, heading, vx, vy, omega);
+    }
 }

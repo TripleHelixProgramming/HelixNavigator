@@ -2,17 +2,17 @@ package org.team2363.helixnavigator.document;
 
 import java.util.List;
 
+import org.team2363.helixnavigator.document.obstacle.HObstacle;
+import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
+import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
+import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.DeserializedJSONTarget;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.JSONSerializer;
 import com.jlbabilino.json.SerializedJSONObjectValue;
-
-import org.team2363.helixnavigator.document.obstacle.HObstacle;
-import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
-import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
-import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
@@ -185,7 +185,7 @@ public class HPath {
     public final HTrajectory getTrajectory() {
         return trajectory.get();
     }
-    
+
     @Override
     public String toString() {
         return JSONSerializer.serializeString(this);
