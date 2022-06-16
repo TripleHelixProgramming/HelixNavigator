@@ -30,6 +30,9 @@ public class HTrajectory {
 
         duration = samples.get(samples.size() - 1).ts;
 
+        robotLocation.setX(samples.get(0).x);
+        robotLocation.setY(samples.get(0).y);
+        robotLocation.setHeading(samples.get(0).heading);
         // Ripped off my own code from HSelectionModel
         timestamp.addListener((obs, oldVal, newVal) -> {
             double targetTimestamp = newVal.doubleValue();
@@ -81,7 +84,6 @@ public class HTrajectory {
             robotLocation.setX(newX);
             robotLocation.setY(newY);
             robotLocation.setHeading(newHeading);
-
         });
     }
 
