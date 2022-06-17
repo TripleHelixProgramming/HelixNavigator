@@ -14,6 +14,7 @@ import com.jlbabilino.json.JSONDeserializerException;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Button;
@@ -30,6 +31,7 @@ public class TrajectoryToolBar extends ToolBar {
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
     private final ChangeListener<? super HTrajectory> onTrajectoryChanged = this::trajectoryChanged;
 
+    private final Button generateTraj = new Button("Generate Traj");
     private final Button importTraj = new Button("Import Traj");
     private final Slider timestampSlider = new Slider();
     private final ToggleButton animateButton = new ToggleButton("Animate");
@@ -40,8 +42,35 @@ public class TrajectoryToolBar extends ToolBar {
         this.documentManager = documentManager;
 
         timestampSlider.setMinWidth(500.0);
-        getItems().addAll(importTraj, timestampSlider, animateButton);
+        getItems().addAll(importTraj, generateTraj, timestampSlider, animateButton);
 
+        generateTraj.setOnAction(event -> {
+            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected() &&
+                    this.documentManager.requestSaveDocument()) {
+                HDocument document = this.documentManager.getDocument();
+                File saveLocation = document.getSaveLocation();
+                String docName = saveLocation.getName().substring(0, saveLocation.getName().length() - 5);
+                String inputFileStr = saveLocation.getAbsolutePath();
+                String outputFileStr = new File(saveLocation.getParentFile(), docName + "-traj.json").getAbsolutePath();
+                String pathName = document.getSelectedPath().getName();
+                ProcessBuilder processBuilder = new ProcessBuilder("helixtrajectory", "-i", inputFileStr, "-o", outputFileStr, "-p", pathName);
+                try {
+                    Process process = processBuilder.start();
+                    Platform.runLater(() -> {
+                        try {
+                            process.waitFor();
+                            HTrajectory traj = JSONDeserializer.deserialize(new File(outputFileStr), HTrajectory.class);
+                            this.documentManager.getDocument().getSelectedPath().setTrajectory(traj);
+                            System.out.println("Loaded traj automatically");
+                        } catch (IOException | InterruptedException | JSONDeserializerException e) {
+                            System.out.println("Error finishing process");
+                        }
+                    });
+                } catch (IOException e) {
+                    System.out.println("Error starting process");
+                }
+            }
+        });
         importTraj.setOnAction(event -> {
             if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
                 FileChooser chooser = new FileChooser();
