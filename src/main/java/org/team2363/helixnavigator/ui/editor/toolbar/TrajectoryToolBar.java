@@ -1,12 +1,18 @@
 package org.team2363.helixnavigator.ui.editor.toolbar;
 
+import static org.team2363.helixnavigator.global.Standards.ExportedUnits.TIME_UNIT;
+
 import java.io.File;
 import java.io.IOException;
+
+import javax.measure.quantity.Time;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
 import org.team2363.helixnavigator.document.HTrajectory;
+import org.team2363.helixnavigator.global.Standards;
+import org.team2363.lib.ui.validation.UnitTextField;
 
 import com.jlbabilino.json.JSONDeserializer;
 import com.jlbabilino.json.JSONDeserializerException;
@@ -34,6 +40,7 @@ public class TrajectoryToolBar extends ToolBar {
     private final Button generateTraj = new Button("Generate Traj");
     private final Button importTraj = new Button("Import Traj");
     private final Slider timestampSlider = new Slider();
+    private final UnitTextField<Time> timestampInput = new UnitTextField<>(TIME_UNIT, Standards.SupportedUnits.SupportedTime.UNITS);
     private final ToggleButton animateButton = new ToggleButton("Animate");
 
     private Timeline timeline;
