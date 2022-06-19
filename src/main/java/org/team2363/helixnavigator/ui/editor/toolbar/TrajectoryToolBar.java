@@ -4,6 +4,7 @@ import static org.team2363.helixnavigator.global.Standards.ExportedUnits.TIME_UN
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ProcessBuilder.Redirect;
 
 import javax.measure.quantity.Time;
 
@@ -60,8 +61,17 @@ public class TrajectoryToolBar extends ToolBar {
                 String inputFileStr = saveLocation.getAbsolutePath();
                 String outputFileStr = new File(saveLocation.getParentFile(), docName + "-traj.json").getAbsolutePath();
                 String pathName = document.getSelectedPath().getName();
-                ProcessBuilder processBuilder = new ProcessBuilder("helixtrajectory", "-i", inputFileStr, "-o", outputFileStr, "-p", pathName);
+                String os = System.getProperty("os.name");
+                ProcessBuilder processBuilder;
+                if (os != null && os.startsWith("Mac")) {
+                    processBuilder = new ProcessBuilder("helixtrajectory", "-i", inputFileStr.replace(" ", "\\ "), "-o", outputFileStr.replace(" ", "\\ "), "-p", pathName);
+                } else {
+                    processBuilder = new ProcessBuilder("helixtrajectory", '"'+inputFileStr+'"',  '"'+outputFileStr+'"', "--path", pathName);
+                }
                 try {
+                    // processBuilder.redirectError(Redirect.INHERIT);
+                    // processBuilder.redirectInput(Redirect.INHERIT);
+                    processBuilder.redirectOutput(Redirect.DISCARD);
                     Process process = processBuilder.start();
                     Platform.runLater(() -> {
                         try {
@@ -70,11 +80,11 @@ public class TrajectoryToolBar extends ToolBar {
                             this.documentManager.getDocument().getSelectedPath().setTrajectory(traj);
                             System.out.println("Loaded traj automatically");
                         } catch (IOException | InterruptedException | JSONDeserializerException e) {
-                            System.out.println("Error finishing process");
+                            System.out.println("Error finishing process: " + e.getMessage());
                         }
                     });
                 } catch (IOException e) {
-                    System.out.println("Error starting process");
+                    System.out.println("Error starting process: " + e.getMessage());
                 }
             }
         });
