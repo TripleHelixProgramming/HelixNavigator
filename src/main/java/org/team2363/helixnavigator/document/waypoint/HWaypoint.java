@@ -10,6 +10,7 @@ import com.jlbabilino.json.SerializedJSONObjectValue;
 import com.jlbabilino.json.TypeMarker;
 
 import org.team2363.helixnavigator.document.HPathElement;
+import org.team2363.helixtrajectory.Waypoint;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -82,6 +83,8 @@ public abstract class HWaypoint extends HPathElement {
     public final double getY() {
         return y.get();
     }
+
+    public abstract Waypoint toWaypoint();
 
     @DeserializedJSONDeterminer
     public static TypeMarker<? extends HWaypoint> determiner(JSONObject jsonObject) throws JSONDeserializerException {

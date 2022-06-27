@@ -1,5 +1,7 @@
 package org.team2363.helixnavigator.document;
 
+import org.team2363.helixtrajectory.TrajectorySample;
+
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.JSONSerializable;
@@ -51,5 +53,10 @@ public class HTrajectorySample {
         double vy = ratioA * a.vy + ratioB * b.vy;
         double omega = ratioA * a.omega + ratioB * b.omega;
         return new HTrajectorySample(ts, x, y, heading, vx, vy, omega);
+    }
+
+    public static HTrajectorySample fromTrajectorySample(TrajectorySample sample) {
+        return new HTrajectorySample(sample.ts, sample.x, sample.y, sample.heading,
+                sample.vx, sample.vy, sample.omega);
     }
 }

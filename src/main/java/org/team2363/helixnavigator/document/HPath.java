@@ -6,6 +6,8 @@ import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+import org.team2363.helixtrajectory.Path;
+import org.team2363.helixtrajectory.Waypoint;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
@@ -184,6 +186,14 @@ public class HPath {
 
     public final HTrajectory getTrajectory() {
         return trajectory.get();
+    }
+
+    public Path toPath() {
+        Waypoint[] waypointsArray = new Waypoint[waypoints.size()];
+        for (int i = 0; i < waypointsArray.length; i++) {
+            waypointsArray[i] = waypoints.get(i).toWaypoint();
+        }
+        return new Path(waypointsArray);
     }
 
     @Override
