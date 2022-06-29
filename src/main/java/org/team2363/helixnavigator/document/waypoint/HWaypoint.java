@@ -19,9 +19,10 @@ public abstract class HWaypoint extends HPathElement {
 
     private static final TypeMarker<HSoftWaypoint> SOFT_TYPE = new TypeMarker<HSoftWaypoint>() {};
     private static final TypeMarker<HHardWaypoint> HARD_TYPE = new TypeMarker<HHardWaypoint>() {};
+    private static final TypeMarker<HCustomWaypoint> CUSTOM_TYPE = new TypeMarker<HCustomWaypoint>() {};
 
     public static enum WaypointType {
-        SOFT, HARD;
+        SOFT, HARD, CUSTOM;
 
         @Override
         public String toString() {
@@ -53,6 +54,10 @@ public abstract class HWaypoint extends HPathElement {
     }
 
     public boolean isHard() {
+        return false;
+    }
+
+    public boolean isCustom() {
         return false;
     }
 
@@ -97,6 +102,8 @@ public abstract class HWaypoint extends HPathElement {
                 return SOFT_TYPE;
             case "hard":
                 return HARD_TYPE;
+            case "custom":
+                return CUSTOM_TYPE;
             default:
                 throw new JSONDeserializerException("Unrecognized waypoint type: \"" + typeString + "\"");
         }
