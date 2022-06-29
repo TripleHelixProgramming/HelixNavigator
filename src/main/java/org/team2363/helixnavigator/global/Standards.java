@@ -21,6 +21,7 @@ import org.team2363.lib.unit.MomentOfInertia;
 
 import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser.ExtensionFilter;
 import si.uom.NonSI;
 import si.uom.SI;
 import si.uom.quantity.AngularSpeed;
@@ -42,6 +43,8 @@ public class Standards {
      * The location of the "Documents" folder for the user
      */
     public static final File USER_DOCUMENTS_DIR = new File(System.getProperty("user.home") + File.separator + "Documents"); // TODO: make this work for every platform
+    public static final ExtensionFilter DOCUMENT_FILE_TYPE = new ExtensionFilter("HelixNavigator Document (*.json)", "*.json");
+    public static final ExtensionFilter TRAJECTORY_FILE_TYPE = new ExtensionFilter("HelixTrajectory Trajectory (*.json)", "*.json");
     /**
      * One or more characters; a-z, 0-9, space, hyphen, underscore allowed
      */

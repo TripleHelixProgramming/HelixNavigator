@@ -19,6 +19,7 @@ import org.team2363.lib.ui.validation.UnitTextField;
 
 import com.jlbabilino.json.JSONDeserializer;
 import com.jlbabilino.json.JSONDeserializerException;
+import com.jlbabilino.json.JSONSerializer;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -42,6 +43,7 @@ public class TrajectoryToolBar extends ToolBar {
 
     private final Button generateTraj = new Button("Generate Traj");
     private final Button importTraj = new Button("Import Traj");
+    private final Button exportTraj = new Button ("Export Traj");
     private final Slider timestampSlider = new Slider();
     private final UnitTextField<Time> timestampInput = new UnitTextField<>(TIME_UNIT, Standards.SupportedUnits.SupportedTime.UNITS);
     private final ToggleButton animateButton = new ToggleButton("Animate");
@@ -51,8 +53,8 @@ public class TrajectoryToolBar extends ToolBar {
     public TrajectoryToolBar(DocumentManager documentManager) {
         this.documentManager = documentManager;
 
-        timestampSlider.setMinWidth(500.0);
-        getItems().addAll(importTraj, generateTraj, timestampSlider, animateButton);
+        timestampSlider.setMinWidth(400.0);
+        getItems().addAll(importTraj, exportTraj, generateTraj, timestampSlider, animateButton);
 
         generateTraj.setOnAction(event -> {
             if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
@@ -96,6 +98,23 @@ public class TrajectoryToolBar extends ToolBar {
                     System.out.println("Loaded traj");
                 } catch (IOException | JSONDeserializerException e) {
                     System.out.println("Error when importing traj: " + e.getMessage());
+                }
+            }
+        });
+        exportTraj.setOnAction(event -> {
+            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected() &&
+                    this.documentManager.getDocument().getSelectedPath().getTrajectory() != null) {
+                HTrajectory traj = this.documentManager.getDocument().getSelectedPath().getTrajectory();
+                FileChooser chooser = new FileChooser();
+                chooser.getExtensionFilters().add(Standards.TRAJECTORY_FILE_TYPE);
+                File result = chooser.showSaveDialog(this.documentManager.getStage());
+                if (result != null) {
+                    try {
+                        JSONSerializer.serializeFile(traj, result);
+                        System.out.println("Exported traj");
+                    } catch (IOException e) {
+                        System.out.println("Error when exporting traj: " + e.getMessage());
+                    }
                 }
             }
         });

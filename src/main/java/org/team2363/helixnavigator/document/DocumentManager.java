@@ -28,7 +28,6 @@ import javafx.stage.Stage;
 
 public class DocumentManager {
 
-    private static final ExtensionFilter DOCUMENT_FILE_TYPE = new ExtensionFilter("HelixNavigator Document (*.json)", "*.json");
     private static final ExtensionFilter WAYPOINT_BUNDLE_FILE_TYPE = new ExtensionFilter("Waypoint Bundle (*.json)", "*.json");
 
     private static final Logger logger = Logger.getLogger("org.team2363.helixnavigator.document");
@@ -168,7 +167,7 @@ public class DocumentManager {
     public final boolean requestOpenDocument() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select a Document");
-        fileChooser.getExtensionFilters().add(DOCUMENT_FILE_TYPE);
+        fileChooser.getExtensionFilters().add(Standards.DOCUMENT_FILE_TYPE);
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
             if (file.canRead()) {
@@ -262,7 +261,7 @@ public class DocumentManager {
     public final boolean requestSaveAsDocument() {
         if (getIsDocumentOpen()) {
             FileChooser fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters().add(DOCUMENT_FILE_TYPE);
+            fileChooser.getExtensionFilters().add(Standards.DOCUMENT_FILE_TYPE);
             File saveLocation = fileChooser.showSaveDialog(stage);
             if (saveLocation != null) {
                 getDocument().setSaveLocation(saveLocation);
