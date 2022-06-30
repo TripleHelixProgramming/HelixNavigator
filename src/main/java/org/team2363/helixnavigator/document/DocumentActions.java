@@ -2,6 +2,7 @@ package org.team2363.helixnavigator.document;
 
 import org.team2363.helixnavigator.document.field.image.HFieldImage;
 import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
+import org.team2363.helixnavigator.document.waypoint.HCustomWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
@@ -232,6 +233,13 @@ public class DocumentActions {
             insertWaypoint(index, newWaypoint);
         }
     }
+    public void newCustomWaypoint(int index) {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+            HWaypoint newWaypoint = new HCustomWaypoint();
+            newWaypoint.setName("Custom Waypoint " + index);
+            insertWaypoint(index, newWaypoint);
+        }
+    }
     public void newSoftWaypoint() {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
             newSoftWaypoint(documentManager.getDocument().getSelectedPath().getWaypoints().size());
@@ -240,6 +248,11 @@ public class DocumentActions {
     public void newHardWaypoint() {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
             newHardWaypoint(documentManager.getDocument().getSelectedPath().getWaypoints().size());
+        }
+    }
+    public void newCustomWaypoint() {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+            newCustomWaypoint(documentManager.getDocument().getSelectedPath().getWaypoints().size());
         }
     }
 

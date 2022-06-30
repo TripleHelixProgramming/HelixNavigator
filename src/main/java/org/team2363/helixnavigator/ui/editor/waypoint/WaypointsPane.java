@@ -5,6 +5,7 @@ import java.util.List;
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
+import org.team2363.helixnavigator.document.waypoint.HCustomWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
@@ -110,6 +111,11 @@ public class WaypointsPane extends Pane {
                     hardWaypointView.bumperWidthProperty().bind(this.documentManager.getDocument().getRobotConfiguration().bumperWidthProperty());
                     robotsPane.getChildren().add(hardWaypointView.getRobotView().getView());
                     waypointView = hardWaypointView;
+                    break;
+                case CUSTOM:
+                    HCustomWaypoint customWaypoint = (HCustomWaypoint) waypoint;
+                    CustomWaypointView customWaypointView = new CustomWaypointView(customWaypoint);
+                    waypointView = customWaypointView;
                     break;
                 default:
                     waypointView = null;

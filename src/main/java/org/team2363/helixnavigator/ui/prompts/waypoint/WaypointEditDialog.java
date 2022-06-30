@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import javax.measure.quantity.Length;
 
+import org.team2363.helixnavigator.document.waypoint.HCustomWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
@@ -33,6 +34,8 @@ public abstract class WaypointEditDialog {
                 return new SoftWaypointEditDialog((HSoftWaypoint) waypoint);
             case HARD:
                 return new HardWaypointEditDialog((HHardWaypoint) waypoint);
+            case CUSTOM:
+                return new CustomWaypointEditDialog((HCustomWaypoint) waypoint);
             default:
                 return null;
         }
@@ -48,10 +51,15 @@ public abstract class WaypointEditDialog {
     private final Text yText = new Text("Y:");
     private final UnitTextField<Length> yTextField = new UnitTextField<>(ExportedUnits.LENGTH_UNIT, SupportedLength.UNITS);
     private final GridPane propertyGrid = new GridPane();
+    /**
+     * The index where new grid pane items can be added.
+     */
+    protected static final int ADDITIONAL_PROPERTIES_ROW = 3;
     private final Button okButton = new Button("OK");
     private final Button cancelButton = new Button("Cancel");
     private final HBox buttonBox = new HBox();
-    private final VBox vBox = new VBox();
+    protected final VBox vBox = new VBox();
+    protected static final int ADDITIONAL_NODES_ROW = 1;
     private final Scene scene;
     private final Stage stage = new Stage();
 

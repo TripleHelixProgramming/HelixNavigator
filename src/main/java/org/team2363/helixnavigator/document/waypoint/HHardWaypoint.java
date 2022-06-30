@@ -44,6 +44,6 @@ public class HHardWaypoint extends HWaypoint {
 
     @Override
     public Waypoint toWaypoint() {
-        return new Waypoint(getX(), getY(), getHeading());
+        return Waypoint.hardWaypoint(getX(), getY(), getHeading());
     }
 }

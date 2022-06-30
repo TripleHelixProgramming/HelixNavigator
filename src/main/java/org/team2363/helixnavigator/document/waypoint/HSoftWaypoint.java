@@ -22,6 +22,6 @@ public class HSoftWaypoint extends HWaypoint {
 
     @Override
     public Waypoint toWaypoint() {
-        return new Waypoint(getX(), getY(), 0.0);
+        return Waypoint.softWaypoint(getX(), getY());
     }
 }
