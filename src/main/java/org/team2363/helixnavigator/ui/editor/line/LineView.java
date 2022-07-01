@@ -10,8 +10,6 @@ public class LineView {
 
     private final Line bottomLine = new Line();
     private final Line topLine = new Line();
-    
-    private final Line clip = new Line();
 
     private final DoubleProperty startPointX = new SimpleDoubleProperty(this, "startPointX", 0.0);
     private final DoubleProperty startPointY = new SimpleDoubleProperty(this, "startPointY", 0.0);
@@ -32,19 +30,10 @@ public class LineView {
         topLine.endXProperty().bind(endPointX.multiply(zoomScale));
         topLine.endYProperty().bind(endPointY.multiply(zoomScale).negate());
 
-        // TODO: see if clip can be removed
-        clip.startXProperty().bind(startPointX.multiply(zoomScale));
-        clip.startYProperty().bind(startPointY.multiply(zoomScale).negate());
-        clip.endXProperty().bind(endPointX.multiply(zoomScale));
-        clip.endYProperty().bind(endPointY.multiply(zoomScale).negate());
-
-        bottomLine.setStrokeWidth(5);
-        bottomLine.setStroke(Color.gray(0.6));
-        topLine.setStrokeWidth(3);
-        topLine.setStroke(Color.BLACK);
-        clip.setStrokeWidth(5);
-        
-        pane.setClip(clip);
+        bottomLine.setStrokeWidth(4);
+        bottomLine.setStroke(Color.gray(0.6).deriveColor(0.0, 1.0, 1.0, 0.4));
+        topLine.setStrokeWidth(2);
+        topLine.setStroke(Color.BLACK.deriveColor(0.0, 1.0, 1.0, 0.4));
     }
 
     public final DoubleProperty startPointXProperty() {

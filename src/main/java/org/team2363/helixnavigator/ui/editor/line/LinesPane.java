@@ -9,9 +9,7 @@ import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.scene.layout.Pane;
 
 public class LinesPane extends Pane {

@@ -97,6 +97,8 @@ public class ExpressionParser {
             return Math.max(args[0], args[1]);
         }
     };
+    private static final Function deg = args -> Math.toDegrees(args[0]);
+    private static final Function rad = args -> Math.toRadians(args[0]);
     private static final Function pi = new Function() {
         @Override
         public int argCount() {
@@ -155,6 +157,8 @@ public class ExpressionParser {
             case "ceil": return ceil;
             case "min": return min;
             case "max": return max;
+            case "deg": return deg;
+            case "rad": return rad;
             case "pi": return pi;
             case "e": return e;
             default:

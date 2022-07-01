@@ -37,6 +37,7 @@ public class CustomWaypointEditDialog extends WaypointEditDialog {
     private final CheckBox headingConstrainedCheckBox = new CheckBox("Heading");
     private final CheckBox velocityXConstrainedCheckBox = new CheckBox("Velocity X");
     private final CheckBox velocityYConstrainedCheckBox = new CheckBox("Velocity Y");
+    private final CheckBox velocityMagnitudeConstrainedCheckBox = new CheckBox("Velocity Magnitude");
     private final CheckBox angularVelocityConstrainedCheckBox = new CheckBox("Angular Velocity");
 
     public CustomWaypointEditDialog(HCustomWaypoint customWaypoint) {
@@ -61,7 +62,8 @@ public class CustomWaypointEditDialog extends WaypointEditDialog {
         vBox.getChildren().add(ADDITIONAL_NODES_ROW + 3, headingConstrainedCheckBox);
         vBox.getChildren().add(ADDITIONAL_NODES_ROW + 4, velocityXConstrainedCheckBox);
         vBox.getChildren().add(ADDITIONAL_NODES_ROW + 5, velocityYConstrainedCheckBox);
-        vBox.getChildren().add(ADDITIONAL_NODES_ROW + 6, angularVelocityConstrainedCheckBox);
+        vBox.getChildren().add(ADDITIONAL_NODES_ROW + 6, velocityMagnitudeConstrainedCheckBox);
+        vBox.getChildren().add(ADDITIONAL_NODES_ROW + 7, angularVelocityConstrainedCheckBox);
 
         backupWaypoint();
         // Set ui to values of HWaypoint:
@@ -82,6 +84,7 @@ public class CustomWaypointEditDialog extends WaypointEditDialog {
         headingConstrainedCheckBox.setSelected(customWaypoint.isHeadingConstrained());
         velocityXConstrainedCheckBox.setSelected(customWaypoint.isVelocityXConstrained());
         velocityYConstrainedCheckBox.setSelected(customWaypoint.isVelocityYConstrained());
+        velocityMagnitudeConstrainedCheckBox.setSelected(customWaypoint.isVelocityMagnitudeConstrained());
         angularVelocityConstrainedCheckBox.setSelected(customWaypoint.isAngularVelocityConstrained());
     }
 
@@ -97,6 +100,7 @@ public class CustomWaypointEditDialog extends WaypointEditDialog {
         customWaypoint.headingConstrainedProperty().unbind();
         customWaypoint.velocityXConstrainedProperty().unbind();
         customWaypoint.velocityYConstrainedProperty().unbind();
+        customWaypoint.velocityMagnitudeConstrainedProperty().unbind();
         customWaypoint.angularVelocityConstrainedProperty().unbind();
     }
 
@@ -112,6 +116,7 @@ public class CustomWaypointEditDialog extends WaypointEditDialog {
         customWaypoint.headingConstrainedProperty().bind(headingConstrainedCheckBox.selectedProperty());
         customWaypoint.velocityXConstrainedProperty().bind(velocityXConstrainedCheckBox.selectedProperty());
         customWaypoint.velocityYConstrainedProperty().bind(velocityYConstrainedCheckBox.selectedProperty());
+        customWaypoint.velocityMagnitudeConstrainedProperty().bind(velocityMagnitudeConstrainedCheckBox.selectedProperty());
         customWaypoint.angularVelocityConstrainedProperty().bind(angularVelocityConstrainedCheckBox.selectedProperty());
 
     }
@@ -128,6 +133,7 @@ public class CustomWaypointEditDialog extends WaypointEditDialog {
         backupCustomWaypoint.setHeadingConstrained(customWaypoint.isHeadingConstrained());
         backupCustomWaypoint.setVelocityXConstrained(customWaypoint.isVelocityXConstrained());
         backupCustomWaypoint.setVelocityYConstrained(customWaypoint.isVelocityYConstrained());
+        backupCustomWaypoint.setVelocityMagnitudeConstrained(customWaypoint.isVelocityMagnitudeConstrained());
         backupCustomWaypoint.setAngularVelocityConstrained(customWaypoint.isAngularVelocityConstrained());
     }
 
@@ -143,6 +149,7 @@ public class CustomWaypointEditDialog extends WaypointEditDialog {
         customWaypoint.setHeadingConstrained(backupCustomWaypoint.isHeadingConstrained());
         customWaypoint.setVelocityXConstrained(backupCustomWaypoint.isVelocityXConstrained());
         customWaypoint.setVelocityYConstrained(backupCustomWaypoint.isVelocityYConstrained());
+        customWaypoint.setVelocityMagnitudeConstrained(backupCustomWaypoint.isVelocityMagnitudeConstrained());
         customWaypoint.setAngularVelocityConstrained(backupCustomWaypoint.isAngularVelocityConstrained());
     }
 }

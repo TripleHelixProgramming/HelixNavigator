@@ -24,6 +24,7 @@ public class HCustomWaypoint extends HWaypoint {
     private final BooleanProperty headingConstrained = new SimpleBooleanProperty(this, "headingConstrained", true);
     private final BooleanProperty velocityXConstrained = new SimpleBooleanProperty(this, "velocityXConstrained", false);
     private final BooleanProperty velocityYConstrained = new SimpleBooleanProperty(this, "velocityYConstrained", false);
+    private final BooleanProperty velocityMagnitudeConstrained = new SimpleBooleanProperty(this, "velocityMagnitudeConstrained", false);
     private final BooleanProperty angularVelocityConstrained = new SimpleBooleanProperty(this, "angularVelocityConstrained", false);
 
     @DeserializedJSONConstructor
@@ -148,6 +149,18 @@ public class HCustomWaypoint extends HWaypoint {
         return velocityYConstrained.get();
     }
 
+    public final BooleanProperty velocityMagnitudeConstrainedProperty() {
+        return velocityMagnitudeConstrained;
+    }
+    @DeserializedJSONTarget
+    public final void setVelocityMagnitudeConstrained(@DeserializedJSONObjectValue(key = "velocity_magnitude_constrained") boolean value) {
+        velocityMagnitudeConstrained.set(value);
+    }
+    @SerializedJSONObjectValue(key = "velocity_magnitude_constrained")
+    public final boolean isVelocityMagnitudeConstrained() {
+        return velocityMagnitudeConstrained.get();
+    }
+
     public final BooleanProperty angularVelocityConstrainedProperty() {
         return angularVelocityConstrained;
     }
@@ -164,6 +177,6 @@ public class HCustomWaypoint extends HWaypoint {
     public Waypoint toWaypoint() {
         return new Waypoint(getX(), getY(), getHeading(), getVelocityX(), getVelocityY(), getAngularVelocity(),
                             isXConstrained(), isYConstrained(), isHeadingConstrained(), isVelocityXConstrained(),
-                            isVelocityYConstrained(), isAngularVelocityConstrained());
+                            isVelocityYConstrained(), isVelocityMagnitudeConstrained(), isAngularVelocityConstrained());
     }
 }
