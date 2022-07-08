@@ -7,9 +7,11 @@ import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HInitialGuessWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+import org.team2363.helixnavigator.ui.prompts.TransformDialog;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -22,8 +24,33 @@ public class DocumentActions {
     private final BooleanProperty showOrigin = new SimpleBooleanProperty(this, "showOrigin", false);
     private final BooleanProperty autoWaypoint = new SimpleBooleanProperty(this, "autoWaypoint", false);
 
+    private TransformDialog transformDialog = null;
+
     DocumentActions(DocumentManager documentManager) {
         this.documentManager = documentManager;
+
+        loadDocument(this.documentManager.getDocument());
+        this.documentManager.documentProperty().addListener(this::documentChanged);
+    }
+
+    private void documentChanged(ObservableValue<? extends HDocument> currentDocument, HDocument oldDocument, HDocument newDocument) {
+        unloadDocument(oldDocument);
+        loadDocument(newDocument);
+    }
+    private void unloadDocument(HDocument oldDocument) {
+        if (oldDocument != null) {
+            transformDialog.close();
+            transformDialog = null;
+        }
+    }
+    private void loadDocument(HDocument newDocument) {
+        if (newDocument != null) {
+            transformDialog = new TransformDialog(newDocument);
+        }
+    }
+
+    public TransformDialog getTransformDialog() {
+        return transformDialog;
     }
 
     public void pan(double deltaX, double deltaY) {

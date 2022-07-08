@@ -13,6 +13,8 @@ import com.jlbabilino.json.TypeMarker;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.geometry.Point2D;
+import javafx.scene.transform.Transform;
 
 public abstract class HWaypoint extends HPathElement {
 
@@ -34,6 +36,13 @@ public abstract class HWaypoint extends HPathElement {
     private final DoubleProperty y = new SimpleDoubleProperty(this, "y", 0.0);
 
     public HWaypoint() {
+    }
+
+    @Override
+    public void transformRelative(Transform transform) {
+        Point2D newPoint = transform.transform(getX(), getY());
+        setX(newPoint.getX());
+        setY(newPoint.getY());
     }
 
     @Override

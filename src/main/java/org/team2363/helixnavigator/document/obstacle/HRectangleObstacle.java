@@ -10,6 +10,8 @@ import com.jlbabilino.json.SerializedJSONObjectValue;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.geometry.Point2D;
+import javafx.scene.transform.Transform;
 
 public class HRectangleObstacle extends HObstacle {
 
@@ -41,6 +43,15 @@ public class HRectangleObstacle extends HObstacle {
                                           new ObstaclePoint(x[2], y[2]),
                                           new ObstaclePoint(x[3], y[3])};
         return new Obstacle(getSafetyDistance(), obstaclePoints);
+    }
+
+    @Override
+    public void transformRelative(Transform transform) {
+        Point2D newCenter = transform.transform(getCenterX(), getCenterY());
+        double deltaAngle = Math.atan2(transform.getMyx(), transform.getMxx());
+        setCenterX(newCenter.getX());
+        setCenterY(newCenter.getY());
+        setRotateAngle(getRotateAngle() + deltaAngle);
     }
 
     @Override

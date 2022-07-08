@@ -10,6 +10,8 @@ import com.jlbabilino.json.SerializedJSONObjectValue;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.geometry.Point2D;
+import javafx.scene.transform.Transform;
 
 public class HCircleObstacle extends HObstacle {
 
@@ -24,6 +26,13 @@ public class HCircleObstacle extends HObstacle {
     @Override
     public Obstacle toObstacle() {
         return new Obstacle(getSafetyDistance() + getRadius(), new ObstaclePoint(getCenterX(), getCenterY()));
+    }
+
+    @Override
+    public void transformRelative(Transform transform) {
+        Point2D newCenter = transform.transform(getCenterX(), getCenterY());
+        setCenterX(newCenter.getX());
+        setCenterY(newCenter.getY());
     }
 
     @Override

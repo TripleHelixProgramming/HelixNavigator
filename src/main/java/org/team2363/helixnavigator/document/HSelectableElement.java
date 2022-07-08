@@ -2,6 +2,7 @@ package org.team2363.helixnavigator.document;
 
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
+import javafx.scene.transform.Transform;
 
 public abstract class HSelectableElement {
 
@@ -9,6 +10,8 @@ public abstract class HSelectableElement {
 
     protected HSelectableElement() {
     }
+
+    public abstract void transformRelative(Transform transform);
 
     public abstract void translateRelativeX(double x);
 

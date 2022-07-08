@@ -11,6 +11,7 @@ import com.jlbabilino.json.SerializedJSONObjectValue;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.transform.Transform;
 
 public class HPolygonObstacle extends HObstacle {
 
@@ -42,6 +43,11 @@ public class HPolygonObstacle extends HObstacle {
             obstaclePoints[i] = points.get(i).toObstaclePoint();
         }
         return new Obstacle(getSafetyDistance(), obstaclePoints);
+    }
+
+    @Override
+    public void transformRelative(Transform transform) {
+        points.forEach(point -> point.transformRelative(transform));
     }
 
     @Override

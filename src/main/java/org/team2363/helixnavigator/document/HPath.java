@@ -31,6 +31,7 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.transform.Transform;
 
 @JSONSerializable
 public class HPath {
@@ -70,6 +71,11 @@ public class HPath {
         } else {
             setPolygonPointsSelectionModel(null);
         }
+    }
+
+    public void transformSelectedElementsRelative(Transform transform) {
+        getWaypointsSelectionModel().getSelectedItems().forEach(element -> element.transformRelative(transform));
+        getObstaclesSelectionModel().getSelectedItems().forEach(element -> element.transformRelative(transform));
     }
 
     public void moveSelectedElementsRelative(double deltaX, double deltaY) {

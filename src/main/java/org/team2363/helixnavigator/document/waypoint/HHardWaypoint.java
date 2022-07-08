@@ -10,6 +10,7 @@ import com.jlbabilino.json.SerializedJSONObjectValue;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.transform.Transform;
 
 public class HHardWaypoint extends HWaypoint {
     
@@ -17,6 +18,13 @@ public class HHardWaypoint extends HWaypoint {
 
     @DeserializedJSONConstructor
     public HHardWaypoint() {
+    }
+
+    @Override
+    public void transformRelative(Transform transform) {
+        super.transformRelative(transform);
+        double deltaAngle = Math.atan2(transform.getMyx(), transform.getMxx());
+        setHeading(getHeading() + deltaAngle);
     }
 
     @Override

@@ -33,7 +33,7 @@ public class RectangleObstacleView extends ObstacleView {
 
         originTranslate.xProperty().bind(this.rectangleObstacle.lengthProperty().multiply(zoomScaleProperty()).multiply(-0.5));
         originTranslate.yProperty().bind(this.rectangleObstacle.widthProperty().multiply(zoomScaleProperty().multiply(-0.5)));
-        rotation.angleProperty().bind(this.rectangleObstacle.rotateAngleProperty());
+        rotation.angleProperty().bind(this.rectangleObstacle.rotateAngleProperty().multiply(-180 / Math.PI));
         centerTranslate.xProperty().bind(this.rectangleObstacle.centerXProperty().multiply(zoomScaleProperty()));
         centerTranslate.yProperty().bind(this.rectangleObstacle.centerYProperty().multiply(zoomScaleProperty()).negate());
         pane.getTransforms().addAll(centerTranslate, rotation, originTranslate);

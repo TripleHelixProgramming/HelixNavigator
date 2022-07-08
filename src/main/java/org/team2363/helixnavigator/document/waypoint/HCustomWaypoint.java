@@ -12,6 +12,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.transform.Transform;
 
 public class HCustomWaypoint extends HWaypoint {
     
@@ -30,6 +31,13 @@ public class HCustomWaypoint extends HWaypoint {
 
     @DeserializedJSONConstructor
     public HCustomWaypoint() {
+    }
+
+    @Override
+    public void transformRelative(Transform transform) {
+        super.transformRelative(transform);
+        double deltaAngle = Math.atan2(transform.getMyx(), transform.getMxx());
+        setHeading(getHeading() + deltaAngle);
     }
 
     @Override
