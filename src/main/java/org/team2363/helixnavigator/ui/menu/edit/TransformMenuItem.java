@@ -20,8 +20,6 @@ public class TransformMenuItem extends MenuItem {
     }
 
     public void action(ActionEvent event) {
-        if (this.documentManager.getIsDocumentOpen()) { // Redundant check
-            documentManager.actions().getTransformDialog().show();
-        }
+        documentManager.actions().getTransformDialog().show();
     }
 }

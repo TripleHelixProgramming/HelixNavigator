@@ -7,6 +7,7 @@ import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HInitialGuessWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+import org.team2363.helixnavigator.ui.prompts.RobotConfigDialog;
 import org.team2363.helixnavigator.ui.prompts.TransformDialog;
 
 import javafx.beans.property.BooleanProperty;
@@ -24,6 +25,7 @@ public class DocumentActions {
     private final BooleanProperty showOrigin = new SimpleBooleanProperty(this, "showOrigin", false);
     private final BooleanProperty autoWaypoint = new SimpleBooleanProperty(this, "autoWaypoint", false);
 
+    private RobotConfigDialog robotConfigDialog = null;
     private TransformDialog transformDialog = null;
 
     DocumentActions(DocumentManager documentManager) {
@@ -39,16 +41,22 @@ public class DocumentActions {
     }
     private void unloadDocument(HDocument oldDocument) {
         if (oldDocument != null) {
+            robotConfigDialog.close();
             transformDialog.close();
+            robotConfigDialog = null;
             transformDialog = null;
         }
     }
     private void loadDocument(HDocument newDocument) {
         if (newDocument != null) {
+            robotConfigDialog = new RobotConfigDialog(newDocument.getRobotConfiguration());
             transformDialog = new TransformDialog(newDocument);
         }
     }
 
+    public RobotConfigDialog getRobotConfigDialog() {
+        return robotConfigDialog;
+    }
     public TransformDialog getTransformDialog() {
         return transformDialog;
     }
