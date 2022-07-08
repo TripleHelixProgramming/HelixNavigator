@@ -114,7 +114,7 @@ public class Standards {
             }
             @Override
             public String toString() {
-                return unit.toString();
+                return name().toLowerCase();
             }
             public static final ObservableList<SupportedTime> SUPPORTED_UNITS =
                     unmodifiableObservableList(observableArrayList(values()));
@@ -142,7 +142,7 @@ public class Standards {
             }
             @Override
             public String toString() {
-                return unit.toString();
+                return name().toLowerCase();
             }
             public static final ObservableList<SupportedLength> SUPPORTED_UNITS =
                     unmodifiableObservableList(observableArrayList(values()));
@@ -171,7 +171,7 @@ public class Standards {
             }
             @Override
             public String toString() {
-                return unit.toString();
+                return name().toLowerCase();
             }
             public static final ObservableList<SupportedMass> SUPPORTED_UNITS =
                     unmodifiableObservableList(observableArrayList(values()));
@@ -200,7 +200,7 @@ public class Standards {
             }
             @Override
             public String toString() {
-                return unit.toString();
+                return name().toLowerCase();
             }
             public static final ObservableList<SupportedSpeed> SUPPORTED_UNITS =
                     unmodifiableObservableList(observableArrayList(values()));
@@ -227,7 +227,7 @@ public class Standards {
             }
             @Override
             public String toString() {
-                return unit.toString();
+                return name().toLowerCase();
             }
             public static final ObservableList<SupportedAcceleration> SUPPORTED_UNITS =
                     unmodifiableObservableList(observableArrayList(values()));
@@ -255,7 +255,7 @@ public class Standards {
             }
             @Override
             public String toString() {
-                return unit.toString();
+                return name().toLowerCase();
             }
             public static final ObservableList<SupportedAngle> SUPPORTED_UNITS =
                     unmodifiableObservableList(observableArrayList(values()));
@@ -283,7 +283,7 @@ public class Standards {
             }
             @Override
             public String toString() {
-                return unit.toString();
+                return name().toLowerCase();
             }
             public static final ObservableList<SupportedAngularSpeed> SUPPORTED_UNITS =
                     unmodifiableObservableList(observableArrayList(values()));
@@ -310,7 +310,7 @@ public class Standards {
             }
             @Override
             public String toString() {
-                return unit.toString();
+                return name().toLowerCase();
             }
             public static final ObservableList<SupportedTorque> SUPPORTED_UNITS =
                     unmodifiableObservableList(observableArrayList(values()));
@@ -337,7 +337,7 @@ public class Standards {
             }
             @Override
             public String toString() {
-                return unit.toString();
+                return name().toLowerCase();
             }
             public static final ObservableList<SupportedMomentOfInertia> SUPPORTED_UNITS =
                     unmodifiableObservableList(observableArrayList(values()));

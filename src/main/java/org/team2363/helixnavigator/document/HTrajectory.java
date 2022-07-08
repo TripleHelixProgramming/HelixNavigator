@@ -75,6 +75,7 @@ public class HTrajectory {
                         found = true;
                     }
                 }
+                System.out.println(foundIndex);
                 HTrajectorySample a = samples.get(foundIndex - 1);
                 HTrajectorySample b = samples.get(foundIndex);
                 double ratioA = (b.ts - targetTimestamp) / (b.ts - a.ts);

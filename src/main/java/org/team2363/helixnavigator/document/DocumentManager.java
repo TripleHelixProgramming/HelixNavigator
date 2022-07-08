@@ -135,10 +135,11 @@ public class DocumentManager {
             logger.info("File \"" + file.getAbsolutePath() + "\" succesffully opened.");
             return true;
         } catch (IOException e) {
-            logger.finer("Could not read file: " + file.getAbsolutePath());
+            logger.finer("Could not read file " + file.getAbsolutePath() + ": " + e.getMessage());
+            e.printStackTrace();
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("File Error");
-            alert.setContentText("Could not read file: " + file.getAbsolutePath());
+            alert.setContentText("Could not read file " + file.getAbsolutePath() + ": " + e.getMessage());
             alert.showAndWait();
             return false;
         } catch (JSONParserException e) {
