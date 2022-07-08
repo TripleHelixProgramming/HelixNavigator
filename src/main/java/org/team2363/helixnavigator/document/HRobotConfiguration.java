@@ -7,6 +7,7 @@ import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONObjectValue;
 
 import org.team2363.helixnavigator.global.Standards.DefaultRobotConfiguration;
+import org.team2363.helixtrajectory.SwerveDrive;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -25,6 +26,7 @@ public class HRobotConfiguration {
     private final DoubleProperty momentOfInertia = new SimpleDoubleProperty(this, "momentOfInertia", DefaultRobotConfiguration.MOMENT_OF_INERTIA);
     private final DoubleProperty motorMaxAngularSpeed = new SimpleDoubleProperty(this, "motorMaxSpeed", DefaultRobotConfiguration.MOTOR_MAX_ANGULAR_SPEED);
     private final DoubleProperty motorMaxTorque = new SimpleDoubleProperty(this, "motorMaxTorque", DefaultRobotConfiguration.MOTOR_MAX_TORQUE);
+    private final DoubleProperty wheelRadius = new SimpleDoubleProperty(this, "wheelRadius", DefaultRobotConfiguration.WHEEL_RADIUS);
 
     @DeserializedJSONConstructor
     public HRobotConfiguration() {
@@ -156,6 +158,20 @@ public class HRobotConfiguration {
         return motorMaxTorque.get();
     }
 
+    public final DoubleProperty wheelRadiusProperty() {
+        return wheelRadius;
+    }
+
+    @DeserializedJSONTarget
+    public final void setWheelRadius(@DeserializedJSONObjectValue(key = "wheel_radius") double value) {
+        wheelRadius.set(value);
+    }
+
+    @SerializedJSONObjectValue(key = "wheel_radius")
+    public final double getWheelRadius() {
+        return wheelRadius.get();
+    }
+
     /**
      * Populates the settings in this {@code HRobotConfiguration} with the settings from
      * a given configuration.
@@ -172,5 +188,12 @@ public class HRobotConfiguration {
         setMomentOfInertia(otherConfiguration.getMomentOfInertia());
         setMotorMaxAngularSpeed(otherConfiguration.getMotorMaxAngularSpeed());
         setMotorMaxTorque(otherConfiguration.getMotorMaxTorque());
+        setWheelRadius(otherConfiguration.getWheelRadius());
+    }
+
+    public SwerveDrive toDrive() {
+        return new SwerveDrive(getWheelHorizontalDistance(), getWheelVerticalDistance(),
+                getBumperLength(), getBumperWidth(), getMass(), getMomentOfInertia(),
+                getMotorMaxAngularSpeed(), getMotorMaxTorque(), getWheelRadius());
     }
 }

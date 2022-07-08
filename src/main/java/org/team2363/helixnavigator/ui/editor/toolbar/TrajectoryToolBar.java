@@ -12,16 +12,21 @@ import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
 import org.team2363.helixnavigator.document.HTrajectory;
+import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.global.Standards;
+import org.team2363.helixtrajectory.Obstacle;
+import org.team2363.helixtrajectory.Path;
+import org.team2363.helixtrajectory.SwerveDrive;
+import org.team2363.helixtrajectory.TrajectoryGenerator;
 import org.team2363.lib.ui.validation.UnitTextField;
 
 import com.jlbabilino.json.JSONDeserializer;
 import com.jlbabilino.json.JSONDeserializerException;
+import com.jlbabilino.json.JSONSerializer;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Button;
@@ -40,6 +45,7 @@ public class TrajectoryToolBar extends ToolBar {
 
     private final Button generateTraj = new Button("Generate Traj");
     private final Button importTraj = new Button("Import Traj");
+    private final Button exportTraj = new Button ("Export Traj");
     private final Slider timestampSlider = new Slider();
     private final UnitTextField<Time> timestampInput = new UnitTextField<>(TIME_UNIT, Standards.SupportedUnits.SupportedTime.UNITS);
     private final ToggleButton animateButton = new ToggleButton("Animate");
@@ -49,43 +55,20 @@ public class TrajectoryToolBar extends ToolBar {
     public TrajectoryToolBar(DocumentManager documentManager) {
         this.documentManager = documentManager;
 
-        timestampSlider.setMinWidth(500.0);
-        getItems().addAll(importTraj, generateTraj, timestampSlider, animateButton);
+        timestampSlider.setMinWidth(400.0);
+        getItems().addAll(importTraj, exportTraj, generateTraj, timestampSlider, animateButton);
 
         generateTraj.setOnAction(event -> {
-            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected() &&
-                    this.documentManager.requestSaveDocument()) {
-                HDocument document = this.documentManager.getDocument();
-                File saveLocation = document.getSaveLocation();
-                String docName = saveLocation.getName().substring(0, saveLocation.getName().length() - 5);
-                String inputFileStr = saveLocation.getAbsolutePath();
-                String outputFileStr = new File(saveLocation.getParentFile(), docName + "-traj.json").getAbsolutePath();
-                String pathName = document.getSelectedPath().getName();
-                String os = System.getProperty("os.name");
-                ProcessBuilder processBuilder;
-                if (os != null && os.startsWith("Mac")) {
-                    processBuilder = new ProcessBuilder("helixtrajectory", "-i", inputFileStr.replace(" ", "\\ "), "-o", outputFileStr.replace(" ", "\\ "), "-p", pathName);
-                } else {
-                    processBuilder = new ProcessBuilder("helixtrajectory", '"'+inputFileStr+'"',  '"'+outputFileStr+'"', "--path", pathName);
+            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
+                HDocument hDocument = this.documentManager.getDocument();
+                HPath hPath = this.documentManager.getDocument().getSelectedPath();
+                SwerveDrive drive = hDocument.getRobotConfiguration().toDrive();
+                Path path = hPath.toPath();
+                Obstacle[] obstacles = new Obstacle[hPath.getObstacles().size()];
+                for (int i = 0; i < hPath.getObstacles().size(); i++) {
+                    obstacles[i] = hPath.getObstacles().get(i).toObstacle();
                 }
-                try {
-                    // processBuilder.redirectError(Redirect.INHERIT);
-                    // processBuilder.redirectInput(Redirect.INHERIT);
-                    processBuilder.redirectOutput(Redirect.DISCARD);
-                    Process process = processBuilder.start();
-                    Platform.runLater(() -> {
-                        try {
-                            process.waitFor();
-                            HTrajectory traj = JSONDeserializer.deserialize(new File(outputFileStr), HTrajectory.class);
-                            this.documentManager.getDocument().getSelectedPath().setTrajectory(traj);
-                            System.out.println("Loaded traj automatically");
-                        } catch (IOException | InterruptedException | JSONDeserializerException e) {
-                            System.out.println("Error finishing process: " + e.getMessage());
-                        }
-                    });
-                } catch (IOException e) {
-                    System.out.println("Error starting process: " + e.getMessage());
-                }
+                hPath.setTrajectory(HTrajectory.fromTrajectory(TrajectoryGenerator.generate(drive, path, obstacles)));
             }
         });
         importTraj.setOnAction(event -> {
@@ -98,6 +81,23 @@ public class TrajectoryToolBar extends ToolBar {
                     System.out.println("Loaded traj");
                 } catch (IOException | JSONDeserializerException e) {
                     System.out.println("Error when importing traj: " + e.getMessage());
+                }
+            }
+        });
+        exportTraj.setOnAction(event -> {
+            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected() &&
+                    this.documentManager.getDocument().getSelectedPath().getTrajectory() != null) {
+                HTrajectory traj = this.documentManager.getDocument().getSelectedPath().getTrajectory();
+                FileChooser chooser = new FileChooser();
+                chooser.getExtensionFilters().add(Standards.TRAJECTORY_FILE_TYPE);
+                File result = chooser.showSaveDialog(this.documentManager.getStage());
+                if (result != null) {
+                    try {
+                        JSONSerializer.serializeFile(traj, result);
+                        System.out.println("Exported traj");
+                    } catch (IOException e) {
+                        System.out.println("Error when exporting traj: " + e.getMessage());
+                    }
                 }
             }
         });

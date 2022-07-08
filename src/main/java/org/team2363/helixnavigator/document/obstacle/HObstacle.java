@@ -10,6 +10,7 @@ import com.jlbabilino.json.SerializedJSONObjectValue;
 import com.jlbabilino.json.TypeMarker;
 
 import org.team2363.helixnavigator.document.HPathElement;
+import org.team2363.helixtrajectory.Obstacle;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -35,6 +36,8 @@ public abstract class HObstacle extends HPathElement {
 
     protected HObstacle() {
     }
+
+    public abstract Obstacle toObstacle();
 
     public final DoubleProperty safetyDistanceProperty() {
         return safetyDistance;

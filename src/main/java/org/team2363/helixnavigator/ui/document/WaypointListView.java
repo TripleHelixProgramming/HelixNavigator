@@ -28,6 +28,8 @@ public class WaypointListView extends ListView<HWaypoint> {
     private final ContextMenu noneSelectedContextMenu = new ContextMenu();
     private final MenuItem newSoftWaypointMenuItem = new MenuItem("New soft waypoint");
     private final MenuItem newHardWaypointMenuItem = new MenuItem("New hard waypoint");
+    private final MenuItem newCustomWaypointMenuItem = new MenuItem("New custom waypoint");
+    private final MenuItem newInitialGuessWaypointMenuItem = new MenuItem("New initial guess waypoint");
 
     private final Label placeholder = new Label("RIGHT-CLICK TO CREATE A WAYPOINT");
 
@@ -43,9 +45,12 @@ public class WaypointListView extends ListView<HWaypoint> {
         setSelectionModel(blankSelecitonModel);
         setContextMenu(null);
         setCellFactory(WaypointListCell.WAYPOINT_CELL_FACTORY);
-        noneSelectedContextMenu.getItems().addAll(newSoftWaypointMenuItem, newHardWaypointMenuItem);
+        noneSelectedContextMenu.getItems().addAll(newSoftWaypointMenuItem, newHardWaypointMenuItem,
+                newCustomWaypointMenuItem, newInitialGuessWaypointMenuItem);
         newSoftWaypointMenuItem.setOnAction(this::newSoftWaypoint);
         newHardWaypointMenuItem.setOnAction(this::newHardWaypoint);
+        newCustomWaypointMenuItem.setOnAction(this::newCustomWaypoint);
+        newInitialGuessWaypointMenuItem.setOnAction(this::newInitialGuessWaypoint);
         noneSelectedContextMenu.setAutoHide(true);
 
         loadDocument(this.documentManager.getDocument());
@@ -57,6 +62,12 @@ public class WaypointListView extends ListView<HWaypoint> {
     }
     private void newHardWaypoint(ActionEvent event) {
         documentManager.actions().newHardWaypoint();
+    }
+    private void newCustomWaypoint(ActionEvent event) {
+        documentManager.actions().newCustomWaypoint();
+    }
+    private void newInitialGuessWaypoint(ActionEvent event) {
+        documentManager.actions().newInitialGuessWaypoint();
     }
 
     private void documentChanged(ObservableValue<? extends HDocument> currentDocument, HDocument oldDocument, HDocument newDocument) {

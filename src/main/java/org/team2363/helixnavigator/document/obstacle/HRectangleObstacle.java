@@ -1,5 +1,8 @@
 package org.team2363.helixnavigator.document.obstacle;
 
+import org.team2363.helixtrajectory.Obstacle;
+import org.team2363.helixtrajectory.ObstaclePoint;
+
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.DeserializedJSONTarget;
@@ -18,6 +21,26 @@ public class HRectangleObstacle extends HObstacle {
 
     @DeserializedJSONConstructor
     public HRectangleObstacle() {
+    }
+
+    @Override
+    public Obstacle toObstacle() {
+        double diagonal = Math.hypot(getLength() / 2, getWidth() / 2);
+        double angle = Math.atan(getWidth() / getLength());
+        double[] angles = {+angle, +(Math.PI - angle), -(Math.PI - angle), -angle};
+        double[] x = {getCenterX() + diagonal * Math.cos(getRotateAngle() + angles[0]),
+                      getCenterX() + diagonal * Math.cos(getRotateAngle() + angles[1]),
+                      getCenterX() + diagonal * Math.cos(getRotateAngle() + angles[2]),
+                      getCenterX() + diagonal * Math.cos(getRotateAngle() + angles[3])};
+        double[] y = {getCenterY() + diagonal * Math.sin(getRotateAngle() + angles[0]),
+                      getCenterY() + diagonal * Math.sin(getRotateAngle() + angles[1]),
+                      getCenterY() + diagonal * Math.sin(getRotateAngle() + angles[2]),
+                      getCenterY() + diagonal * Math.sin(getRotateAngle() + angles[3])};
+        ObstaclePoint[] obstaclePoints = {new ObstaclePoint(x[0], y[0]),
+                                          new ObstaclePoint(x[1], y[1]),
+                                          new ObstaclePoint(x[2], y[2]),
+                                          new ObstaclePoint(x[3], y[3])};
+        return new Obstacle(getSafetyDistance(), obstaclePoints);
     }
 
     @Override

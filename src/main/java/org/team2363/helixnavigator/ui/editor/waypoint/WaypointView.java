@@ -10,6 +10,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.transform.Translate;
@@ -61,6 +62,10 @@ public abstract class WaypointView {
 
     private void updateSelected(boolean isSelected) {
         selectionCircle.setOpacity(isSelected ? 1.0 : 0.0);
+    }
+
+    protected void setWaypointFill(Paint paint) {
+        waypointCircle.setFill(paint);
     }
 
     public final DoubleProperty zoomScaleProperty() {

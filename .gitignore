@@ -11,3 +11,6 @@ bin
 
 # Ignore mac stuff
 .DS_Store
+
+# Ignore local libraries for testing
+libs

@@ -7,6 +7,7 @@ import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONObjectValue;
 
 import org.team2363.helixnavigator.document.HSelectableElement;
+import org.team2363.helixtrajectory.ObstaclePoint;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -29,6 +30,10 @@ public class HPolygonPoint extends HSelectableElement {
     @Override
     public void translateRelativeY(double dy) {
         setY(getY() + dy);
+    }
+
+    public ObstaclePoint toObstaclePoint() {
+        return new ObstaclePoint(getX(), getY());
     }
 
     public final DoubleProperty xProperty() {

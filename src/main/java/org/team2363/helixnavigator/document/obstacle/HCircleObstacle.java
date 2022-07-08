@@ -1,5 +1,8 @@
 package org.team2363.helixnavigator.document.obstacle;
 
+import org.team2363.helixtrajectory.Obstacle;
+import org.team2363.helixtrajectory.ObstaclePoint;
+
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.DeserializedJSONTarget;
@@ -16,6 +19,11 @@ public class HCircleObstacle extends HObstacle {
 
     @DeserializedJSONConstructor
     public HCircleObstacle() {
+    }
+
+    @Override
+    public Obstacle toObstacle() {
+        return new Obstacle(getSafetyDistance() + getRadius(), new ObstaclePoint(getCenterX(), getCenterY()));
     }
 
     @Override

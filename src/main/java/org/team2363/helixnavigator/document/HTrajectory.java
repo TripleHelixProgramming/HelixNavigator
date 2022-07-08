@@ -1,9 +1,11 @@
 package org.team2363.helixnavigator.document;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
+import org.team2363.helixtrajectory.Trajectory;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONEntry;
@@ -96,5 +98,13 @@ public class HTrajectory {
     }
     public final double getTimestamp() {
         return timestamp.get();
+    }
+
+    public static HTrajectory fromTrajectory(Trajectory trajectory) {
+        List<HTrajectorySample> hSamples = new ArrayList<>();
+        for (int i = 0; i < trajectory.length(); i++) {
+            hSamples.add(HTrajectorySample.fromTrajectorySample(trajectory.get(i)));
+        }
+        return new HTrajectory(hSamples);
     }
 }

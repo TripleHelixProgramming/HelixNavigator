@@ -102,7 +102,11 @@ public class HSelectionModel<E extends HSelectableElement> extends MultipleSelec
         if (getSelectedIndex() >= items.size()) {
             int correctIndex = items.size() - 1;
             setSelectedIndex(correctIndex);
-            setSelectedItem(items.get(correctIndex));
+            if (correctIndex < 0) {
+                setSelectedItem(null);
+            } else {
+                setSelectedItem(items.get(correctIndex));
+            }
         }
     }
 

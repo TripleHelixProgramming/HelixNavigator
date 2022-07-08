@@ -46,12 +46,12 @@ public abstract class ObstacleEditDialog {
      * The index where new grid pane items can be added. For example, the circle obstacle
      * dialog can add the center x text field at this row.
      */
-    protected final int ADDITIONAL_PROPERTIES_ROW = 2;
+    protected static final int ADDITIONAL_PROPERTIES_ROW = 2;
     private final Button okButton = new Button("OK");
     private final Button cancelButton = new Button("Cancel");
     private final HBox buttonBox = new HBox(okButton, cancelButton);
     protected final VBox vBox = new VBox(propertyGrid, buttonBox);
-    protected final int ADDITIONAL_NODES_ROW = 1;
+    protected static final int ADDITIONAL_NODES_ROW = 1;
     private final Scene scene = new Scene(vBox);
     private final Stage stage = new Stage();
 
@@ -97,18 +97,22 @@ public abstract class ObstacleEditDialog {
 
     protected void unbindObstacle() {
         obstacle.nameProperty().unbind();
+        obstacle.safetyDistanceProperty().unbind();
     }
 
     protected void bindObstacle() {
         obstacle.nameProperty().bind(nameTextField.textProperty());
+        obstacle.safetyDistanceProperty().bind(safetyDistanceTextField.valueProperty());
     }
 
     protected void backupObstacle() {
         backupObstacle.setName(obstacle.getName());
+        backupObstacle.setSafetyDistance(obstacle.getSafetyDistance());
     }
 
     protected void restoreBackup() {
         obstacle.setName(backupObstacle.getName());
+        obstacle.setSafetyDistance(backupObstacle.getSafetyDistance());
     }
 
     public void show() {
