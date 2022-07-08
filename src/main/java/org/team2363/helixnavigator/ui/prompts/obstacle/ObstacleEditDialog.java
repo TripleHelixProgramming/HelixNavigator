@@ -1,12 +1,17 @@
 package org.team2363.helixnavigator.ui.prompts.obstacle;
 
+import static org.team2363.helixnavigator.global.Standards.ExportedUnits.LENGTH_UNIT;
+
+import javax.measure.quantity.Length;
+
 import org.team2363.helixnavigator.document.obstacle.HCircleObstacle;
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
 import org.team2363.helixnavigator.document.obstacle.HRectangleObstacle;
 import org.team2363.helixnavigator.global.Standards;
-import org.team2363.lib.ui.validation.DecimalTextField;
+import org.team2363.helixnavigator.global.Standards.SupportedUnits.SupportedLength;
 import org.team2363.lib.ui.validation.FilteredTextField;
+import org.team2363.lib.ui.validation.UnitTextField;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -40,7 +45,7 @@ public abstract class ObstacleEditDialog {
     private final Text nameText = new Text("Name:");
     private final FilteredTextField nameTextField = new FilteredTextField(Standards.MAX_NAME_LENGTH, Standards.VALID_NAME);
     private final Text safetyDistanceText = new Text("Safety Distance:");
-    private final DecimalTextField safetyDistanceTextField = new DecimalTextField(0, Double.MAX_VALUE);
+    private final UnitTextField<Length> safetyDistanceTextField = new UnitTextField<>(LENGTH_UNIT, SupportedLength.UNITS);
     protected final GridPane propertyGrid = new GridPane();
     /**
      * The index where new grid pane items can be added. For example, the circle obstacle
@@ -59,6 +64,7 @@ public abstract class ObstacleEditDialog {
         this.obstacle = obstacle;
         this.backupObstacle = backupObstacle;
 
+        safetyDistanceTextField.setInputTransformation(input -> Math.max(input, 0));
         // okButton.setDefaultButton(true);
         GridPane.setConstraints(nameText, 0, 0);
         GridPane.setConstraints(nameTextField, 1, 0);
