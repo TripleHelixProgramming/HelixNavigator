@@ -97,18 +97,22 @@ public abstract class ObstacleEditDialog {
 
     protected void unbindObstacle() {
         obstacle.nameProperty().unbind();
+        obstacle.safetyDistanceProperty().unbind();
     }
 
     protected void bindObstacle() {
         obstacle.nameProperty().bind(nameTextField.textProperty());
+        obstacle.safetyDistanceProperty().bind(safetyDistanceTextField.valueProperty());
     }
 
     protected void backupObstacle() {
         backupObstacle.setName(obstacle.getName());
+        backupObstacle.setSafetyDistance(obstacle.getSafetyDistance());
     }
 
     protected void restoreBackup() {
         obstacle.setName(backupObstacle.getName());
+        obstacle.setSafetyDistance(backupObstacle.getSafetyDistance());
     }
 
     public void show() {

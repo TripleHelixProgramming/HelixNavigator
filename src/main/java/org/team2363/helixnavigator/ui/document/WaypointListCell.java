@@ -5,12 +5,14 @@ import java.util.List;
 
 import org.team2363.helixnavigator.document.waypoint.HCustomWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
+import org.team2363.helixnavigator.document.waypoint.HInitialGuessWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint.WaypointType;
 import org.team2363.helixnavigator.global.Standards;
 import org.team2363.helixnavigator.ui.editor.waypoint.CustomWaypointView;
 import org.team2363.helixnavigator.ui.editor.waypoint.HardWaypointView;
+import org.team2363.helixnavigator.ui.editor.waypoint.InitialGuessWaypointView;
 import org.team2363.helixnavigator.ui.editor.waypoint.SoftWaypointView;
 import org.team2363.helixnavigator.ui.prompts.waypoint.WaypointEditDialog;
 import org.team2363.lib.ui.OrderableListCell;
@@ -51,6 +53,7 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
     private final SoftWaypointView softView = new SoftWaypointView(new HSoftWaypoint());
     private final HardWaypointView hardView = new HardWaypointView(new HHardWaypoint());
     private final CustomWaypointView customView = new CustomWaypointView(new HCustomWaypoint());
+    private final InitialGuessWaypointView initialGuessView = new InitialGuessWaypointView(new HInitialGuessWaypoint());
     private final TextField textField = new FilteredTextField(Standards.MAX_NAME_LENGTH, Standards.VALID_NAME);
     private final HBox graphicBox = new HBox();
 
@@ -58,6 +61,7 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
     private final MenuItem newSoftWaypointMenuItem = new MenuItem("New soft waypoint");
     private final MenuItem newHardWaypointMenuItem = new MenuItem("New hard waypoint");
     private final MenuItem newCustomWaypointMenuItem = new MenuItem("New custom waypoint");
+    private final MenuItem newInitialGuessWaypointMenuItem = new MenuItem("New initial guess waypoint");
 
     private final ContextMenu singleSelectedContextMenu = new ContextMenu();
     private final MenuItem editMenuItem = new MenuItem("Edit...");
@@ -65,9 +69,11 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
     private final MenuItem insertNewSoftWaypointBeforeMenuItem = new MenuItem("Insert new soft waypoint before");
     private final MenuItem insertNewHardWaypointBeforeMenuItem = new MenuItem("Insert new hard waypoint before");
     private final MenuItem insertNewCustomWaypointBeforeMenuItem = new MenuItem("Insert new custom waypoint before");
+    private final MenuItem insertNewInitialGuessWaypointBeforeMenuItem = new MenuItem("Insert new initial guess waypoint before");
     private final MenuItem insertNewSoftWaypointAfterMenuItem = new MenuItem("Insert new soft waypoint after");
     private final MenuItem insertNewHardWaypointAfterMenuItem = new MenuItem("Insert new hard waypoint after");
     private final MenuItem insertNewCustomWaypointAfterMenuItem = new MenuItem("Insert new custom waypoint after");
+    private final MenuItem insertNewInitialGuessWaypointAfterMenuItem = new MenuItem("Insert new initial guess waypoint after");
     private final MenuItem renameMenuItem = new MenuItem("Rename");
     private final MenuItem deleteSingleMenuItem = new MenuItem("Delete");
 
@@ -83,9 +89,12 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
         hardView.getWaypointView().setTranslateY(yt);
         customView.getWaypointView().setTranslateX(xt);
         customView.getWaypointView().setTranslateY(yt);
+        initialGuessView.getWaypointView().setTranslateX(xt);
+        initialGuessView.getWaypointView().setTranslateY(yt);
         softView.getWaypointView().setClip(new Circle(10));
         hardView.getWaypointView().setClip(new Circle(10)); // these circles make snapshots of cells correct
         customView.getWaypointView().setClip(new Circle(10));
+        initialGuessView.getWaypointView().setClip(new Circle(10));
         // (see OrderableListCell)
 
         graphicBox.getChildren().add(softView.getWaypointView()); // have to use one image here even though we don't know which it is yet
@@ -107,21 +116,26 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
         newSoftWaypointMenuItem.setOnAction(this::newSoftWaypoint);
         newHardWaypointMenuItem.setOnAction(this::newHardWaypoint);
         newCustomWaypointMenuItem.setOnAction(this::newCustomWaypoint);
+        newInitialGuessWaypointMenuItem.setOnAction(this::newInitialGuessWaypoint);
         insertNewSoftWaypointBeforeMenuItem.setOnAction(this::insertNewSoftWaypointBefore);
         insertNewHardWaypointBeforeMenuItem.setOnAction(this::insertNewHardWaypointBefore);
         insertNewCustomWaypointBeforeMenuItem.setOnAction(this::insertNewCustomWaypointBefore);
+        insertNewInitialGuessWaypointBeforeMenuItem.setOnAction(this::insertNewInitialGuessWaypointBefore);
         insertNewSoftWaypointAfterMenuItem.setOnAction(this::insertNewSoftWaypointAfter);
         insertNewHardWaypointAfterMenuItem.setOnAction(this::insertNewHardWaypointAfter);
         insertNewCustomWaypointAfterMenuItem.setOnAction(this::insertNewCustomWaypointAfter);
+        insertNewInitialGuessWaypointAfterMenuItem.setOnAction(this::insertNewInitialGuessWaypointAfter);
         renameMenuItem.setOnAction(this::renameWaypoint);
         deleteSingleMenuItem.setOnAction(this::deleteSelectedWaypoints);
         deleteMultipleMenuItem.setOnAction(this::deleteSelectedWaypoints);
 
         insertMenu.getItems().addAll(
-                insertNewSoftWaypointBeforeMenuItem, insertNewHardWaypointBeforeMenuItem, insertNewCustomWaypointBeforeMenuItem,
-                insertNewSoftWaypointAfterMenuItem, insertNewHardWaypointAfterMenuItem, insertNewCustomWaypointAfterMenuItem);
+                insertNewSoftWaypointBeforeMenuItem, insertNewHardWaypointBeforeMenuItem,
+                insertNewCustomWaypointBeforeMenuItem, insertNewInitialGuessWaypointBeforeMenuItem,
+                insertNewSoftWaypointAfterMenuItem, insertNewHardWaypointAfterMenuItem,
+                insertNewCustomWaypointAfterMenuItem, insertNewInitialGuessWaypointAfterMenuItem);
 
-        noneSelectedContextMenu.getItems().addAll(newSoftWaypointMenuItem, newHardWaypointMenuItem, newCustomWaypointMenuItem);
+        noneSelectedContextMenu.getItems().addAll(newSoftWaypointMenuItem, newHardWaypointMenuItem, newCustomWaypointMenuItem, newInitialGuessWaypointMenuItem);
         singleSelectedContextMenu.getItems().addAll(editMenuItem, insertMenu, renameMenuItem, deleteSingleMenuItem);
         multipleSelectedContextMenu.getItems().addAll(deleteMultipleMenuItem);
 
@@ -156,6 +170,10 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
                 break;
             case CUSTOM:
                 graphicBox.getChildren().set(0, customView.getWaypointView());
+                break;
+            case INITIAL_GUESS:
+                graphicBox.getChildren().set(0, initialGuessView.getWaypointView());
+                break;
         }
     }
 
@@ -242,6 +260,11 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
         newWaypoint.setName("Custom Waypoint " + getListView().getItems().size());
         getListView().getItems().add(newWaypoint);
     }
+    private void newInitialGuessWaypoint(ActionEvent event) {
+        HWaypoint newWaypoint = new HInitialGuessWaypoint();
+        newWaypoint.setName("Initial Guess Waypoint " + getListView().getItems().size());
+        getListView().getItems().add(newWaypoint);
+    }
     private void insertNewSoftWaypointBefore(ActionEvent event) {
         int insertIndex = getListView().getSelectionModel().getSelectedIndex();
         HWaypoint newWaypoint = new HSoftWaypoint();
@@ -260,6 +283,12 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
         newWaypoint.setName("Custom Waypoint " + getListView().getItems().size());
         getListView().getItems().add(insertIndex, newWaypoint);
     }
+    private void insertNewInitialGuessWaypointBefore(ActionEvent event) {
+        int insertIndex = getListView().getSelectionModel().getSelectedIndex();
+        HWaypoint newWaypoint = new HInitialGuessWaypoint();
+        newWaypoint.setName("Initial Guess Waypoint " + getListView().getItems().size());
+        getListView().getItems().add(insertIndex, newWaypoint);
+    }
     private void insertNewSoftWaypointAfter(ActionEvent event) {
         int insertIndex = getListView().getSelectionModel().getSelectedIndex() + 1;
         HWaypoint newWaypoint = new HSoftWaypoint();
@@ -276,6 +305,12 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
         int insertIndex = getListView().getSelectionModel().getSelectedIndex() + 1;
         HWaypoint newWaypoint = new HCustomWaypoint();
         newWaypoint.setName("Custom Waypoint " + getListView().getItems().size());
+        getListView().getItems().add(insertIndex, newWaypoint);
+    }
+    private void insertNewInitialGuessWaypointAfter(ActionEvent event) {
+        int insertIndex = getListView().getSelectionModel().getSelectedIndex() + 1;
+        HWaypoint newWaypoint = new HInitialGuessWaypoint();
+        newWaypoint.setName("Initial Guess Waypoint " + getListView().getItems().size());
         getListView().getItems().add(insertIndex, newWaypoint);
     }
     private void renameWaypoint(ActionEvent event) {

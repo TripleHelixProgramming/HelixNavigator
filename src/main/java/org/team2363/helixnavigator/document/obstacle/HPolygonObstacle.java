@@ -2,6 +2,9 @@ package org.team2363.helixnavigator.document.obstacle;
 
 import java.util.List;
 
+import org.team2363.helixtrajectory.Obstacle;
+import org.team2363.helixtrajectory.ObstaclePoint;
+
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.SerializedJSONObjectValue;
@@ -30,6 +33,15 @@ public class HPolygonObstacle extends HObstacle {
     @DeserializedJSONConstructor
     public HPolygonObstacle(@DeserializedJSONObjectValue(key = "points") List<? extends HPolygonPoint> initialPoints) {
         points.setAll(initialPoints);
+    }
+
+    @Override
+    public Obstacle toObstacle() {
+        ObstaclePoint[] obstaclePoints = new ObstaclePoint[points.size()];
+        for (int i = 0; i < points.size(); i++) {
+            obstaclePoints[i] = points.get(i).toObstaclePoint();
+        }
+        return new Obstacle(getSafetyDistance(), obstaclePoints);
     }
 
     @Override

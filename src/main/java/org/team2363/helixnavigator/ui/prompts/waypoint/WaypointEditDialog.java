@@ -6,6 +6,7 @@ import javax.measure.quantity.Length;
 
 import org.team2363.helixnavigator.document.waypoint.HCustomWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
+import org.team2363.helixnavigator.document.waypoint.HInitialGuessWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 import org.team2363.helixnavigator.global.Standards;
@@ -36,6 +37,8 @@ public abstract class WaypointEditDialog {
                 return new HardWaypointEditDialog((HHardWaypoint) waypoint);
             case CUSTOM:
                 return new CustomWaypointEditDialog((HCustomWaypoint) waypoint);
+            case INITIAL_GUESS:
+                return new InitialGuessWaypointEditDialog((HInitialGuessWaypoint) waypoint);
             default:
                 return null;
         }

@@ -1,11 +1,17 @@
 package org.team2363.helixnavigator.document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
+import org.team2363.helixnavigator.document.waypoint.HCustomWaypoint;
+import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
+import org.team2363.helixnavigator.document.waypoint.HInitialGuessWaypoint;
+import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+import org.team2363.helixtrajectory.InitialGuessPoint;
 import org.team2363.helixtrajectory.Path;
 import org.team2363.helixtrajectory.Waypoint;
 
@@ -189,11 +195,35 @@ public class HPath {
     }
 
     public Path toPath() {
-        Waypoint[] waypointsArray = new Waypoint[waypoints.size()];
-        for (int i = 0; i < waypointsArray.length; i++) {
-            waypointsArray[i] = waypoints.get(i).toWaypoint();
+        List<Waypoint> htWaypoints = new ArrayList<>();
+        int i = 0;
+        while (waypoints.get(i).isInitialGuess()) {
+            i++;
         }
-        return new Path(waypointsArray);
+        while (i < waypoints.size()) {
+            int waypointIndex = i;
+            i++;
+            List<InitialGuessPoint> initialGuessPoints = new ArrayList<>();
+            while (i < waypoints.size() && waypoints.get(i).isInitialGuess()) {
+                initialGuessPoints.add(((HInitialGuessWaypoint) waypoints.get(i)).toInitialGuessPoint());
+                i++;
+            }
+            InitialGuessPoint[] initialGuessPointsArray = initialGuessPoints.toArray(new InitialGuessPoint[0]);
+            switch (waypoints.get(waypointIndex).getWaypointType()) {
+                case SOFT:
+                    htWaypoints.add(((HSoftWaypoint) waypoints.get(waypointIndex)).toWaypoint(initialGuessPointsArray));
+                    break;
+                case HARD:
+                    htWaypoints.add(((HHardWaypoint) waypoints.get(waypointIndex)).toWaypoint(initialGuessPointsArray));
+                    break;
+                case CUSTOM:
+                    htWaypoints.add(((HCustomWaypoint) waypoints.get(waypointIndex)).toWaypoint(initialGuessPointsArray));
+                    break;
+                default:
+                    break;
+            }
+        }
+        return new Path(htWaypoints.toArray(new Waypoint[0]));
     }
 
     @Override

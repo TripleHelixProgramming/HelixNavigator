@@ -11,7 +11,9 @@ import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
 import org.team2363.helixnavigator.document.HTrajectory;
+import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.global.Standards;
+import org.team2363.helixtrajectory.Obstacle;
 import org.team2363.helixtrajectory.Path;
 import org.team2363.helixtrajectory.SwerveDrive;
 import org.team2363.helixtrajectory.TrajectoryGenerator;
@@ -24,7 +26,6 @@ import com.jlbabilino.json.JSONSerializer;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Button;
@@ -60,32 +61,13 @@ public class TrajectoryToolBar extends ToolBar {
             if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
                 HDocument hDocument = this.documentManager.getDocument();
                 HPath hPath = this.documentManager.getDocument().getSelectedPath();
-                // File saveLocation = hDocument.getSaveLocation();
-                // String docName = saveLocation.getName().substring(0, saveLocation.getName().length() - 5);
-                // String inputFileStr = saveLocation.getAbsolutePath();
-                // String outputFileStr = new File(saveLocation.getParentFile(), docName + "-traj.json").getAbsolutePath();
-                // String pathName = hDocument.getSelectedPath().getName();
-                // ProcessBuilder processBuilder = new ProcessBuilder("helixtrajectory", "-i", inputFileStr, "-o", outputFileStr, "-p", pathName);
-                // try {
-                //     Process process = processBuilder.start();
-                //     Platform.runLater(() -> {
-                //         try {
-                //             process.waitFor();
-                //             HTrajectory traj = JSONDeserializer.deserialize(new File(outputFileStr), HTrajectory.class);
-                //             this.documentManager.getDocument().getSelectedPath().setTrajectory(traj);
-                //             System.out.println("Loaded traj automatically");
-                //         } catch (IOException | InterruptedException | JSONDeserializerException e) {
-                //             System.out.println("Error finishing process");
-                //         }
-                //     });
-                // } catch (IOException e) {
-                //     System.out.println("Error starting process");
-                // }
-
-                Path path = hPath.toPath();
                 SwerveDrive drive = hDocument.getRobotConfiguration().toDrive();
-                TrajectoryGenerator generator = new TrajectoryGenerator(drive);
-                hPath.setTrajectory(HTrajectory.fromTrajectory(generator.generate(path)));
+                Path path = hPath.toPath();
+                Obstacle[] obstacles = new Obstacle[hPath.getObstacles().size()];
+                for (int i = 0; i < hPath.getObstacles().size(); i++) {
+                    obstacles[i] = hPath.getObstacles().get(i).toObstacle();
+                }
+                hPath.setTrajectory(HTrajectory.fromTrajectory(TrajectoryGenerator.generate(drive, path, obstacles)));
             }
         });
         importTraj.setOnAction(event -> {

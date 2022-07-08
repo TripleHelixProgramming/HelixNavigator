@@ -1,5 +1,6 @@
 package org.team2363.helixnavigator.document.waypoint;
 
+import org.team2363.helixtrajectory.InitialGuessPoint;
 import org.team2363.helixtrajectory.Waypoint;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
@@ -42,8 +43,7 @@ public class HHardWaypoint extends HWaypoint {
         return heading.get();
     }
 
-    @Override
-    public Waypoint toWaypoint() {
-        return Waypoint.hardWaypoint(getX(), getY(), getHeading());
+    public Waypoint toWaypoint(InitialGuessPoint[] initialGuessPoints) {
+        return new Waypoint(getX(), getY(), getHeading(), 0.0, 0.0, 0.0, true, true, true, false, false, false, false, initialGuessPoints);
     }
 }

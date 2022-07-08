@@ -1,16 +1,16 @@
 package org.team2363.helixnavigator.ui.prompts.waypoint;
 
-import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
+import org.team2363.helixnavigator.document.waypoint.HInitialGuessWaypoint;
 
-public class SoftWaypointEditDialog extends WaypointEditDialog {
+public class InitialGuessWaypointEditDialog extends WaypointEditDialog {
 
-    // private HSoftWaypoint softWaypoint;
-    // private HSoftWaypoint backupSoftWaypoint;
+    // private HInitialGuessWaypoint initialGuessWaypoint;
+    // private HInitialGuessWaypoint backupInitialGuessWaypoint;
 
-    public SoftWaypointEditDialog(HSoftWaypoint softWaypoint) {
-        super(softWaypoint, new HSoftWaypoint());
-        // this.softWaypoint = (HSoftWaypoint) super.waypoint;
-        // this.backupSoftWaypoint = (HSoftWaypoint) super.backupWaypoint;
+    public InitialGuessWaypointEditDialog(HInitialGuessWaypoint initialGuessWaypoint) {
+        super(initialGuessWaypoint, new HInitialGuessWaypoint());
+        // this.initialGuessWaypoint = (HInitialGuessWaypoint) super.waypoint;
+        // this.backupInitialGuessWaypoint = (HInitialGuessWaypoint) super.backupWaypoint;
 
         backupWaypoint();
         // Set ui to values of HWaypoint:
