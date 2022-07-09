@@ -1,7 +1,13 @@
 package org.team2363.helixnavigator.ui.prompts.obstacle;
 
+import static org.team2363.helixnavigator.global.Standards.ExportedUnits.LENGTH_UNIT;
+
+import javax.measure.quantity.Length;
+
 import org.team2363.helixnavigator.document.obstacle.HCircleObstacle;
-import org.team2363.lib.ui.validation.DecimalTextField;
+import org.team2363.helixnavigator.global.Standards;
+import org.team2363.helixnavigator.global.Standards.SupportedUnits.SupportedLength;
+import org.team2363.lib.ui.validation.UnitTextField;
 
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
@@ -12,11 +18,11 @@ public class CircleObstacleEditDialog extends ObstacleEditDialog {
     private final HCircleObstacle backupCircleObstacle;
 
     private final Text centerXText = new Text("Center X:");
-    private final DecimalTextField centerXTextField = new DecimalTextField();
+    private final UnitTextField<Length> centerXTextField = new UnitTextField<Length>(LENGTH_UNIT, SupportedLength.UNITS);
     private final Text centerYText = new Text("Center Y:");
-    private final DecimalTextField centerYTextField = new DecimalTextField();
+    private final UnitTextField<Length> centerYTextField = new UnitTextField<Length>(LENGTH_UNIT, SupportedLength.UNITS);
     private final Text radiusText = new Text("Radius:");
-    private final DecimalTextField radiusTextField = new DecimalTextField(0, Double.MAX_VALUE);
+    private final UnitTextField<Length> radiusTextField = new UnitTextField<Length>(LENGTH_UNIT, SupportedLength.UNITS);
 
     public CircleObstacleEditDialog(HCircleObstacle circleObstacle) {
         super(circleObstacle, new HCircleObstacle());
@@ -32,6 +38,9 @@ public class CircleObstacleEditDialog extends ObstacleEditDialog {
 
         propertyGrid.getChildren().addAll(centerXText, centerXTextField,
                 centerYText, centerYTextField, radiusText, radiusTextField);
+
+        radiusTextField.setInputTransformation(input -> Math.max(input, 0));
+        radiusTextField.setDecimalFormat(Standards.GUI_NUMBER_FORMAT);
 
         backupObstacle();
         // Set ui to values of Obstacle:

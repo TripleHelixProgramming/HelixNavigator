@@ -64,7 +64,6 @@ public abstract class ObstacleEditDialog {
         this.obstacle = obstacle;
         this.backupObstacle = backupObstacle;
 
-        safetyDistanceTextField.setInputTransformation(input -> Math.max(input, 0));
         // okButton.setDefaultButton(true);
         GridPane.setConstraints(nameText, 0, 0);
         GridPane.setConstraints(nameTextField, 1, 0);
@@ -94,6 +93,9 @@ public abstract class ObstacleEditDialog {
             unbindObstacle();
             restoreBackup();
         });
+
+        safetyDistanceTextField.setInputTransformation(input -> Math.max(input, 0));
+        safetyDistanceTextField.setDecimalFormat(Standards.GUI_NUMBER_FORMAT);
     }
 
     protected void initializeTextFields() {
