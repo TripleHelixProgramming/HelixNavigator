@@ -1,7 +1,11 @@
 package org.team2363.helixnavigator.document;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.team2363.helixnavigator.document.field.image.HFieldImage;
 import org.team2363.helixnavigator.document.obstacle.HCircleObstacle;
+import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
 import org.team2363.helixnavigator.document.waypoint.HCustomWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
@@ -11,10 +15,21 @@ import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 import org.team2363.helixnavigator.ui.prompts.RobotConfigDialog;
 import org.team2363.helixnavigator.ui.prompts.TransformDialog;
 
+import com.jlbabilino.json.JSONArray;
+import com.jlbabilino.json.JSONDeserializer;
+import com.jlbabilino.json.JSONDeserializerException;
+import com.jlbabilino.json.JSONEntry;
+import com.jlbabilino.json.JSONObject;
+import com.jlbabilino.json.JSONParser;
+import com.jlbabilino.json.JSONParserException;
+import com.jlbabilino.json.JSONSerializer;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -275,6 +290,89 @@ public class DocumentActions {
     public void deleteSelection() {
         deleteSelectedWaypoints();
         deleteSelectedObstacles();
+    }
+
+    public void cut() {
+        copy();
+        deleteSelection();
+    }
+
+    public void copy() {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+            String data;
+            HPath path = documentManager.getDocument().getSelectedPath();
+            int selectedWaypointsCount = path.getWaypointsSelectionModel().getSelectedItems().size();
+            int selectedObstaclesCount = path.getObstaclesSelectionModel().getSelectedItems().size();
+            int totalCount = selectedWaypointsCount + selectedObstaclesCount;
+            if (totalCount == 0) {
+                data = JSONSerializer.serializeString(path);
+            } else if (totalCount == 1 && selectedWaypointsCount == 1) {
+                data = JSONSerializer.serializeString(path.getWaypointsSelectionModel().getSelectedItem());
+            } else if (totalCount == 1 && selectedObstaclesCount == 1) {
+                data = JSONSerializer.serializeString(path.getObstaclesSelectionModel().getSelectedItem());
+            } else {
+                List<HPathElement> list = new ArrayList<>();
+                for (HWaypoint waypoint : path.getWaypointsSelectionModel().getSelectedItems()) {
+                    list.add(waypoint);
+                }
+                for (HObstacle obstacle : path.getObstaclesSelectionModel().getSelectedItems()) {
+                    list.add(obstacle);
+                }
+                data = JSONSerializer.serializeString(list);
+            }
+            Clipboard systemClipboard = Clipboard.getSystemClipboard();
+            ClipboardContent content = new ClipboardContent();
+            content.putString(data);
+            systemClipboard.setContent(content);
+        }
+    }
+
+    private void paste(JSONEntry jsonEntry) {
+        if (documentManager.getIsDocumentOpen()) {
+            HDocument document = documentManager.getDocument();
+            try {
+                if (jsonEntry.isObject()) {
+                    JSONObject jsonObject = (JSONObject) jsonEntry;
+                    if (jsonObject.containsKey("waypoints")) {
+                        HPath pastedPath = JSONDeserializer.deserialize(jsonEntry, HPath.class);
+                        document.getPaths().add(pastedPath);
+                        document.setSelectedPathIndex(document.getPaths().size() - 1);
+                    } else if (document.isPathSelected()) {
+                        HPath path = document.getSelectedPath();
+                        if (jsonObject.containsKey("waypoint_type")) {
+                            HWaypoint waypoint = JSONDeserializer.deserialize(jsonEntry, HWaypoint.class);
+                            int index = path.getWaypointsSelectionModel().getSelectedIndex() + 1;
+                            path.getWaypoints().add(index, waypoint);
+                            path.getWaypointsSelectionModel().select(index);
+                        } else if (jsonObject.containsKey("obstacle_type")) {
+                            HObstacle obstacle = JSONDeserializer.deserialize(jsonEntry, HObstacle.class);
+                            int index = path.getObstaclesSelectionModel().getSelectedIndex() + 1;
+                            path.getObstacles().add(index, obstacle);
+                            path.getObstaclesSelectionModel().select(index);
+                        }
+                    }
+                } else if (jsonEntry.isArray()) {
+                    JSONArray jsonArray = (JSONArray) jsonEntry;
+                    for (JSONEntry entry : jsonArray) {
+                        documentManager.actions().clearSelection();
+                        paste(entry);
+                    }
+                }
+            } catch (JSONDeserializerException e) {
+            }
+        }
+    }
+
+    public void paste() {
+        Clipboard systemClipboard = Clipboard.getSystemClipboard();
+        if (systemClipboard.hasString()) {
+            String data = systemClipboard.getString();
+            try {
+                JSONEntry jsonEntry = JSONParser.parseJSONEntry(data);
+                paste(jsonEntry);
+            } catch (JSONParserException e) {
+            }
+        }
     }
 
     private static final Rotate ROTATE_90_CLOCKWISE = new Rotate(-90);
