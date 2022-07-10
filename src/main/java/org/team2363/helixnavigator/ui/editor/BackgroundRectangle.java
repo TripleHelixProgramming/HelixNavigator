@@ -1,12 +1,19 @@
 package org.team2363.helixnavigator.ui.editor;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.team2363.helixnavigator.document.DocumentManager;
+import org.team2363.helixnavigator.document.HPath;
 import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 import org.team2363.helixnavigator.global.Standards;
 import org.team2363.lib.ui.MouseEventWrapper;
 
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -24,6 +31,8 @@ public class BackgroundRectangle extends Pane {
 
     private double selectionRectangleX = 0.0;
     private double selectionRectangleY = 0.0;
+    private List<Integer> initialSelectedWaypointIndices = null;
+    private List<Integer> initialSelectedObstacleIndices = null;
     
     public BackgroundRectangle(DocumentManager documentManager) {
         this.documentManager = documentManager;
@@ -51,6 +60,18 @@ public class BackgroundRectangle extends Pane {
             selectionRectangle.setX(selectionRectangleX);
             selectionRectangle.setY(selectionRectangleY);
             selectionRectangle.setOpacity(1.0);
+            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
+                if (event.isShortcutDown()) {
+                    initialSelectedWaypointIndices = new ArrayList<>(this.documentManager.getDocument().getSelectedPath()
+                            .getWaypointsSelectionModel().getSelectedIndices());
+                    initialSelectedObstacleIndices = new ArrayList<>(this.documentManager.getDocument().getSelectedPath()
+                            .getObstaclesSelectionModel().getSelectedIndices());
+                } else {
+                    initialSelectedWaypointIndices = Collections.emptyList();
+                    initialSelectedObstacleIndices = Collections.emptyList();
+                    documentManager.actions().clearSelection();
+                }
+            }
         };
         EventHandler<MouseEvent> onMouseDragged = event -> {
             double x = event.getX();
@@ -74,6 +95,24 @@ public class BackgroundRectangle extends Pane {
             } else {
                 selectionRectangle.setY(selectionRectangleY);
                 selectionRectangle.setHeight(y - selectionRectangleY);
+            }
+            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
+                HPath path = this.documentManager.getDocument().getSelectedPath();
+                for (int waypointIndex = 0; waypointIndex < path.getWaypoints().size(); waypointIndex++) {
+                    if (initialSelectedWaypointIndices == null || !initialSelectedWaypointIndices.contains(waypointIndex)) {
+                        HWaypoint waypoint = path.getWaypoints().get(waypointIndex);
+                        Point2D pathAreaCoords = this.documentManager.actions().calculatePathAreaCoordinates(waypoint);
+                        // System.out.println(pathAreaCoords.toString());
+                        if (selectionRectangle.getX() <= pathAreaCoords.getX() &&
+                                pathAreaCoords.getX() <= selectionRectangle.getX() + selectionRectangle.getWidth() &&
+                                selectionRectangle.getY() <= pathAreaCoords.getY() &&
+                                pathAreaCoords.getY() <= selectionRectangle.getY() + selectionRectangle.getHeight()) {
+                            path.getWaypointsSelectionModel().select(waypointIndex);
+                        } else {
+                            path.getWaypointsSelectionModel().deselect(waypointIndex);
+                        }
+                    }
+                }
             }
         };
         EventHandler<MouseEvent> onMouseDragEnd = event -> {

@@ -1,6 +1,7 @@
 package org.team2363.helixnavigator.document;
 
 import org.team2363.helixnavigator.document.field.image.HFieldImage;
+import org.team2363.helixnavigator.document.obstacle.HCircleObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
 import org.team2363.helixnavigator.document.waypoint.HCustomWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
@@ -13,9 +14,11 @@ import org.team2363.helixnavigator.ui.prompts.TransformDialog;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Point2D;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.transform.Rotate;
 
 public class DocumentActions {
 
@@ -212,6 +215,28 @@ public class DocumentActions {
         }
     }
 
+    public Point2D calculatePathAreaCoordinates(double x, double y) {
+        double pathAreaX = 0;
+        double pathAreaY = 0;
+        if (documentManager.getIsDocumentOpen()) {
+            pathAreaX = documentManager.getDocument().getZoomScale() * x
+                    + documentManager.getDocument().getZoomTranslateX() + documentManager.getPathAreaWidth() / 2;
+            pathAreaY = documentManager.getDocument().getZoomScale() * (-y)
+                    + documentManager.getDocument().getZoomTranslateY() + documentManager.getPathAreaHeight() / 2;
+        }
+        return new Point2D(pathAreaX, pathAreaY);
+    }
+
+    public Point2D calculatePathAreaCoordinates(HWaypoint waypoint) {
+        return calculatePathAreaCoordinates(waypoint.getX(), waypoint.getY());
+    }
+    public Point2D calculatePathAreaCoordinates(HCircleObstacle obstacle) {
+        return calculatePathAreaCoordinates(obstacle.getCenterX(), obstacle.getCenterY());
+    }
+    public Point2D calculatePathAreaCoordinates(HPolygonPoint polygonPoint) {
+        return calculatePathAreaCoordinates(polygonPoint.getX(), polygonPoint.getY());
+    } 
+
     public void clearSelection() {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
             documentManager.getDocument().getSelectedPath().clearSelection();
@@ -250,6 +275,25 @@ public class DocumentActions {
     public void deleteSelection() {
         deleteSelectedWaypoints();
         deleteSelectedObstacles();
+    }
+
+    private static final Rotate ROTATE_90_CLOCKWISE = new Rotate(-90);
+    private static final Rotate ROTATE_90_COUNTERCLOCKWISE = new Rotate(90);
+    private static final Rotate ROTATE_180 = new Rotate(180);
+    public void rotateSelection90Clockwise() {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+            documentManager.getDocument().getSelectedPath().transformSelectedElementsRelative(ROTATE_90_CLOCKWISE);
+        }
+    }
+    public void rotateSelection90Counterclockwise() {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+            documentManager.getDocument().getSelectedPath().transformSelectedElementsRelative(ROTATE_90_COUNTERCLOCKWISE);
+        }
+    }
+    public void rotateSelection180() {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+            documentManager.getDocument().getSelectedPath().transformSelectedElementsRelative(ROTATE_180);
+        }
     }
 
     private void insertWaypoint(int index, HWaypoint waypoint) {
