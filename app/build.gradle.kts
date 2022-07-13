@@ -31,7 +31,7 @@ dependencies {
     implementation("systems.uom:systems-quantity:2.1")
     // implementation "org.djunits:djunits:4.01.07"
 
-    implementation(files("libs/jar/helixtrajectoryj.jar"))
+    implementation(files("../libs/jar/helixtrajectoryj.jar"))
 }
 
 application {
