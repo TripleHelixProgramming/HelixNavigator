@@ -47,7 +47,7 @@ javafx {
 // shadowJar {
 //     // minimize()
 
-//     archiveClassifier.set("")
+//     // archiveClassifier.set("")
 // }
 
 // launch4j {
@@ -58,28 +58,28 @@ javafx {
 //     jarTask = project.tasks.shadowJar
 // }
 
-// task createDmg {
-//     dependsOn shadowJar
-    
-//     doLast {
-//         def jarDir = "${buildDir}/libs"
-//         def jarName = "${packageName}.jar"
-//         def jarFile = "${buildDir}/libs/${jarName}"
-//         def javaOptions = "-Djava.library.path=\$APPDIR"
-//         def javaMainClass = "java"
-//         def dest = "${buildDir}/package"
-//         def iconFile = "${buildDir}/resources/main/icon.icns"
-//         project.exec {
-//             commandLine("jpackage",
-//                     "--input", jarDir,
-//                     "--java-options", javaOptions,
-//                     "--main-jar", jarName,
-//                     // "--main-class", "org.team2363.helixnavigator.Main",
-//                     "--dest", dest,
-//                     "--name", project.name,
-//                     "--type", "dmg",
-//                     "--icon", iconFile,
-//                     )
-//         }
-//     }
-// }
+tasks.register("jpackage") {
+    dependsOn("shadowJar")
+
+    doLast {
+        val jarDir = "${buildDir}/libs"
+        val jarName = "${packageName}-all.jar"
+        val jarFile = "${buildDir}/libs/${jarName}"
+        val javaOptions = "-Djava.library.path=\$APPDIR"
+        val javaMainClass = "java"
+        val dest = "${buildDir}/package"
+        val iconFile = "${buildDir}/resources/main/icon.icns"
+        project.exec {
+            commandLine("jpackage",
+                    "--input", jarDir,
+                    "--java-options", javaOptions,
+                    "--main-jar", jarName,
+                    // "--main-class", "org.team2363.helixnavigator.Main",
+                    "--dest", dest,
+                    "--name", project.name,
+                    "--type", "dmg",
+                    "--icon", iconFile,
+            )
+        }
+    }
+}
