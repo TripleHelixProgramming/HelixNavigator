@@ -24,10 +24,10 @@ public class HPolygonObstacle extends HObstacle {
         }
         initialPoints[0].setX(0.0);
         initialPoints[0].setY(0.0);
-        initialPoints[1].setX(80.0);
+        initialPoints[1].setX(2.0);
         initialPoints[1].setY(0.0);
-        initialPoints[2].setX(40.0);
-        initialPoints[2].setY(80.0);
+        initialPoints[2].setX(1.0);
+        initialPoints[2].setY(2.0);
         points.addAll(initialPoints[0], initialPoints[1], initialPoints[2]);
     }
 

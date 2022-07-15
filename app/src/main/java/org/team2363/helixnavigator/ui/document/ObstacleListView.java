@@ -50,7 +50,7 @@ public class ObstacleListView extends ListView<HObstacle> {
         setContextMenu(null);
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         getSelectionModel().getSelectedIndices().addListener(onListViewSelectedIndicesChanged);
-        setCellFactory(ObstacleListCell.obstacleCellFactory);
+        setCellFactory(ObstacleListCell.obstacleCellFactory(this.documentManager));
         noneSelectedContextMenu.getItems().addAll(newCircleObstacleMenuItem, newPolygonObstacleMenuItem, newRectangleObstacleMenuItem);
         newCircleObstacleMenuItem.setOnAction(this::newCircleObstacle);
         newPolygonObstacleMenuItem.setOnAction(this::newPolygonObstacle);

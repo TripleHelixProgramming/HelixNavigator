@@ -1,18 +1,22 @@
 package org.team2363.helixnavigator.document;
 
+import org.team2363.helixnavigator.document.obstacle.HObstacle;
+import org.team2363.helixnavigator.global.Standards.DefaultRobotConfiguration;
+import org.team2363.helixtrajectory.Obstacle;
+import org.team2363.helixtrajectory.SwerveDrive;
+
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.DeserializedJSONTarget;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONObjectValue;
 
-import org.team2363.helixnavigator.global.Standards.DefaultRobotConfiguration;
-import org.team2363.helixtrajectory.SwerveDrive;
-
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 @JSONSerializable
 public class HRobotConfiguration {
@@ -27,6 +31,7 @@ public class HRobotConfiguration {
     private final DoubleProperty motorMaxAngularSpeed = new SimpleDoubleProperty(this, "motorMaxSpeed", DefaultRobotConfiguration.MOTOR_MAX_ANGULAR_SPEED);
     private final DoubleProperty motorMaxTorque = new SimpleDoubleProperty(this, "motorMaxTorque", DefaultRobotConfiguration.MOTOR_MAX_TORQUE);
     private final DoubleProperty wheelRadius = new SimpleDoubleProperty(this, "wheelRadius", DefaultRobotConfiguration.WHEEL_RADIUS);
+    private final ObjectProperty<Obstacle> bumpers = new SimpleObjectProperty<>(this, "bumpers", HObstacle.defaultBumpers());
 
     @DeserializedJSONConstructor
     public HRobotConfiguration() {
@@ -172,6 +177,18 @@ public class HRobotConfiguration {
         return wheelRadius.get();
     }
 
+    public final ObjectProperty<Obstacle> bumpersProperty() {
+        return bumpers;
+    }
+
+    public final void setBumpers(Obstacle value) {
+        bumpers.set(value);
+    }
+
+    public final Obstacle getBumpers() {
+        return bumpers.get();
+    }
+
     /**
      * Populates the settings in this {@code HRobotConfiguration} with the settings from
      * a given configuration.
@@ -189,11 +206,12 @@ public class HRobotConfiguration {
         setMotorMaxAngularSpeed(otherConfiguration.getMotorMaxAngularSpeed());
         setMotorMaxTorque(otherConfiguration.getMotorMaxTorque());
         setWheelRadius(otherConfiguration.getWheelRadius());
+        setBumpers(otherConfiguration.getBumpers());
     }
 
     public SwerveDrive toDrive() {
         return new SwerveDrive(getWheelHorizontalDistance(), getWheelVerticalDistance(),
-                getBumperLength(), getBumperWidth(), getMass(), getMomentOfInertia(),
-                getMotorMaxAngularSpeed(), getMotorMaxTorque(), getWheelRadius());
+                getMass(), getMomentOfInertia(),
+                getMotorMaxAngularSpeed(), getMotorMaxTorque(), getWheelRadius(), getBumpers());
     }
 }

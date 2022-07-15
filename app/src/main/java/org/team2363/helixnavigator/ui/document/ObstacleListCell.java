@@ -3,14 +3,7 @@ package org.team2363.helixnavigator.ui.document;
 import java.util.Arrays;
 import java.util.List;
 
-import com.jlbabilino.json.JSONDeserializer;
-import com.jlbabilino.json.JSONDeserializerException;
-import com.jlbabilino.json.JSONEntry;
-import com.jlbabilino.json.JSONParser;
-import com.jlbabilino.json.JSONParserException;
-import com.jlbabilino.json.JSONSerializer;
-import com.jlbabilino.json.TypeMarker;
-
+import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.obstacle.HCircleObstacle;
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HObstacle.ObstacleType;
@@ -18,8 +11,17 @@ import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
 import org.team2363.helixnavigator.document.obstacle.HRectangleObstacle;
 import org.team2363.helixnavigator.global.Standards;
 import org.team2363.helixnavigator.ui.prompts.obstacle.ObstacleEditDialog;
+import org.team2363.helixtrajectory.Obstacle;
 import org.team2363.lib.ui.OrderableListCell;
 import org.team2363.lib.ui.validation.FilteredTextField;
+
+import com.jlbabilino.json.JSONDeserializer;
+import com.jlbabilino.json.JSONDeserializerException;
+import com.jlbabilino.json.JSONEntry;
+import com.jlbabilino.json.JSONParser;
+import com.jlbabilino.json.JSONParserException;
+import com.jlbabilino.json.JSONSerializer;
+import com.jlbabilino.json.TypeMarker;
 
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -42,19 +44,22 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
     private static final Image POLYGON;
     private static final Image RECTANGLE;
 
-    public static final Callback<ListView<HObstacle>, ListCell<HObstacle>> obstacleCellFactory =
-            new Callback<ListView<HObstacle>, ListCell<HObstacle>>() {
-        @Override
-        public ListCell<HObstacle> call(ListView<HObstacle> listView) {
-            return new ObstacleListCell();
-        }
-    };
+    public static final Callback<ListView<HObstacle>, ListCell<HObstacle>> obstacleCellFactory(DocumentManager documentManager) {
+        return new Callback<ListView<HObstacle>, ListCell<HObstacle>>() {
+            @Override
+            public ListCell<HObstacle> call(ListView<HObstacle> listView) {
+                return new ObstacleListCell(documentManager);
+            }
+        };
+    }
 
     static {
         CIRCLE = null;
         POLYGON = null;
         RECTANGLE = null;
     }
+
+    private final DocumentManager documentManager;
 
     private final ImageView circleView = new ImageView(CIRCLE);
     private final ImageView polygonView = new ImageView(POLYGON);
@@ -78,11 +83,14 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
     private final MenuItem insertNewRectangleObstacleAfterMenuItem = new MenuItem("Insert new rectangle obstacle after");
     private final MenuItem renameMenuItem = new MenuItem("Rename");
     private final MenuItem deleteSingleMenuItem = new MenuItem("Delete");
+    private final MenuItem setAsBumpersMenuItem = new MenuItem("Set As Bumpers");
 
     private final ContextMenu multipleSelectedContextMenu = new ContextMenu();
     private final MenuItem deleteMultipleMenuItem = new MenuItem("Delete");
 
-    public ObstacleListCell() {
+    public ObstacleListCell(DocumentManager documentManager) {
+        this.documentManager = documentManager;
+
         circleView.setPreserveRatio(true);
         circleView.setFitHeight(20);
         polygonView.setPreserveRatio(true);
@@ -116,6 +124,7 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
         insertNewRectangleObstacleAfterMenuItem.setOnAction(this::insertNewRectangleObstacleAfter);
         renameMenuItem.setOnAction(this::renameObstacle);
         deleteSingleMenuItem.setOnAction(this::deleteSelectedObstacles);
+        setAsBumpersMenuItem.setOnAction(this::setAsBumpers);
         deleteMultipleMenuItem.setOnAction(this::deleteSelectedObstacles);
 
         insertMenu.getItems().addAll(insertNewCircleObstacleBeforeMenuItem, insertNewPolygonObstacleBeforeMenuItem,
@@ -123,7 +132,7 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
                 insertNewPolygonObstacleAfterMenuItem, insertNewRectangleObstacleAfterMenuItem);
 
         noneSelectedContextMenu.getItems().addAll(newCircleObstacleMenuItem, newPolygonObstacleMenuItem, newRectangleObstacleMenuItem);
-        singleSelectedContextMenu.getItems().addAll(editMenuItem, insertMenu, renameMenuItem, deleteSingleMenuItem);
+        singleSelectedContextMenu.getItems().addAll(editMenuItem, insertMenu, renameMenuItem, deleteSingleMenuItem, setAsBumpersMenuItem);
         multipleSelectedContextMenu.getItems().addAll(deleteMultipleMenuItem);
 
         noneSelectedContextMenu.setAutoHide(true);
@@ -290,5 +299,9 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
         for (Integer index : selectedIndicesArray) {
             getListView().getItems().remove(index.intValue()); // have to use intValue() to remove ambiguity
         }
+    }
+    private void setAsBumpers(ActionEvent event) {
+        Obstacle bumpers = getItem().toObstacle();
+        documentManager.getDocument().getRobotConfiguration().setBumpers(bumpers);
     }
 }
