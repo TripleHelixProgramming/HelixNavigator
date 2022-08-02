@@ -3,13 +3,13 @@ package org.team2363.helixnavigator.document.waypoint;
 import org.team2363.helixnavigator.document.HPathElement;
 
 import com.jlbabilino.json.DeserializedJSONDeterminer;
+import com.jlbabilino.json.DeserializedJSONEntry;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.DeserializedJSONTarget;
 import com.jlbabilino.json.JSONDeserializerException;
 import com.jlbabilino.json.JSONObject;
 import com.jlbabilino.json.JSONString;
 import com.jlbabilino.json.SerializedJSONObjectValue;
-import com.jlbabilino.json.TypeMarker;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -17,11 +17,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.transform.Transform;
 
 public abstract class HWaypoint extends HPathElement {
-
-    private static final TypeMarker<HSoftWaypoint> SOFT_TYPE = new TypeMarker<HSoftWaypoint>() {};
-    private static final TypeMarker<HHardWaypoint> HARD_TYPE = new TypeMarker<HHardWaypoint>() {};
-    private static final TypeMarker<HCustomWaypoint> CUSTOM_TYPE = new TypeMarker<HCustomWaypoint>() {};
-    private static final TypeMarker<HInitialGuessWaypoint> INITIAL_GUESS_TYPE = new TypeMarker<HInitialGuessWaypoint>() {};
 
     public static enum WaypointType {
         SOFT, HARD, CUSTOM, INITIAL_GUESS;
@@ -103,20 +98,20 @@ public abstract class HWaypoint extends HPathElement {
     }
 
     @DeserializedJSONDeterminer
-    public static TypeMarker<? extends HWaypoint> determiner(JSONObject jsonObject) throws JSONDeserializerException {
+    public static Class<? extends HWaypoint> determiner(@DeserializedJSONEntry JSONObject jsonObject) throws JSONDeserializerException {
         if (!jsonObject.containsKey("waypoint_type")) {
             throw new JSONDeserializerException("Missing \"waypoint_type\" key");
         }
         String typeString = ((JSONString) jsonObject.get("waypoint_type")).getString();
         switch (typeString.trim().toLowerCase()) {
             case "soft":
-                return SOFT_TYPE;
+                return HSoftWaypoint.class;
             case "hard":
-                return HARD_TYPE;
+                return HHardWaypoint.class;
             case "custom":
-                return CUSTOM_TYPE;
+                return HCustomWaypoint.class;
             case "initial_guess":
-                return INITIAL_GUESS_TYPE;
+                return HInitialGuessWaypoint.class;
             default:
                 throw new JSONDeserializerException("Unrecognized waypoint type: \"" + typeString + "\"");
         }

@@ -152,7 +152,7 @@ public class DocumentManager {
             alert.showAndWait();
             return false;
         } catch (InvalidJSONTranslationConfiguration e) {
-            logger.severe("Internal JSON translation configuration error.");
+            logger.severe("Internal JSON translation configuration error: " + e.getMessage());
             return false;
         } catch (JSONDeserializerException e) {
             logger.finer("Could not deserialize JSON data in file \"" + file.getName() + "\":" + e.getMessage());
@@ -212,10 +212,10 @@ public class DocumentManager {
             JSONSerializer.serializeFile(getDocument(), saveLocation);
             return true;
         } catch (InvalidJSONTranslationConfiguration e) {
-            logger.severe("Internal JSON translation configuration.");
+            logger.severe("Internal JSON translation configuration: " + e.getMessage());
             return false;
         } catch (JSONSerializerException e) {
-            logger.severe("Internal JSON serialization error");
+            logger.severe("Internal JSON serialization error: " + e.getMessage());
             return false;
         } catch (IOException e) {
             Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -337,10 +337,10 @@ public class DocumentManager {
                     JSONSerializer.serializeFile(waypointBundle, saveLocation);
                     return true;
                 } catch (InvalidJSONTranslationConfiguration e) {
-                    logger.severe("Internal JSON translation configuration error.");
+                    logger.severe("Internal JSON translation configuration error: " + e.getMessage());
                     return false;
                 } catch (JSONSerializerException e) {
-                    logger.severe("Internal JSON serializer error.");
+                    logger.severe("Internal JSON serialization error: " + e.getMessage());
                     return false;
                 } catch (IOException e) {
                     logger.finer("Error while saving waypoint bundle");
