@@ -134,7 +134,7 @@ public class DocumentManager {
             HDocument openedDocument = JSONDeserializer.deserialize(file, HDocument.class);
             openedDocument.setSaveLocation(file);
             setDocument(openedDocument);
-            logger.info("File \"" + file.getAbsolutePath() + "\" succesffully opened.");
+            logger.info("File \"" + file.getAbsolutePath() + "\" successfully opened.");
             return true;
         } catch (IOException e) {
             logger.finer("Could not read file " + file.getAbsolutePath() + ": " + e.getMessage());

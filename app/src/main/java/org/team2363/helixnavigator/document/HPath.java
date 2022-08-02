@@ -130,12 +130,12 @@ public class HPath {
         return name;
     }
 
-    @DeserializedJSONTarget
+    // @DeserializedJSONTarget
     public final void setName(@DeserializedJSONObjectValue(key = "name") String value) {
         name.set(value);
     }
 
-    @SerializedJSONObjectValue(key = "name")
+    // @SerializedJSONObjectValue(key = "name")
     public final String getName() {
         return name.get();
     }

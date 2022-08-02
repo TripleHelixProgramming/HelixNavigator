@@ -17,20 +17,21 @@
 package org.team2363.helixnavigator.document;
 
 import java.io.File;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
+
+import org.team2363.helixnavigator.document.field.image.HFieldImage;
+import org.team2363.helixnavigator.document.field.image.HReferenceFieldImage;
+import org.team2363.helixnavigator.global.Standards;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.DeserializedJSONTarget;
 import com.jlbabilino.json.JSONDeserializable;
+import com.jlbabilino.json.JSONEntry.JSONType;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONObjectValue;
-import com.jlbabilino.json.JSONEntry.JSONType;
-
-import org.team2363.helixnavigator.document.field.image.HFieldImage;
-import org.team2363.helixnavigator.document.field.image.HReferenceFieldImage;
-import org.team2363.helixnavigator.global.Standards;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -129,10 +130,22 @@ public class HDocument {
         selectedPathIndex.addListener((currentIndex, oldIndex, newIndex) -> updateSelectedPath());
     }
 
+    // @DeserializedJSONConstructor
+    // public HDocument(@DeserializedJSONObjectValue(key = "paths") List<? extends HPath> initialPaths) {
+    //     this();
+    //     paths.setAll(initialPaths);
+    // }
+
     @DeserializedJSONConstructor
-    public HDocument(@DeserializedJSONObjectValue(key = "paths") List<? extends HPath> initialPaths) {
+    public HDocument(@DeserializedJSONObjectValue(key = "paths") Map<String, HPath> initialPathsMap) {
         this();
-        paths.setAll(initialPaths);
+
+        initialPathsMap.entrySet().stream().sorted((a, b) -> a.getKey().compareTo(b.getKey())).forEach(entry -> {
+            String pathName = entry.getKey();
+            HPath path = entry.getValue();
+            path.setName(pathName);
+            paths.add(path);
+        }); 
     }
 
     /**
@@ -222,12 +235,12 @@ public class HDocument {
         return zoomScale;
     }
 
-    @DeserializedJSONTarget
+    // @DeserializedJSONTarget
     public final void setZoomScale(@DeserializedJSONObjectValue(key = "zoom_scale") double value) {
         zoomScale.set(value);
     }
 
-    @SerializedJSONObjectValue(key = "zoom_scale")
+    // @SerializedJSONObjectValue(key = "zoom_scale")
     public final double getZoomScale() {
         return zoomScale.get();
     }
@@ -236,12 +249,12 @@ public class HDocument {
         return zoomTranslateX;
     }
 
-    @DeserializedJSONTarget
+    // @DeserializedJSONTarget
     public final void setZoomTranslateX(@DeserializedJSONObjectValue(key = "zoom_translate_x") double value) {
         zoomTranslateX.set(value);
     }
 
-    @SerializedJSONObjectValue(key = "zoom_translate_x")
+    // @SerializedJSONObjectValue(key = "zoom_translate_x")
     public final double getZoomTranslateX() {
         return zoomTranslateX.get();
     }
@@ -250,19 +263,28 @@ public class HDocument {
         return zoomTranslateY;
     }
 
-    @DeserializedJSONTarget
+    // @DeserializedJSONTarget
     public final void setZoomTranslateY(@DeserializedJSONObjectValue(key = "zoom_translate_y") double value) {
         zoomTranslateY.set(value);
     }
 
-    @SerializedJSONObjectValue(key = "zoom_translate_y")
+    // @SerializedJSONObjectValue(key = "zoom_translate_y")
     public final double getZoomTranslateY() {
         return zoomTranslateY.get();
     }
 
-    @SerializedJSONObjectValue(key = "paths")
+    // @SerializedJSONObjectValue(key = "paths")
     public final ObservableList<HPath> getPaths() {
         return paths;
+    }
+
+    @SerializedJSONObjectValue(key = "paths")
+    public final Map<String, HPath> getPathsMap() {
+        Map<String, HPath> map = new HashMap<>(getPaths().size());
+        for (HPath path : getPaths()) {
+            map.put(path.getName(), path);
+        }
+        return map;
     }
 
     public final ReadOnlyIntegerProperty selectedPathIndexProperty() {
