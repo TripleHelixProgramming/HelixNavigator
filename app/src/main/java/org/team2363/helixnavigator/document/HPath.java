@@ -39,7 +39,7 @@ import javafx.scene.transform.Transform;
 
 @JSONSerializable(JSONType.OBJECT)
 @JSONDeserializable({JSONType.OBJECT})
-public class HPath {
+public class HPath implements HNamedElement {
 
     private final StringProperty name = new SimpleStringProperty(this, "name", "");
     private final ObservableList<HWaypoint> waypoints = FXCollections.<HWaypoint>observableArrayList();

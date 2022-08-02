@@ -2,25 +2,10 @@ package org.team2363.helixnavigator.document;
 
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
-import javafx.scene.transform.Transform;
 
 public abstract class HSelectableElement {
 
     private final ReadOnlyBooleanWrapper selected = new ReadOnlyBooleanWrapper(this, "selected", false);
-
-    protected HSelectableElement() {
-    }
-
-    public abstract void transformRelative(Transform transform);
-
-    public abstract void translateRelativeX(double x);
-
-    public abstract void translateRelativeY(double y);
-
-    public void translateRelative(double x, double y) {
-        translateRelativeX(x);
-        translateRelativeY(y);
-    }
 
     public final ReadOnlyBooleanProperty selectedProperty() {
         return selected.getReadOnlyProperty();
