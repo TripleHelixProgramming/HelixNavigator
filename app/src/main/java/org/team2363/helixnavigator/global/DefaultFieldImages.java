@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import com.jlbabilino.json.InvalidJSONTranslationConfiguration;
 import com.jlbabilino.json.JSONDeserializer;
 import com.jlbabilino.json.JSONDeserializerException;
 import com.jlbabilino.json.JSONParserException;
@@ -18,7 +19,7 @@ import javafx.collections.ObservableList;
 
 public class DefaultFieldImages {
 
-    //TODO: make sure all loggers use this same naming convention and are all private static final (low priority)
+    //TODO: make sure all loggers use this same naming convention and are all private static final (low dev priority)
     private static final Logger LOGGER = Logger.getLogger("org.team2363.helixnavigator.global");
 
     private static final Map<String, HDefaultFieldImage> fieldImageMap = new HashMap<>();
@@ -43,6 +44,8 @@ public class DefaultFieldImages {
                 LOGGER.finer("Failed to load a file: " + e.getMessage());
             } catch (JSONParserException e) {
                 LOGGER.finer("Failed to parse a file: " + e.getMessage());
+            } catch (InvalidJSONTranslationConfiguration e) {
+                LOGGER.severe("Internal JSON translation configuration error: " + e.getMessage());
             } catch (JSONDeserializerException e) {
                 LOGGER.finer("Failed to deserialize a file: " + e.getMessage());
             } finally {

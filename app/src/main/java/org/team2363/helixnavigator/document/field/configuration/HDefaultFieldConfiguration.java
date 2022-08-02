@@ -4,8 +4,10 @@ import java.util.List;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
+import com.jlbabilino.json.JSONDeserializable;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONObjectValue;
+import com.jlbabilino.json.JSONEntry.JSONType;
 
 import org.team2363.helixnavigator.document.field.image.HFieldImage;
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
@@ -13,7 +15,8 @@ import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-@JSONSerializable
+@JSONSerializable(JSONType.OBJECT)
+@JSONDeserializable({JSONType.OBJECT})
 public class HDefaultFieldConfiguration implements HFieldConfiguration {
 
     private String name;

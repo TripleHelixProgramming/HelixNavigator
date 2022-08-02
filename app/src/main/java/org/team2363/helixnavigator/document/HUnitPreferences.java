@@ -13,13 +13,16 @@ import org.team2363.helixnavigator.global.Standards.SupportedUnits.SupportedTorq
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.DeserializedJSONTarget;
+import com.jlbabilino.json.JSONDeserializable;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONObjectValue;
+import com.jlbabilino.json.JSONEntry.JSONType;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-@JSONSerializable
+@JSONSerializable(JSONType.OBJECT)
+@JSONDeserializable({JSONType.OBJECT})
 public class HUnitPreferences {
 
     private final ObjectProperty<SupportedTime> timeUnit = new SimpleObjectProperty<>(this, "timeUnit", SupportedTime.values()[0]);

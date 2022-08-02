@@ -4,7 +4,6 @@ import static org.team2363.helixnavigator.global.Standards.ExportedUnits.TIME_UN
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.ProcessBuilder.Redirect;
 
 import javax.measure.quantity.Time;
 
@@ -12,7 +11,6 @@ import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
 import org.team2363.helixnavigator.document.HTrajectory;
-import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.global.Standards;
 import org.team2363.helixtrajectory.Obstacle;
 import org.team2363.helixtrajectory.Path;
@@ -20,9 +18,11 @@ import org.team2363.helixtrajectory.SwerveDrive;
 import org.team2363.helixtrajectory.TrajectoryGenerator;
 import org.team2363.lib.ui.validation.UnitTextField;
 
+import com.jlbabilino.json.InvalidJSONTranslationConfiguration;
 import com.jlbabilino.json.JSONDeserializer;
 import com.jlbabilino.json.JSONDeserializerException;
 import com.jlbabilino.json.JSONSerializer;
+import com.jlbabilino.json.JSONSerializerException;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -79,7 +79,7 @@ public class TrajectoryToolBar extends ToolBar {
                     HTrajectory traj = JSONDeserializer.deserialize(result, HTrajectory.class);
                     this.documentManager.getDocument().getSelectedPath().setTrajectory(traj);
                     System.out.println("Loaded traj");
-                } catch (IOException | JSONDeserializerException e) {
+                } catch (IOException | InvalidJSONTranslationConfiguration | JSONDeserializerException e) {
                     System.out.println("Error when importing traj: " + e.getMessage());
                 }
             }
@@ -95,7 +95,7 @@ public class TrajectoryToolBar extends ToolBar {
                     try {
                         JSONSerializer.serializeFile(traj, result);
                         System.out.println("Exported traj");
-                    } catch (IOException e) {
+                    } catch (IOException | InvalidJSONTranslationConfiguration | JSONSerializerException e) {
                         System.out.println("Error when exporting traj: " + e.getMessage());
                     }
                 }

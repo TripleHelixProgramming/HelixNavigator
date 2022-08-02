@@ -3,13 +3,16 @@ package org.team2363.helixnavigator.document;
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.DeserializedJSONTarget;
+import com.jlbabilino.json.JSONDeserializable;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONObjectValue;
+import com.jlbabilino.json.JSONEntry.JSONType;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
-@JSONSerializable
+@JSONSerializable(JSONType.OBJECT)
+@JSONDeserializable({JSONType.OBJECT})
 public class HFieldTarget {
     
     private final DoubleProperty x = new SimpleDoubleProperty(this, "x", 0.0);

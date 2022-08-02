@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import com.jlbabilino.json.InvalidJSONTranslationConfiguration;
 import com.jlbabilino.json.JSONDeserializer;
 import com.jlbabilino.json.JSONDeserializerException;
 import com.jlbabilino.json.JSONParserException;
@@ -35,6 +36,8 @@ public class DefaultFieldConfigurations {
                 LOGGER.finer("Failed to load a file: " + e.getMessage());
             } catch (JSONParserException e) {
                 LOGGER.finer("Failed to parse a file: " + e.getMessage());
+            } catch (InvalidJSONTranslationConfiguration e) {
+                LOGGER.severe("Internal JSON translation configuration error: " + e.getMessage());
             } catch (JSONDeserializerException e) {
                 LOGGER.finer("Failed to deserialize a file: " + e.getMessage());
             } finally {

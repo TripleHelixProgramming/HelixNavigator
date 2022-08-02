@@ -4,14 +4,17 @@ import java.io.InputStream;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
+import com.jlbabilino.json.JSONDeserializable;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONObjectValue;
+import com.jlbabilino.json.JSONEntry.JSONType;
 
 import org.team2363.helixnavigator.global.DefaultFieldImages;
 
 import javafx.scene.image.Image;
 
-@JSONSerializable
+@JSONSerializable(JSONType.OBJECT)
+@JSONDeserializable({JSONType.OBJECT})
 public class HDefaultFieldImage implements HFieldImage {
 
     private final String name;

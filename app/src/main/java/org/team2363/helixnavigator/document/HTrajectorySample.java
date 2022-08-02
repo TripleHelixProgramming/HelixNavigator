@@ -4,10 +4,13 @@ import org.team2363.helixtrajectory.TrajectorySample;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
+import com.jlbabilino.json.JSONDeserializable;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONObjectValue;
+import com.jlbabilino.json.JSONEntry.JSONType;
 
-@JSONSerializable
+@JSONSerializable(JSONType.OBJECT)
+@JSONDeserializable({JSONType.OBJECT})
 public class HTrajectorySample {
 
     @SerializedJSONObjectValue(key = "ts")

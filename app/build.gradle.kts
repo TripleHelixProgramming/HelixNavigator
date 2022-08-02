@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.jlbabilino:json:0.1.4")
+    implementation("com.github.jlbabilino:json:0.2.0")
     // implementation "javax.measure:unit-api:2.1.3"
     // implementation "tec.units:unit-ri:1.0.3"
     // implementation "tech.units:indriya:2.1.3"

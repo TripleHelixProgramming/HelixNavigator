@@ -23,8 +23,10 @@ import java.util.logging.Logger;
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.DeserializedJSONTarget;
+import com.jlbabilino.json.JSONDeserializable;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONObjectValue;
+import com.jlbabilino.json.JSONEntry.JSONType;
 
 import org.team2363.helixnavigator.document.field.image.HFieldImage;
 import org.team2363.helixnavigator.document.field.image.HReferenceFieldImage;
@@ -49,7 +51,8 @@ import javafx.collections.ObservableList;
  * 
  * @author Justin Babilino
  */
-@JSONSerializable
+@JSONSerializable(JSONType.OBJECT)
+@JSONDeserializable({JSONType.OBJECT})
 public class HDocument {
 
     private static final Logger logger = Logger.getLogger("org.team2363.helixnavigator.document");

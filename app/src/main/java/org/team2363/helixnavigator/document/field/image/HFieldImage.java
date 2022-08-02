@@ -1,14 +1,17 @@
 package org.team2363.helixnavigator.document.field.image;
 
 import com.jlbabilino.json.DeserializedJSONDeterminer;
+import com.jlbabilino.json.JSONDeserializable;
 import com.jlbabilino.json.JSONDeserializerException;
 import com.jlbabilino.json.JSONObject;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.TypeMarker;
+import com.jlbabilino.json.JSONEntry.JSONType;
 
 import javafx.scene.image.Image;
 
-@JSONSerializable
+@JSONSerializable(JSONType.OBJECT)
+@JSONDeserializable({JSONType.OBJECT})
 public interface HFieldImage {
 
     static final TypeMarker<HReferenceFieldImage> REFERENCE_TYPE = new TypeMarker<>() {};

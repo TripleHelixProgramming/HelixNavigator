@@ -9,6 +9,7 @@ import org.team2363.helixtrajectory.Trajectory;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONEntry;
+import com.jlbabilino.json.JSONDeserializable;
 import com.jlbabilino.json.JSONEntry.JSONType;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONEntry;
@@ -16,7 +17,8 @@ import com.jlbabilino.json.SerializedJSONEntry;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
-@JSONSerializable(rootType = JSONType.ARRAY)
+@JSONSerializable(JSONType.ARRAY)
+@JSONDeserializable({JSONType.ARRAY})
 public class HTrajectory {
 
     private final DoubleProperty timestamp = new SimpleDoubleProperty(this, "timestamp", 0.0);

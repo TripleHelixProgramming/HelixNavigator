@@ -15,12 +15,14 @@ import org.team2363.helixtrajectory.Obstacle;
 import org.team2363.lib.ui.OrderableListCell;
 import org.team2363.lib.ui.validation.FilteredTextField;
 
+import com.jlbabilino.json.InvalidJSONTranslationConfiguration;
 import com.jlbabilino.json.JSONDeserializer;
 import com.jlbabilino.json.JSONDeserializerException;
 import com.jlbabilino.json.JSONEntry;
 import com.jlbabilino.json.JSONParser;
 import com.jlbabilino.json.JSONParserException;
 import com.jlbabilino.json.JSONSerializer;
+import com.jlbabilino.json.JSONSerializerException;
 import com.jlbabilino.json.TypeMarker;
 
 import javafx.collections.ObservableList;
@@ -197,11 +199,16 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
     @Override
     protected String fileString() {
         ObservableList<HObstacle> selectedItems = getListView().getSelectionModel().getSelectedItems();
-        if (selectedItems.size() == 1) {
-            return JSONSerializer.serializeString(getListView().getSelectionModel().getSelectedItem());
-        } else if (selectedItems.size() > 1) {
-            return JSONSerializer.serializeString(getListView().getSelectionModel().getSelectedItems());
-        } else {
+        try {
+            if (selectedItems.size() == 1) {
+                return JSONSerializer.serializeString(getListView().getSelectionModel().getSelectedItem());
+            } else if (selectedItems.size() > 1) {
+                return JSONSerializer.serializeString(getListView().getSelectionModel().getSelectedItems());
+            } else {
+                return "";
+            }
+        } catch (InvalidJSONTranslationConfiguration | JSONSerializerException e) {
+            // TODO: error log
             return "";
         }
     }
@@ -215,7 +222,7 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
             } else {
                 return List.of(JSONDeserializer.deserialize(jsonEntry, HObstacle.class));
             }
-        } catch (JSONParserException | JSONDeserializerException e) {
+        } catch (JSONParserException | InvalidJSONTranslationConfiguration | JSONDeserializerException e) {
             throw new IllegalArgumentException();
         }
     }

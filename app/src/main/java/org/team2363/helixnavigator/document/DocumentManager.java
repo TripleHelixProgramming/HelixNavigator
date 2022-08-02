@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+import com.jlbabilino.json.InvalidJSONTranslationConfiguration;
 import com.jlbabilino.json.JSONDeserializer;
 import com.jlbabilino.json.JSONDeserializerException;
 import com.jlbabilino.json.JSONParserException;
 import com.jlbabilino.json.JSONSerializer;
+import com.jlbabilino.json.JSONSerializerException;
 
 import org.team2363.helixnavigator.global.Standards;
 import org.team2363.lib.ui.prompts.SavePrompt;
@@ -149,6 +151,9 @@ public class DocumentManager {
             alert.setContentText("Could not parse JSON in file \"" + file.getName() + "\":" + e.getMessage());
             alert.showAndWait();
             return false;
+        } catch (InvalidJSONTranslationConfiguration e) {
+            logger.severe("Internal JSON translation configuration error.");
+            return false;
         } catch (JSONDeserializerException e) {
             logger.finer("Could not deserialize JSON data in file \"" + file.getName() + "\":" + e.getMessage());
             Alert alert = new Alert(AlertType.ERROR);
@@ -206,6 +211,12 @@ public class DocumentManager {
         try {
             JSONSerializer.serializeFile(getDocument(), saveLocation);
             return true;
+        } catch (InvalidJSONTranslationConfiguration e) {
+            logger.severe("Internal JSON translation configuration.");
+            return false;
+        } catch (JSONSerializerException e) {
+            logger.severe("Internal JSON serialization error");
+            return false;
         } catch (IOException e) {
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("File Error");
@@ -325,6 +336,12 @@ public class DocumentManager {
                 try {
                     JSONSerializer.serializeFile(waypointBundle, saveLocation);
                     return true;
+                } catch (InvalidJSONTranslationConfiguration e) {
+                    logger.severe("Internal JSON translation configuration error.");
+                    return false;
+                } catch (JSONSerializerException e) {
+                    logger.severe("Internal JSON serializer error.");
+                    return false;
                 } catch (IOException e) {
                     logger.finer("Error while saving waypoint bundle");
                     return false;

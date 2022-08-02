@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jlbabilino.json.JSONEntry.JSONType;
+import com.jlbabilino.json.JSONDeserializable;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONEntry;
 
 import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 
-@JSONSerializable(rootType = JSONType.ARRAY)
+@JSONSerializable(JSONType.ARRAY)
+@JSONDeserializable({JSONType.ARRAY})
 public class HWaypointBundle {
     
     private List<double[]> bundleWaypoints = new ArrayList<>();
