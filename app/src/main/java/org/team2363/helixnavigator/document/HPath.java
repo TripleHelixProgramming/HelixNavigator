@@ -1,30 +1,23 @@
 package org.team2363.helixnavigator.document;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
-import org.team2363.helixnavigator.document.waypoint.HCustomWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HInitialGuessWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HWaypoint;
-import org.team2363.helixtrajectory.InitialGuessPoint;
+import org.team2363.helixnavigator.document.timeline.HTimelineElement;
 import org.team2363.helixtrajectory.Path;
-import org.team2363.helixtrajectory.Waypoint;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.DeserializedJSONTarget;
 import com.jlbabilino.json.InvalidJSONTranslationConfiguration;
 import com.jlbabilino.json.JSONDeserializable;
+import com.jlbabilino.json.JSONEntry.JSONType;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.JSONSerializer;
 import com.jlbabilino.json.JSONSerializerException;
 import com.jlbabilino.json.SerializedJSONObjectValue;
-import com.jlbabilino.json.JSONEntry.JSONType;
 
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
@@ -42,19 +35,17 @@ import javafx.scene.transform.Transform;
 public class HPath implements HNamedElement {
 
     private final StringProperty name = new SimpleStringProperty(this, "name", "");
-    private final ObservableList<HWaypoint> waypoints = FXCollections.<HWaypoint>observableArrayList();
-    private final HSelectionModel<HWaypoint> waypointsSelectionModel;
-    private final ObservableList<HObstacle> obstacles = FXCollections.<HObstacle>observableArrayList();
-    private final HSelectionModel<HObstacle> obstaclesSelectionModel;
+    private final ObservableList<HTimelineElement> timeline = FXCollections.observableArrayList();
+    private final HSelectionModel<HTimelineElement> timelineSelectionModel = new HSelectionModel<>(timeline);
+    private final ObservableList<HObstacle> obstacles = FXCollections.observableArrayList();
+    private final HSelectionModel<HObstacle> obstaclesSelectionModel = new HSelectionModel<>(obstacles);
     private final ReadOnlyBooleanWrapper inPolygonPointMode = new ReadOnlyBooleanWrapper(this, "inPolygonPointMode", false);
     private final ReadOnlyObjectWrapper<HSelectionModel<HPolygonPoint>> polygonPointsSelectionModel = new ReadOnlyObjectWrapper<>(this, "polygonPointsSelectionModel", null);
     private final ReadOnlyObjectWrapper<HTrajectory> trajectory = new ReadOnlyObjectWrapper<HTrajectory>(this, "trajectory", null);
 
     @DeserializedJSONConstructor
     public HPath() {
-        waypointsSelectionModel = new HSelectionModel<>(waypoints);
-        obstaclesSelectionModel = new HSelectionModel<>(obstacles);
-        waypointsSelectionModel.getSelectedItems().addListener((ListChangeListener.Change<? extends HWaypoint> change) -> {
+        timelineSelectionModel.getSelectedItems().addListener((ListChangeListener.Change<? extends HTimelineElement> change) -> {
             updateInPolygonPointMode();
             updatePolygonPointsSelectionModel();
         });
@@ -66,7 +57,7 @@ public class HPath implements HNamedElement {
 
     private void updateInPolygonPointMode() {
         setInPolygonPointMode(
-                waypointsSelectionModel.getSelectedIndices().isEmpty()
+                timelineSelectionModel.getSelectedIndices().isEmpty()
                 && obstaclesSelectionModel.getSelectedItems().size() == 1
                 && obstaclesSelectionModel.getSelectedItems().get(0).isPolygon());
     }
@@ -79,17 +70,17 @@ public class HPath implements HNamedElement {
     }
 
     public void transformSelectedElementsRelative(Transform transform) {
-        getWaypointsSelectionModel().getSelectedItems().forEach(element -> element.transformRelative(transform));
+        getTimelineSelectionModel().getSelectedItems().forEach(element -> element.transformRelative(transform));
         getObstaclesSelectionModel().getSelectedItems().forEach(element -> element.transformRelative(transform));
     }
 
     public void moveSelectedElementsRelative(double deltaX, double deltaY) {
-        getWaypointsSelectionModel().getSelectedItems().forEach(element -> element.translateRelative(deltaX, deltaY));
+        getTimelineSelectionModel().getSelectedItems().forEach(element -> element.translateRelative(deltaX, deltaY));
         getObstaclesSelectionModel().getSelectedItems().forEach(element -> element.translateRelative(deltaX, deltaY));
     }
 
     public void moveSelectedElementsRelative(double deltaX, double deltaY, HPathElement excludedElement) {
-        getWaypointsSelectionModel().getSelectedItems().forEach(element -> {
+        getTimelineSelectionModel().getSelectedItems().forEach(element -> {
             if (element != excludedElement) {
                 element.translateRelative(deltaX, deltaY);
             }
@@ -109,14 +100,14 @@ public class HPath implements HNamedElement {
         });
     }
 
-    public void clearWaypointsSelection() {
-        waypointsSelectionModel.clearSelection();
+    public void clearTimelineSelection() {
+        timelineSelectionModel.clearSelection();
     }
     public void clearObstaclesSelection() {
         obstaclesSelectionModel.clearSelection();
     }
     public void clearSelection() {
-        clearWaypointsSelection();
+        clearTimelineSelection();
         clearObstaclesSelection();
     }
 
@@ -141,17 +132,17 @@ public class HPath implements HNamedElement {
     }
 
     @DeserializedJSONTarget
-    public final void setWaypoints(@DeserializedJSONObjectValue(key = "waypoints") List<? extends HWaypoint> newWaypoints) {
-        waypoints.setAll(newWaypoints);
+    public final void setTimeline(@DeserializedJSONObjectValue(key = "timeline") List<? extends HTimelineElement> newTimeline) {
+        timeline.setAll(newTimeline);
     }
 
-    @SerializedJSONObjectValue(key = "waypoints")
-    public final ObservableList<HWaypoint> getWaypoints() {
-        return waypoints;
+    @SerializedJSONObjectValue(key = "timeline")
+    public final ObservableList<HTimelineElement> getTimeline() {
+        return timeline;
     }
 
-    public final HSelectionModel<HWaypoint> getWaypointsSelectionModel() {
-        return waypointsSelectionModel;
+    public final HSelectionModel<HTimelineElement> getTimelineSelectionModel() {
+        return timelineSelectionModel;
     }
 
     @DeserializedJSONTarget
@@ -197,6 +188,7 @@ public class HPath implements HNamedElement {
     }
 
     // TODO: Make this private eventually
+    // there should be a method to generate a trajectory
     public final void setTrajectory(HTrajectory value) {
         trajectory.set(value);
     }
@@ -206,35 +198,36 @@ public class HPath implements HNamedElement {
     }
 
     public Path toPath() {
-        List<Waypoint> htWaypoints = new ArrayList<>();
-        int i = 0;
-        while (waypoints.get(i).isInitialGuess()) {
-            i++;
-        }
-        while (i < waypoints.size()) {
-            int waypointIndex = i;
-            i++;
-            List<InitialGuessPoint> initialGuessPoints = new ArrayList<>();
-            while (i < waypoints.size() && waypoints.get(i).isInitialGuess()) {
-                initialGuessPoints.add(((HInitialGuessWaypoint) waypoints.get(i)).toInitialGuessPoint());
-                i++;
-            }
-            InitialGuessPoint[] initialGuessPointsArray = initialGuessPoints.toArray(new InitialGuessPoint[0]);
-            switch (waypoints.get(waypointIndex).getWaypointType()) {
-                case SOFT:
-                    htWaypoints.add(((HSoftWaypoint) waypoints.get(waypointIndex)).toWaypoint(initialGuessPointsArray));
-                    break;
-                case HARD:
-                    htWaypoints.add(((HHardWaypoint) waypoints.get(waypointIndex)).toWaypoint(initialGuessPointsArray));
-                    break;
-                case CUSTOM:
-                    htWaypoints.add(((HCustomWaypoint) waypoints.get(waypointIndex)).toWaypoint(initialGuessPointsArray));
-                    break;
-                default:
-                    break;
-            }
-        }
-        return new Path(htWaypoints.toArray(new Waypoint[0]));
+        // List<Waypoint> htWaypoints = new ArrayList<>();
+        // int i = 0;
+        // while (timelineElements.get(i).isInitialGuess()) {
+        //     i++;
+        // }
+        // while (i < timelineElements.size()) {
+        //     int waypointIndex = i;
+        //     i++;
+        //     List<InitialGuessPoint> initialGuessPoints = new ArrayList<>();
+        //     while (i < timelineElements.size() && timelineElements.get(i).isInitialGuess()) {
+        //         initialGuessPoints.add(((HInitialGuessPoint) timelineElements.get(i)).toInitialGuessPoint());
+        //         i++;
+        //     }
+        //     InitialGuessPoint[] initialGuessPointsArray = initialGuessPoints.toArray(new InitialGuessPoint[0]);
+        //     switch (timelineElements.get(waypointIndex).getWaypointType()) {
+        //         case SOFT:
+        //             htWaypoints.add(((HSoftWaypoint) timelineElements.get(waypointIndex)).toWaypoint(initialGuessPointsArray));
+        //             break;
+        //         case HARD:
+        //             htWaypoints.add(((HHardWaypoint) timelineElements.get(waypointIndex)).toWaypoint(initialGuessPointsArray));
+        //             break;
+        //         case CUSTOM:
+        //             htWaypoints.add(((HWaypoint) timelineElements.get(waypointIndex)).toWaypoint(initialGuessPointsArray));
+        //             break;
+        //         default:
+        //             break;
+        //     }
+        // }
+        // return new Path(htWaypoints.toArray(new Waypoint[0]));
+        return null; //TODO: fix this
     }
 
     @Override

@@ -26,8 +26,8 @@ public class PathToolBar extends ToolBar {
         debug.setOnAction(event -> {
             if (this.documentManager.getIsDocumentOpen() &&
                     this.documentManager.getDocument().isPathSelected() &&
-                    !this.documentManager.getDocument().getSelectedPath().getWaypoints().isEmpty()) {
-                debug.setText(String.valueOf(this.documentManager.getDocument().getSelectedPath().getWaypoints().get(0).isSelected()));
+                    !this.documentManager.getDocument().getSelectedPath().getTimeline().isEmpty()) {
+                debug.setText(String.valueOf(this.documentManager.getDocument().getSelectedPath().getTimeline().get(0).isSelected()));
             }
         });
 

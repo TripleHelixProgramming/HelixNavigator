@@ -5,11 +5,10 @@ import java.util.List;
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
-import org.team2363.helixnavigator.document.waypoint.HCustomWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HInitialGuessWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+import org.team2363.helixnavigator.document.timeline.HInitialGuessPoint;
+import org.team2363.helixnavigator.document.timeline.HWaypoint;
+import org.team2363.helixnavigator.document.timeline.waypoint.HHardWaypoint;
+import org.team2363.helixnavigator.document.timeline.waypoint.HSoftWaypoint;
 import org.team2363.lib.ui.MouseEventWrapper;
 
 import javafx.beans.value.ChangeListener;
@@ -78,14 +77,14 @@ public class WaypointsPane extends Pane {
         if (oldPath != null) {
             waypointsPane.getChildren().clear();
             robotsPane.getChildren().clear();
-            oldPath.getWaypoints().removeListener(onWaypointsChanged);
+            oldPath.getTimeline().removeListener(onWaypointsChanged);
         }
     }
 
     private void loadSelectedPath(HPath newPath) {
         if (newPath != null) {
-            updateWaypoints(newPath.getWaypoints());
-            newPath.getWaypoints().addListener(onWaypointsChanged);
+            updateWaypoints(newPath.getTimeline());
+            newPath.getTimeline().addListener(onWaypointsChanged);
         }
     }
 
@@ -114,12 +113,12 @@ public class WaypointsPane extends Pane {
                     waypointView = hardWaypointView;
                     break;
                 case CUSTOM:
-                    HCustomWaypoint customWaypoint = (HCustomWaypoint) waypoint;
+                    HWaypoint customWaypoint = (HWaypoint) waypoint;
                     CustomWaypointView customWaypointView = new CustomWaypointView(customWaypoint);
                     waypointView = customWaypointView;
                     break;
                 case INITIAL_GUESS:
-                    HInitialGuessWaypoint initialGuessWaypoint = (HInitialGuessWaypoint) waypoint;
+                    HInitialGuessPoint initialGuessWaypoint = (HInitialGuessPoint) waypoint;
                     InitialGuessWaypointView initialGuessWaypointView = new InitialGuessWaypointView(initialGuessWaypoint);
                     waypointView = initialGuessWaypointView;
                     break;
@@ -139,10 +138,10 @@ public class WaypointsPane extends Pane {
         };
         EventHandler<MouseEvent> onMouseDragBegin = event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                if (!event.isShortcutDown() && !documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().isSelected(index)) {
+                if (!event.isShortcutDown() && !documentManager.getDocument().getSelectedPath().getTimelineSelectionModel().isSelected(index)) {
                     documentManager.getDocument().getSelectedPath().clearSelection();
                 }
-                documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().select(index);
+                documentManager.getDocument().getSelectedPath().getTimelineSelectionModel().select(index);
             }
         };
         EventHandler<MouseEvent> onMouseDragged = event -> {
@@ -155,11 +154,11 @@ public class WaypointsPane extends Pane {
         EventHandler<MouseEvent> onMouseReleased = event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 if (!event.isShortcutDown()) {
-                    boolean selected = documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().isSelected(index);
+                    boolean selected = documentManager.getDocument().getSelectedPath().getTimelineSelectionModel().isSelected(index);
                     documentManager.getDocument().getSelectedPath().clearSelection();
-                    documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().setSelected(index, selected);
+                    documentManager.getDocument().getSelectedPath().getTimelineSelectionModel().setSelected(index, selected);
                 }
-                documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().toggle(index);
+                documentManager.getDocument().getSelectedPath().getTimelineSelectionModel().toggle(index);
             }
         };
 

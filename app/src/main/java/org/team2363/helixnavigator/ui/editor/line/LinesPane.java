@@ -5,7 +5,7 @@ import java.util.List;
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
-import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+import org.team2363.helixnavigator.document.timeline.HWaypoint;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -58,14 +58,14 @@ public class LinesPane extends Pane {
         if (oldPath != null) {
             // lineViews.clear();
             getChildren().clear();
-            oldPath.getWaypoints().removeListener(onWaypointsChanged);
+            oldPath.getTimeline().removeListener(onWaypointsChanged);
         }
     }
 
     private void loadSelectedPath(HPath newPath) {
         if (newPath != null) {
-            updateWaypoints(newPath.getWaypoints());
-            newPath.getWaypoints().addListener(onWaypointsChanged);
+            updateWaypoints(newPath.getTimeline());
+            newPath.getTimeline().addListener(onWaypointsChanged);
         }
     }
 

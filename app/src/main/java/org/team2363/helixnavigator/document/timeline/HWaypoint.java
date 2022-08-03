@@ -1,4 +1,4 @@
-package org.team2363.helixnavigator.document.waypoint;
+package org.team2363.helixnavigator.document.timeline;
 
 import org.team2363.helixtrajectory.InitialGuessPoint;
 import org.team2363.helixtrajectory.Waypoint;
@@ -10,12 +10,25 @@ import com.jlbabilino.json.SerializedJSONObjectValue;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.geometry.Point2D;
 import javafx.scene.transform.Transform;
 
-public class HCustomWaypoint extends HWaypoint {
-    
+public class HWaypoint extends HTimelineElement {
+
+    public static enum PositionConstraintType {
+        NONE, X, X_AND_Y, Y, ERROR
+    }
+    public static enum VelocityConstraintType {
+        NONE, DIRECTION, MAGNITUDE, DIRECTION_AND_MAGNITUDE, X, Y, STATIC
+    }
+
+    private final DoubleProperty x = new SimpleDoubleProperty(this, "x", 0.0);
+    private final DoubleProperty y = new SimpleDoubleProperty(this, "y", 0.0);
     private final DoubleProperty heading = new SimpleDoubleProperty(this, "heading", 0.0);
     private final DoubleProperty velocityX = new SimpleDoubleProperty(this, "velocityX", 0.0);
     private final DoubleProperty velocityY = new SimpleDoubleProperty(this, "velocityY", 0.0);
@@ -26,28 +39,141 @@ public class HCustomWaypoint extends HWaypoint {
     private final BooleanProperty headingConstrained = new SimpleBooleanProperty(this, "headingConstrained", true);
     private final BooleanProperty velocityXConstrained = new SimpleBooleanProperty(this, "velocityXConstrained", false);
     private final BooleanProperty velocityYConstrained = new SimpleBooleanProperty(this, "velocityYConstrained", false);
-    private final BooleanProperty velocityMagnitudeConstrained = new SimpleBooleanProperty(this, "velocityMagnitudeConstrained", false);
-    private final BooleanProperty angularVelocityConstrained = new SimpleBooleanProperty(this, "angularVelocityConstrained", false);
+    private final BooleanProperty velocityMagnitudeConstrained = new SimpleBooleanProperty(this, "velocityMagnitudeConstrained", true);
+    private final BooleanProperty angularVelocityConstrained = new SimpleBooleanProperty(this, "angularVelocityConstrained", true);
+
+    private final ReadOnlyObjectWrapper<PositionConstraintType> positionConstraintType = new ReadOnlyObjectWrapper<>(this, "positionConstraintType", PositionConstraintType.X_AND_Y);
+    private final ReadOnlyObjectWrapper<VelocityConstraintType> velocityConstraintType = new ReadOnlyObjectWrapper<>(this, "velocityConstraintType", VelocityConstraintType.STATIC);
 
     @DeserializedJSONConstructor
-    public HCustomWaypoint() {
+    public HWaypoint() {
+        ChangeListener<? super Boolean> onPositionConstraintChanged = (obsVal, wasOn, isOn) -> updatePositionConstraintType();
+        xConstrained.addListener(onPositionConstraintChanged);
+        yConstrained.addListener(onPositionConstraintChanged);
+
+        ChangeListener<? super Boolean> onVelocityConstraintChanged = (obsVal, wasOn, isOn) -> updateVelocityConstraintType();
+        velocityXConstrained.addListener(onVelocityConstraintChanged);
+        velocityYConstrained.addListener(onVelocityConstraintChanged);
+        velocityMagnitudeConstrained.addListener(onVelocityConstraintChanged);
+        velocityMagnitudeConstrained.addListener(onVelocityConstraintChanged);
+
+        ChangeListener<? super Number> onVelocityComponentChanged = (obsVal, oldVal, newVal) -> {
+            if (oldVal.doubleValue() == 0.0 || newVal.doubleValue() == 0.0) {
+                updateVelocityConstraintType();
+            }
+        };
+        velocityX.addListener(onVelocityComponentChanged);
+        velocityY.addListener(onVelocityComponentChanged);
+    }
+
+    private void updatePositionConstraintType() {
+        if (isXConstrained() && isYConstrained()) {
+            setPositionConstraintType(PositionConstraintType.X_AND_Y);
+        } else if (isXConstrained() && !isYConstrained()) {
+            setPositionConstraintType(PositionConstraintType.X);
+        } else if (!isXConstrained() && isYConstrained()) {
+            setPositionConstraintType(PositionConstraintType.Y);
+        } else { // should be at least one constraining
+            setPositionConstraintType(PositionConstraintType.ERROR);
+        }
+    }
+
+    private void updateVelocityConstraintType() {
+        if (isVelocityMagnitudeConstrained()) {
+            if (getVelocityX() == 0.0 && getVelocityY() == 0.0) {
+                setVelocityConstraintType(VelocityConstraintType.STATIC);
+            } else if (isVelocityXConstrained() && isVelocityYConstrained()) {
+                setVelocityConstraintType(VelocityConstraintType.DIRECTION_AND_MAGNITUDE);
+            } else if (!isVelocityXConstrained() && !isVelocityYConstrained()) {
+                setVelocityConstraintType(VelocityConstraintType.MAGNITUDE);
+            } else if (isVelocityXConstrained() && !isVelocityYConstrained()) {
+                setVelocityConstraintType(VelocityConstraintType.X);
+            } else /*if (!isVelocityXConstrained() && isVelocityYConstrained())*/ {
+                setVelocityConstraintType(VelocityConstraintType.Y);
+            }
+        } else { // magnitude unconstrained
+            if (isVelocityXConstrained() && isVelocityYConstrained()) {
+                setVelocityConstraintType(VelocityConstraintType.DIRECTION);
+            } else {
+                setVelocityConstraintType(VelocityConstraintType.NONE);
+            }
+        }
     }
 
     @Override
     public void transformRelative(Transform transform) {
-        super.transformRelative(transform);
+        Point2D newPoint = transform.transform(getX(), getY());
+        setX(newPoint.getX());
+        setY(newPoint.getY());
         double deltaAngle = Math.atan2(transform.getMyx(), transform.getMxx());
         setHeading(getHeading() + deltaAngle);
     }
-
     @Override
-    public WaypointType getWaypointType() {
-        return WaypointType.CUSTOM;
+    public void translateRelativeX(double dx) {
+        setX(getX() + dx);
+    }
+    @Override
+    public void translateRelativeY(double dy) {
+        setY(getY() + dy);
     }
 
     @Override
-    public boolean isCustom() {
+    public TimelineElementType getTimelineElementType() {
+        return TimelineElementType.WAYPOINT;
+    }
+    @Override
+    public boolean isWaypoint() {
         return true;
+    }
+
+    public final boolean isStateKnown() {
+        return getPositionConstraintType() == PositionConstraintType.X_AND_Y &&
+                (getVelocityConstraintType() == VelocityConstraintType.STATIC
+                || getVelocityConstraintType() == VelocityConstraintType.DIRECTION_AND_MAGNITUDE);
+    }
+
+    public final ReadOnlyObjectProperty<PositionConstraintType> positionConstraintTypeProperty() {
+        return positionConstraintType.getReadOnlyProperty();
+    }
+    private final void setPositionConstraintType(PositionConstraintType value) {
+        positionConstraintType.set(value);
+    }
+    public final PositionConstraintType getPositionConstraintType() {
+        return positionConstraintType.get();
+    }
+
+    public final ReadOnlyObjectProperty<VelocityConstraintType> velocityConstraintTypeProperty() {
+        return velocityConstraintType.getReadOnlyProperty();
+    }
+    private final void setVelocityConstraintType(VelocityConstraintType value) {
+        velocityConstraintType.set(value);
+    }
+    public final VelocityConstraintType getVelocityConstraintType() {
+        return velocityConstraintType.get();
+    }
+
+    public final DoubleProperty xProperty() {
+        return x;
+    }
+    @DeserializedJSONTarget
+    public final void setX(@DeserializedJSONObjectValue(key = "x") double value) {
+        x.set(value);
+    }
+    @SerializedJSONObjectValue(key = "x")
+    public final double getX() {
+        return x.get();
+    }
+
+    public final DoubleProperty yProperty() {
+        return y;
+    }
+    @DeserializedJSONTarget
+    public final void setY(@DeserializedJSONObjectValue(key = "y") double value) {
+        y.set(value);
+    }
+    @SerializedJSONObjectValue(key = "y")
+    public final double getY() {
+        return y.get();
     }
 
     public final DoubleProperty headingProperty() {

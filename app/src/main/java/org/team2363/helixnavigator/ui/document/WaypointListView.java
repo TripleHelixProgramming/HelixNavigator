@@ -4,7 +4,7 @@ import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
 import org.team2363.helixnavigator.document.HSelectionModel;
-import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+import org.team2363.helixnavigator.document.timeline.HWaypoint;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -44,7 +44,7 @@ public class WaypointListView extends ListView<HWaypoint> {
         setItems(blankItems);
         setSelectionModel(blankSelecitonModel);
         setContextMenu(null);
-        setCellFactory(WaypointListCell.WAYPOINT_CELL_FACTORY);
+        setCellFactory(TimelineElementListCell.WAYPOINT_CELL_FACTORY);
         noneSelectedContextMenu.getItems().addAll(newSoftWaypointMenuItem, newHardWaypointMenuItem,
                 newCustomWaypointMenuItem, newInitialGuessWaypointMenuItem);
         newSoftWaypointMenuItem.setOnAction(this::newSoftWaypoint);
@@ -100,8 +100,8 @@ public class WaypointListView extends ListView<HWaypoint> {
     }
     private void loadSelectedPath(HPath newPath) {
         if (newPath != null) {
-            setItems(newPath.getWaypoints());
-            setSelectionModel(newPath.getWaypointsSelectionModel());
+            setItems(newPath.getTimeline());
+            setSelectionModel(newPath.getTimelineSelectionModel());
             setContextMenu(noneSelectedContextMenu);
         }
     }

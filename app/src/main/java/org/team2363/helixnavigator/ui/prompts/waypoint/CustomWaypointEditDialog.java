@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.measure.quantity.Speed;
 
-import org.team2363.helixnavigator.document.waypoint.HCustomWaypoint;
+import org.team2363.helixnavigator.document.timeline.HWaypoint;
 import org.team2363.helixnavigator.global.Standards.SupportedUnits.SupportedAngularSpeed;
 import org.team2363.helixnavigator.global.Standards.SupportedUnits.SupportedSpeed;
 import org.team2363.lib.ui.validation.UnitTextField;
@@ -19,8 +19,8 @@ import si.uom.quantity.AngularSpeed;
 
 public class CustomWaypointEditDialog extends WaypointEditDialog {
     
-    private HCustomWaypoint customWaypoint;
-    private HCustomWaypoint backupCustomWaypoint;
+    private HWaypoint customWaypoint;
+    private HWaypoint backupCustomWaypoint;
 
     private final Text headingText = new Text("Heading:");
     private final HeadingTextField headingTextField = new HeadingTextField();
@@ -40,10 +40,10 @@ public class CustomWaypointEditDialog extends WaypointEditDialog {
     private final CheckBox velocityMagnitudeConstrainedCheckBox = new CheckBox("Velocity Magnitude");
     private final CheckBox angularVelocityConstrainedCheckBox = new CheckBox("Angular Velocity");
 
-    public CustomWaypointEditDialog(HCustomWaypoint customWaypoint) {
-        super(customWaypoint, new HCustomWaypoint());
-        this.customWaypoint = (HCustomWaypoint) waypoint;
-        this.backupCustomWaypoint = (HCustomWaypoint) backupWaypoint;
+    public CustomWaypointEditDialog(HWaypoint customWaypoint) {
+        super(customWaypoint, new HWaypoint());
+        this.customWaypoint = (HWaypoint) waypoint;
+        this.backupCustomWaypoint = (HWaypoint) backupWaypoint;
         GridPane.setConstraints(headingText, 0, ADDITIONAL_PROPERTIES_ROW);
         GridPane.setConstraints(headingTextField, 1, ADDITIONAL_PROPERTIES_ROW);
         GridPane.setConstraints(velocityXText, 0, ADDITIONAL_PROPERTIES_ROW + 1);

@@ -2,7 +2,7 @@ package org.team2363.helixnavigator.ui.prompts.waypoint;
 
 import java.util.List;
 
-import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
+import org.team2363.helixnavigator.document.timeline.waypoint.HHardWaypoint;
 
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;

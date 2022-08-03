@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
+import org.team2363.helixnavigator.document.timeline.HWaypoint;
 import org.team2363.helixtrajectory.Trajectory;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
@@ -23,7 +23,7 @@ public class HTrajectory {
 
     private final DoubleProperty timestamp = new SimpleDoubleProperty(this, "timestamp", 0.0);
     public final double duration;
-    public final HHardWaypoint robotLocation = new HHardWaypoint();
+    public final HWaypoint robotLocation = new HWaypoint();
 
     @SerializedJSONEntry
     public final List<HTrajectorySample> samples;

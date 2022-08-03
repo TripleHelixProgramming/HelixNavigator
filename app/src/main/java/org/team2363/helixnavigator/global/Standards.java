@@ -78,6 +78,30 @@ public class Standards {
         public static final double WHEEL_RADIUS = 0.051;
     }
 
+    public static final class DefaultBumpers {
+        public static final double LENGTH = 1.2;
+        public static final double WIDTH = 1.2;
+    }
+    public static final class DefaultDrive {
+        public static final double MASS = 46.7;
+        public static final double MOMENT_OF_INERTIA = 5.6;
+    }
+    public static final class DefaultSwerveModule {
+        public static final double WHEEL_RADIUS = 0.051;
+        public static final double WHEEL_MAX_ANGULAR_VELOCITY = 70;
+        public static final double WHEEL_MAX_TORQUE = 1.9;
+    }
+    public static final class DefaultSwerveDrive {
+        public static final double WHEELBASE_X = 1.0;
+        public static final double WHEELBASE_Y = 1.0;
+    }
+    public static final class DefaultDifferentialDrive {
+        public static final double WHEELBASE = 1.0;
+        public static final double WHEEL_RADIUS = 0.051;
+        public static final double WHEEL_MAX_ANGULAR_VELOCITY = 70;
+        public static final double WHEEL_MAX_TORQUE = 1.9;
+    }
+
     public static final double MIN_HEADING = -Math.PI;
     public static final double MAX_HEADING = Math.PI;
     public static final double HEADING_LOCK_RADIUS = 5;

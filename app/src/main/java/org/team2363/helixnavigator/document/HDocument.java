@@ -56,7 +56,7 @@ import javafx.collections.ObservableList;
 @JSONDeserializable({JSONType.OBJECT})
 public class HDocument {
 
-    private static final Logger logger = Logger.getLogger("org.team2363.helixnavigator.document");
+    private static final Logger LOGGER = Logger.getLogger("org.team2363.helixnavigator.document");
 
     /**
      * The field that contains the image that the editor pane will display behind
@@ -294,10 +294,10 @@ public class HDocument {
     @DeserializedJSONTarget
     public final void setSelectedPathIndex(@DeserializedJSONObjectValue(key = "selected_path_index") int value) {
         if (value < 0 && hasPaths()) {
-            logger.warning("WARNING: illegal selected path index was attempted: " + value);
+            LOGGER.warning("WARNING: illegal selected path index was attempted: " + value);
             value = 0;
         } else if (value >= paths.size()) {
-            logger.warning("WARNING: illegal selected path index was attempted: " + value);
+            LOGGER.warning("WARNING: illegal selected path index was attempted: " + value);
             value = paths.size() - 1;
         }
         selectedPathIndex.set(value);

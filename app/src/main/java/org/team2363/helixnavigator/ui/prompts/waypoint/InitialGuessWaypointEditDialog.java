@@ -1,14 +1,14 @@
 package org.team2363.helixnavigator.ui.prompts.waypoint;
 
-import org.team2363.helixnavigator.document.waypoint.HInitialGuessWaypoint;
+import org.team2363.helixnavigator.document.timeline.HInitialGuessPoint;
 
 public class InitialGuessWaypointEditDialog extends WaypointEditDialog {
 
     // private HInitialGuessWaypoint initialGuessWaypoint;
     // private HInitialGuessWaypoint backupInitialGuessWaypoint;
 
-    public InitialGuessWaypointEditDialog(HInitialGuessWaypoint initialGuessWaypoint) {
-        super(initialGuessWaypoint, new HInitialGuessWaypoint());
+    public InitialGuessWaypointEditDialog(HInitialGuessPoint initialGuessWaypoint) {
+        super(initialGuessWaypoint, new HInitialGuessPoint());
         // this.initialGuessWaypoint = (HInitialGuessWaypoint) super.waypoint;
         // this.backupInitialGuessWaypoint = (HInitialGuessWaypoint) super.backupWaypoint;
 

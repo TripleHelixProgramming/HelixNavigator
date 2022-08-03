@@ -7,11 +7,10 @@ import org.team2363.helixnavigator.document.field.image.HFieldImage;
 import org.team2363.helixnavigator.document.obstacle.HCircleObstacle;
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
-import org.team2363.helixnavigator.document.waypoint.HCustomWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HInitialGuessWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+import org.team2363.helixnavigator.document.timeline.HInitialGuessPoint;
+import org.team2363.helixnavigator.document.timeline.HWaypoint;
+import org.team2363.helixnavigator.document.timeline.waypoint.HHardWaypoint;
+import org.team2363.helixnavigator.document.timeline.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.ui.prompts.RobotConfigDialog;
 import org.team2363.helixnavigator.ui.prompts.TransformDialog;
 
@@ -262,7 +261,7 @@ public class DocumentActions {
 
     public void selectAll() {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().selectAll();
+            documentManager.getDocument().getSelectedPath().getTimelineSelectionModel().selectAll();
             documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().selectAll();
         }
     }
@@ -270,10 +269,10 @@ public class DocumentActions {
     public void deleteSelectedWaypoints() {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
             HPath path = documentManager.getDocument().getSelectedPath();
-            Integer[] selectedIndices = path.getWaypointsSelectionModel().getSelectedIndices().toArray(new Integer[0]);
-            path.clearWaypointsSelection();
+            Integer[] selectedIndices = path.getTimelineSelectionModel().getSelectedIndices().toArray(new Integer[0]);
+            path.clearTimelineSelection();
             for (int i = selectedIndices.length - 1; i >= 0; i--) {
-                path.getWaypoints().remove(selectedIndices[i].intValue());
+                path.getTimeline().remove(selectedIndices[i].intValue());
             }
         }
     }
@@ -303,19 +302,19 @@ public class DocumentActions {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
             String data;
             HPath path = documentManager.getDocument().getSelectedPath();
-            int selectedWaypointsCount = path.getWaypointsSelectionModel().getSelectedItems().size();
+            int selectedWaypointsCount = path.getTimelineSelectionModel().getSelectedItems().size();
             int selectedObstaclesCount = path.getObstaclesSelectionModel().getSelectedItems().size();
             int totalCount = selectedWaypointsCount + selectedObstaclesCount;
             try {
                 if (totalCount == 0) {
                     data = JSONSerializer.serializeString(path);
                 } else if (totalCount == 1 && selectedWaypointsCount == 1) {
-                    data = JSONSerializer.serializeString(path.getWaypointsSelectionModel().getSelectedItem());
+                    data = JSONSerializer.serializeString(path.getTimelineSelectionModel().getSelectedItem());
                 } else if (totalCount == 1 && selectedObstaclesCount == 1) {
                     data = JSONSerializer.serializeString(path.getObstaclesSelectionModel().getSelectedItem());
                 } else {
                     List<HPathElement> list = new ArrayList<>();
-                    for (HWaypoint waypoint : path.getWaypointsSelectionModel().getSelectedItems()) {
+                    for (HWaypoint waypoint : path.getTimelineSelectionModel().getSelectedItems()) {
                         list.add(waypoint);
                     }
                     for (HObstacle obstacle : path.getObstaclesSelectionModel().getSelectedItems()) {
@@ -347,9 +346,9 @@ public class DocumentActions {
                         HPath path = document.getSelectedPath();
                         if (jsonObject.containsKey("waypoint_type")) {
                             HWaypoint waypoint = JSONDeserializer.deserialize(jsonEntry, HWaypoint.class);
-                            int index = path.getWaypointsSelectionModel().getSelectedIndex() + 1;
-                            path.getWaypoints().add(index, waypoint);
-                            path.getWaypointsSelectionModel().select(index);
+                            int index = path.getTimelineSelectionModel().getSelectedIndex() + 1;
+                            path.getTimeline().add(index, waypoint);
+                            path.getTimelineSelectionModel().select(index);
                         } else if (jsonObject.containsKey("obstacle_type")) {
                             HObstacle obstacle = JSONDeserializer.deserialize(jsonEntry, HObstacle.class);
                             int index = path.getObstaclesSelectionModel().getSelectedIndex() + 1;
@@ -402,7 +401,7 @@ public class DocumentActions {
     }
 
     private void insertWaypoint(int index, HWaypoint waypoint) {
-        documentManager.getDocument().getSelectedPath().getWaypoints().add(index, waypoint);
+        documentManager.getDocument().getSelectedPath().getTimeline().add(index, waypoint);
     }
     public void newSoftWaypoint(int index) {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
@@ -420,36 +419,36 @@ public class DocumentActions {
     }
     public void newCustomWaypoint(int index) {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            HWaypoint newWaypoint = new HCustomWaypoint();
+            HWaypoint newWaypoint = new HWaypoint();
             newWaypoint.setName("Custom Waypoint " + index);
             insertWaypoint(index, newWaypoint);
         }
     }
     public void newInitialGuessWaypoint(int index) {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            HWaypoint newWaypoint = new HInitialGuessWaypoint();
+            HWaypoint newWaypoint = new HInitialGuessPoint();
             newWaypoint.setName("Initial Guess Waypoint " + index);
             insertWaypoint(index, newWaypoint);
         }
     }
     public void newSoftWaypoint() {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            newSoftWaypoint(documentManager.getDocument().getSelectedPath().getWaypoints().size());
+            newSoftWaypoint(documentManager.getDocument().getSelectedPath().getTimeline().size());
         }
     }
     public void newHardWaypoint() {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            newHardWaypoint(documentManager.getDocument().getSelectedPath().getWaypoints().size());
+            newHardWaypoint(documentManager.getDocument().getSelectedPath().getTimeline().size());
         }
     }
     public void newCustomWaypoint() {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            newCustomWaypoint(documentManager.getDocument().getSelectedPath().getWaypoints().size());
+            newCustomWaypoint(documentManager.getDocument().getSelectedPath().getTimeline().size());
         }
     }
     public void newInitialGuessWaypoint() {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            newInitialGuessWaypoint(documentManager.getDocument().getSelectedPath().getWaypoints().size());
+            newInitialGuessWaypoint(documentManager.getDocument().getSelectedPath().getTimeline().size());
         }
     }
 
