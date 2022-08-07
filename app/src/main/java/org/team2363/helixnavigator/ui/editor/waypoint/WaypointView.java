@@ -1,6 +1,6 @@
 package org.team2363.helixnavigator.ui.editor.waypoint;
 
-import org.team2363.helixnavigator.document.timeline.HWaypoint;
+import org.team2363.helixnavigator.document.timeline.HHolonomicWaypoint;
 import org.team2363.helixnavigator.global.Standards;
 import org.team2363.helixnavigator.ui.prompts.waypoint.WaypointEditDialog;
 
@@ -17,7 +17,7 @@ import javafx.scene.transform.Translate;
 
 public abstract class WaypointView {
 
-    private final HWaypoint waypoint;
+    private final HHolonomicWaypoint waypoint;
 
     private final Circle selectionCircle = new Circle(12.0);
     private final Circle waypointCircle = new Circle(10.0);
@@ -31,7 +31,7 @@ public abstract class WaypointView {
     private final MenuItem editMenuItem = new MenuItem("Edit...");
     private final ContextMenu contextMenu = new ContextMenu(editMenuItem);
 
-    protected WaypointView(HWaypoint waypoint) {
+    protected WaypointView(HHolonomicWaypoint waypoint) {
         this.waypoint = waypoint;
 
         selectionCircle.setFill(Color.ORANGE);

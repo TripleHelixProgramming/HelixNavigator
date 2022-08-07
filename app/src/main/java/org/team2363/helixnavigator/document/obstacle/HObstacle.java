@@ -1,17 +1,20 @@
 package org.team2363.helixnavigator.document.obstacle;
 
 import org.team2363.helixnavigator.document.HPathElement;
-import org.team2363.helixnavigator.global.Standards.DefaultRobotConfiguration;
 import org.team2363.helixtrajectory.Obstacle;
-import org.team2363.helixtrajectory.ObstaclePoint;
 
+import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONDeterminer;
 import com.jlbabilino.json.DeserializedJSONEntry;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.DeserializedJSONTarget;
+import com.jlbabilino.json.JSONDeserializable;
 import com.jlbabilino.json.JSONDeserializerException;
+import com.jlbabilino.json.JSONEntry.JSONType;
 import com.jlbabilino.json.JSONObject;
+import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.JSONString;
+import com.jlbabilino.json.SerializedJSONEntry;
 import com.jlbabilino.json.SerializedJSONObjectValue;
 
 import javafx.beans.property.DoubleProperty;
@@ -19,11 +22,19 @@ import javafx.beans.property.SimpleDoubleProperty;
 
 public abstract class HObstacle extends HPathElement {
 
+    @JSONSerializable(JSONType.STRING)
+    @JSONDeserializable({JSONType.STRING})
     public static enum ObstacleType {
         CIRCLE,
         POLYGON,
         RECTANGLE;
 
+        @DeserializedJSONConstructor
+        public static ObstacleType forName(@DeserializedJSONEntry String name) {
+            return valueOf(name);
+        }
+
+        @SerializedJSONEntry
         @Override
         public String toString() {
             return name().toLowerCase();
@@ -82,13 +93,5 @@ public abstract class HObstacle extends HPathElement {
             default:
                 throw new JSONDeserializerException("Unrecognized obstacle type string: \"" + typeString + "\"");
         }
-    }
-
-    public static Obstacle defaultBumpers() {
-        ObstaclePoint point1 = new ObstaclePoint(+DefaultRobotConfiguration.BUMPER_LENGTH / 2, +DefaultRobotConfiguration.BUMPER_WIDTH / 2);
-        ObstaclePoint point2 = new ObstaclePoint(-DefaultRobotConfiguration.BUMPER_LENGTH / 2, +DefaultRobotConfiguration.BUMPER_WIDTH / 2);
-        ObstaclePoint point3 = new ObstaclePoint(-DefaultRobotConfiguration.BUMPER_LENGTH / 2, -DefaultRobotConfiguration.BUMPER_WIDTH / 2);
-        ObstaclePoint point4 = new ObstaclePoint(+DefaultRobotConfiguration.BUMPER_LENGTH / 2, -DefaultRobotConfiguration.BUMPER_WIDTH / 2);
-        return new Obstacle(0, point1, point2, point3, point4);
     }
 }

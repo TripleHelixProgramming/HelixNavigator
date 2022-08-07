@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.team2363.helixnavigator.document.timeline.HWaypoint;
-import org.team2363.helixtrajectory.Trajectory;
+import org.team2363.helixnavigator.document.timeline.HHolonomicWaypoint;
+import org.team2363.helixtrajectory.HolonomicTrajectory;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONEntry;
@@ -19,17 +19,17 @@ import javafx.beans.property.SimpleDoubleProperty;
 
 @JSONSerializable(JSONType.ARRAY)
 @JSONDeserializable({JSONType.ARRAY})
-public class HTrajectory {
+public class HHolonomicTrajectory {
 
     private final DoubleProperty timestamp = new SimpleDoubleProperty(this, "timestamp", 0.0);
     public final double duration;
-    public final HWaypoint robotLocation = new HWaypoint();
+    public final HHolonomicWaypoint robotLocation = new HHolonomicWaypoint();
 
     @SerializedJSONEntry
-    public final List<HTrajectorySample> samples;
+    public final List<HHolonomicTrajectorySample> samples;
 
     @DeserializedJSONConstructor
-    public HTrajectory(@DeserializedJSONEntry List<HTrajectorySample> samples) {
+    public HHolonomicTrajectory(@DeserializedJSONEntry List<HHolonomicTrajectorySample> samples) {
         this.samples = Collections.unmodifiableList(samples);
 
         duration = samples.get(samples.size() - 1).ts;
@@ -77,8 +77,8 @@ public class HTrajectory {
                         found = true;
                     }
                 }
-                HTrajectorySample a = samples.get(foundIndex - 1);
-                HTrajectorySample b = samples.get(foundIndex);
+                HHolonomicTrajectorySample a = samples.get(foundIndex - 1);
+                HHolonomicTrajectorySample b = samples.get(foundIndex);
                 double ratioA = (b.ts - targetTimestamp) / (b.ts - a.ts);
                 double ratioB = 1.0 - ratioA;
                 newX = ratioA * a.x + ratioB * b.x;
@@ -101,11 +101,11 @@ public class HTrajectory {
         return timestamp.get();
     }
 
-    public static HTrajectory fromTrajectory(Trajectory trajectory) {
-        List<HTrajectorySample> hSamples = new ArrayList<>();
-        for (int i = 0; i < trajectory.length(); i++) {
-            hSamples.add(HTrajectorySample.fromTrajectorySample(trajectory.get(i)));
+    public static HHolonomicTrajectory fromTrajectory(HolonomicTrajectory trajectory) {
+        List<HHolonomicTrajectorySample> hSamples = new ArrayList<>();
+        for (int i = 0; i < trajectory.samples.size(); i++) {
+            hSamples.add(HHolonomicTrajectorySample.fromTrajectorySample(trajectory.samples.get(i)));
         }
-        return new HTrajectory(hSamples);
+        return new HHolonomicTrajectory(hSamples);
     }
 }

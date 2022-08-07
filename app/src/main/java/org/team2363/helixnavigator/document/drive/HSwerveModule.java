@@ -86,4 +86,12 @@ public class HSwerveModule {
     public double getWheelMaxTorque() {
         return wheelMaxTorque.get();
     }
+
+    public static HSwerveModule defaultSwerveModule() {
+        HSwerveModule swerveModule = new HSwerveModule();
+        swerveModule.setWheelRadius(DefaultSwerveModule.WHEEL_RADIUS);
+        swerveModule.setWheelMaxAngularVelocity(DefaultSwerveModule.WHEEL_MAX_ANGULAR_VELOCITY);
+        swerveModule.setWheelMaxTorque(DefaultSwerveModule.WHEEL_MAX_TORQUE);
+        return swerveModule;
+    }
 }

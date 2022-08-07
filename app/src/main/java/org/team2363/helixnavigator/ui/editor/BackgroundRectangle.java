@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HPath;
-import org.team2363.helixnavigator.document.timeline.HWaypoint;
+import org.team2363.helixnavigator.document.timeline.HHolonomicWaypoint;
 import org.team2363.helixnavigator.document.timeline.waypoint.HHardWaypoint;
 import org.team2363.helixnavigator.global.Standards;
 import org.team2363.lib.ui.MouseEventWrapper;
@@ -100,7 +100,7 @@ public class BackgroundRectangle extends Pane {
                 HPath path = this.documentManager.getDocument().getSelectedPath();
                 for (int waypointIndex = 0; waypointIndex < path.getTimeline().size(); waypointIndex++) {
                     if (initialSelectedWaypointIndices == null || !initialSelectedWaypointIndices.contains(waypointIndex)) {
-                        HWaypoint waypoint = path.getTimeline().get(waypointIndex);
+                        HHolonomicWaypoint waypoint = path.getTimeline().get(waypointIndex);
                         Point2D pathAreaCoords = this.documentManager.actions().calculatePathAreaCoordinates(waypoint);
                         // System.out.println(pathAreaCoords.toString());
                         if (selectionRectangle.getX() <= pathAreaCoords.getX() &&
@@ -124,7 +124,7 @@ public class BackgroundRectangle extends Pane {
                     && this.documentManager.getDocument().isPathSelected()) {
                 this.documentManager.actions().clearSelection();
                 if (this.documentManager.actions().getAutoWaypoint()) {
-                    HWaypoint newWaypoint;
+                    HHolonomicWaypoint newWaypoint;
                     newWaypoint = new HHardWaypoint();
                     double x = (event.getX() - this.documentManager.getPathAreaWidth() / 2 - this.documentManager.getDocument().getZoomTranslateX()) / this.documentManager.getDocument().getZoomScale();
                     double y = -(event.getY() - this.documentManager.getPathAreaHeight() / 2 - this.documentManager.getDocument().getZoomTranslateY()) / this.documentManager.getDocument().getZoomScale();

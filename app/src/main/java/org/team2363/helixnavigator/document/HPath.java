@@ -41,7 +41,7 @@ public class HPath implements HNamedElement {
     private final HSelectionModel<HObstacle> obstaclesSelectionModel = new HSelectionModel<>(obstacles);
     private final ReadOnlyBooleanWrapper inPolygonPointMode = new ReadOnlyBooleanWrapper(this, "inPolygonPointMode", false);
     private final ReadOnlyObjectWrapper<HSelectionModel<HPolygonPoint>> polygonPointsSelectionModel = new ReadOnlyObjectWrapper<>(this, "polygonPointsSelectionModel", null);
-    private final ReadOnlyObjectWrapper<HTrajectory> trajectory = new ReadOnlyObjectWrapper<HTrajectory>(this, "trajectory", null);
+    private final ReadOnlyObjectWrapper<HHolonomicTrajectory> trajectory = new ReadOnlyObjectWrapper<HHolonomicTrajectory>(this, "trajectory", null);
 
     @DeserializedJSONConstructor
     public HPath() {
@@ -183,18 +183,23 @@ public class HPath implements HNamedElement {
         return polygonPointsSelectionModel.get();
     }
 
-    public final ReadOnlyObjectProperty<HTrajectory> trajectoryProperty() {
+    public final ReadOnlyObjectProperty<HHolonomicTrajectory> trajectoryProperty() {
         return trajectory.getReadOnlyProperty();
     }
 
     // TODO: Make this private eventually
     // there should be a method to generate a trajectory
-    public final void setTrajectory(HTrajectory value) {
+    public final void setTrajectory(HHolonomicTrajectory value) {
         trajectory.set(value);
     }
 
-    public final HTrajectory getTrajectory() {
+    public final HHolonomicTrajectory getTrajectory() {
         return trajectory.get();
+    }
+
+    public static HPath defaultPath() {
+        HPath path = new HPath();
+        return path;
     }
 
     public Path toPath() {

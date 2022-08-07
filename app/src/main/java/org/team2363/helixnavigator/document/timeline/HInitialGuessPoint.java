@@ -85,6 +85,6 @@ public class HInitialGuessPoint extends HTimelineElement {
     }
 
     public InitialGuessPoint toInitialGuessPoint() {
-        return new InitialGuessPoint(getX(), getY());
+        return new InitialGuessPoint(getX(), getY(), getHeading());
     }
 }

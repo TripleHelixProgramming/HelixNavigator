@@ -1,17 +1,17 @@
 package org.team2363.helixnavigator.document;
 
-import org.team2363.helixtrajectory.TrajectorySample;
+import org.team2363.helixtrajectory.HolonomicTrajectorySample;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.JSONDeserializable;
+import com.jlbabilino.json.JSONEntry.JSONType;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONObjectValue;
-import com.jlbabilino.json.JSONEntry.JSONType;
 
 @JSONSerializable(JSONType.OBJECT)
 @JSONDeserializable({JSONType.OBJECT})
-public class HTrajectorySample {
+public class HHolonomicTrajectorySample {
 
     @SerializedJSONObjectValue(key = "ts")
     public final double ts;
@@ -29,7 +29,7 @@ public class HTrajectorySample {
     public final double omega;
 
     @DeserializedJSONConstructor
-    public HTrajectorySample(
+    public HHolonomicTrajectorySample(
             @DeserializedJSONObjectValue(key = "ts") double ts,
             @DeserializedJSONObjectValue(key = "x") double x,
             @DeserializedJSONObjectValue(key = "y") double y,
@@ -46,7 +46,7 @@ public class HTrajectorySample {
         this.omega = omega;
     }
 
-    public static HTrajectorySample interpolate(HTrajectorySample a, HTrajectorySample b, double ts) {
+    public static HHolonomicTrajectorySample interpolate(HHolonomicTrajectorySample a, HHolonomicTrajectorySample b, double ts) {
         double ratioA = (b.ts - ts) / (b.ts - a.ts);
         double ratioB = 1.0 - ratioA;
         double x = ratioA * a.x + ratioB * b.x;
@@ -55,11 +55,11 @@ public class HTrajectorySample {
         double vx = ratioA * a.vx + ratioB * b.vx;
         double vy = ratioA * a.vy + ratioB * b.vy;
         double omega = ratioA * a.omega + ratioB * b.omega;
-        return new HTrajectorySample(ts, x, y, heading, vx, vy, omega);
+        return new HHolonomicTrajectorySample(ts, x, y, heading, vx, vy, omega);
     }
 
-    public static HTrajectorySample fromTrajectorySample(TrajectorySample sample) {
-        return new HTrajectorySample(sample.ts, sample.x, sample.y, sample.heading,
-                sample.vx, sample.vy, sample.omega);
+    public static HHolonomicTrajectorySample fromTrajectorySample(HolonomicTrajectorySample sample) {
+        return new HHolonomicTrajectorySample(sample.timestamp(), sample.x(), sample.y(), sample.heading(),
+                sample.velocityX(), sample.velocityY(), sample.angularVelocity());
     }
 }

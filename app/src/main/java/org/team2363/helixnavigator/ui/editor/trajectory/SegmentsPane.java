@@ -5,8 +5,8 @@ import java.util.List;
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
-import org.team2363.helixnavigator.document.HTrajectory;
-import org.team2363.helixnavigator.document.HTrajectorySample;
+import org.team2363.helixnavigator.document.HHolonomicTrajectory;
+import org.team2363.helixnavigator.document.HHolonomicTrajectorySample;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -17,7 +17,7 @@ public class SegmentsPane extends Pane {
     private final DocumentManager documentManager;
 
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
-    private final ChangeListener<? super HTrajectory> onTrajectoryChanged = this::trajectoryChanged;
+    private final ChangeListener<? super HHolonomicTrajectory> onTrajectoryChanged = this::trajectoryChanged;
     
     public SegmentsPane(DocumentManager documentManager) {
         this.documentManager = documentManager;
@@ -66,18 +66,18 @@ public class SegmentsPane extends Pane {
         }
     }
 
-    private void trajectoryChanged(ObservableValue<? extends HTrajectory> currentTrajectory, HTrajectory oldTrajectory, HTrajectory newTrajectory) {
+    private void trajectoryChanged(ObservableValue<? extends HHolonomicTrajectory> currentTrajectory, HHolonomicTrajectory oldTrajectory, HHolonomicTrajectory newTrajectory) {
         unloadTrajectory(oldTrajectory);
         loadTrajectory(newTrajectory);
     }
-    private void unloadTrajectory(HTrajectory oldTrajectory) {
+    private void unloadTrajectory(HHolonomicTrajectory oldTrajectory) {
         if (oldTrajectory != null) {
             getChildren().clear();
         }
     }
-    private void loadTrajectory(HTrajectory newTrajectory) {
+    private void loadTrajectory(HHolonomicTrajectory newTrajectory) {
         if (newTrajectory != null) {
-            List<HTrajectorySample> samples = newTrajectory.samples;
+            List<HHolonomicTrajectorySample> samples = newTrajectory.samples;
             for (int i = 0; i < samples.size() - 1; i++) {
                 SegmentView view = new SegmentView(samples.get(i).x, samples.get(i).y,
                         samples.get(i+1).x, samples.get(i+1).y);

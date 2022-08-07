@@ -6,7 +6,7 @@ import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
 import org.team2363.helixnavigator.document.timeline.HInitialGuessPoint;
-import org.team2363.helixnavigator.document.timeline.HWaypoint;
+import org.team2363.helixnavigator.document.timeline.HHolonomicWaypoint;
 import org.team2363.helixnavigator.document.timeline.waypoint.HHardWaypoint;
 import org.team2363.helixnavigator.document.timeline.waypoint.HSoftWaypoint;
 import org.team2363.lib.ui.MouseEventWrapper;
@@ -35,7 +35,7 @@ public class WaypointsPane extends Pane {
     private final Pane robotsPane = new Pane();
 
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
-    private final ListChangeListener<? super HWaypoint> onWaypointsChanged = this::waypointsChanged;
+    private final ListChangeListener<? super HHolonomicWaypoint> onWaypointsChanged = this::waypointsChanged;
     
     public WaypointsPane(DocumentManager documentManager) {
         this.documentManager = documentManager;
@@ -88,15 +88,15 @@ public class WaypointsPane extends Pane {
         }
     }
 
-    private void waypointsChanged(ListChangeListener.Change<? extends HWaypoint> change) {
+    private void waypointsChanged(ListChangeListener.Change<? extends HHolonomicWaypoint> change) {
         updateWaypoints(change.getList());
     }
 
-    private void updateWaypoints(List<? extends HWaypoint> list) {
+    private void updateWaypoints(List<? extends HHolonomicWaypoint> list) {
         waypointsPane.getChildren().clear();
         robotsPane.getChildren().clear();
         for (int i = 0; i < list.size(); i++) {
-            HWaypoint waypoint = list.get(i);
+            HHolonomicWaypoint waypoint = list.get(i);
             WaypointView waypointView;
             switch (waypoint.getWaypointType()) {
                 case SOFT:
@@ -113,7 +113,7 @@ public class WaypointsPane extends Pane {
                     waypointView = hardWaypointView;
                     break;
                 case CUSTOM:
-                    HWaypoint customWaypoint = (HWaypoint) waypoint;
+                    HHolonomicWaypoint customWaypoint = (HHolonomicWaypoint) waypoint;
                     CustomWaypointView customWaypointView = new CustomWaypointView(customWaypoint);
                     waypointView = customWaypointView;
                     break;
@@ -131,7 +131,7 @@ public class WaypointsPane extends Pane {
         }
     }
 
-    private void linkWaypointView(final int index, final WaypointView waypointView, final HWaypoint waypoint) {
+    private void linkWaypointView(final int index, final WaypointView waypointView, final HHolonomicWaypoint waypoint) {
         waypointView.zoomScaleProperty().bind(documentManager.getDocument().zoomScaleProperty());
 
         EventHandler<MouseEvent> onMousePressed = event -> {

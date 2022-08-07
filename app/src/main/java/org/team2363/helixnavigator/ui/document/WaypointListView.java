@@ -4,7 +4,7 @@ import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
 import org.team2363.helixnavigator.document.HSelectionModel;
-import org.team2363.helixnavigator.document.timeline.HWaypoint;
+import org.team2363.helixnavigator.document.timeline.HHolonomicWaypoint;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -18,10 +18,10 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.MultipleSelectionModel;
 
-public class WaypointListView extends ListView<HWaypoint> {
+public class WaypointListView extends ListView<HHolonomicWaypoint> {
 
-    private final ObservableList<HWaypoint> blankItems = FXCollections.<HWaypoint>observableArrayList();
-    private final MultipleSelectionModel<HWaypoint> blankSelecitonModel = new HSelectionModel<>(blankItems);
+    private final ObservableList<HHolonomicWaypoint> blankItems = FXCollections.<HHolonomicWaypoint>observableArrayList();
+    private final MultipleSelectionModel<HHolonomicWaypoint> blankSelecitonModel = new HSelectionModel<>(blankItems);
 
     private final DocumentManager documentManager;
 

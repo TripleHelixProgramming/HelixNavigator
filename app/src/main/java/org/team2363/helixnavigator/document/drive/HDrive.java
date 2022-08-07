@@ -6,11 +6,16 @@ import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
 import org.team2363.helixnavigator.global.Standards.DefaultBumpers;
 import org.team2363.helixnavigator.global.Standards.DefaultDrive;
 
+import com.jlbabilino.json.DeserializedJSONConstructor;
+import com.jlbabilino.json.DeserializedJSONDeterminer;
+import com.jlbabilino.json.DeserializedJSONEntry;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.DeserializedJSONTarget;
 import com.jlbabilino.json.JSONDeserializable;
+import com.jlbabilino.json.JSONDeserializerException;
 import com.jlbabilino.json.JSONEntry.JSONType;
 import com.jlbabilino.json.JSONSerializable;
+import com.jlbabilino.json.SerializedJSONEntry;
 import com.jlbabilino.json.SerializedJSONObjectValue;
 
 import javafx.beans.property.DoubleProperty;
@@ -21,10 +26,33 @@ import javafx.beans.property.SimpleObjectProperty;
 @JSONSerializable(JSONType.OBJECT)
 @JSONDeserializable({JSONType.OBJECT})
 public abstract class HDrive {
+
+    @JSONSerializable(JSONType.STRING)
+    @JSONDeserializable({JSONType.STRING})
+    public static enum DriveType {
+        HOLONOMIC;
+
+        @DeserializedJSONConstructor
+        public static DriveType forName(@DeserializedJSONEntry String name) {
+            return valueOf(name.toUpperCase());
+        }
+
+        @SerializedJSONEntry
+        @Override
+        public String toString() {
+            return name().toLowerCase();
+        }
+    }
     
     private final DoubleProperty mass = new SimpleDoubleProperty(this, "mass", DefaultDrive.MASS);
     private final DoubleProperty momentOfInertia = new SimpleDoubleProperty(this, "momentOfInertia", DefaultDrive.MOMENT_OF_INERTIA);
     private final ObjectProperty<HObstacle> bumpers = new SimpleObjectProperty<>(this, "bumpers", defaultBumpers());
+
+    @SerializedJSONObjectValue(key = "drive_type")
+    public abstract DriveType getDriveType();
+    public boolean isHolonomicDrive() {
+        return false;
+    }
 
     public final DoubleProperty massProperty() {
         return mass;
@@ -60,7 +88,7 @@ public abstract class HDrive {
         return bumpers.get();
     }
 
-    private static HObstacle defaultBumpers() {
+    public static HObstacle defaultBumpers() {
         HPolygonObstacle defaultBumpers = new HPolygonObstacle();
         defaultBumpers.setName("Default Bumpers");
         HPolygonPoint corner0 = new HPolygonPoint();
@@ -77,5 +105,21 @@ public abstract class HDrive {
         corner3.setY(-DefaultBumpers.WIDTH / 2);
         defaultBumpers.getPoints().addAll(corner0, corner1, corner2, corner3);
         return defaultBumpers;
+    }
+
+    public static HDrive defaultDrive() {
+        return HHolonomicDrive.defaultHolonomicDrive();
+    }
+
+    @DeserializedJSONDeterminer
+    public static Class<? extends HDrive> driveDeterminer(@DeserializedJSONObjectValue(key = "drive_type") DriveType driveType) throws JSONDeserializerException {
+        switch (driveType) {
+            case HOLONOMIC:
+                return HHolonomicDrive.class;
+            // case DIFFERENTIAL:
+            //     return HDifferentialDrive.class;
+            default:
+                throw new JSONDeserializerException("Cannot have a null drive type");
+        }
     }
 }

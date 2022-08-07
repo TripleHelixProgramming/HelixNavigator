@@ -2,15 +2,29 @@ package org.team2363.helixnavigator.document.timeline;
 
 import org.team2363.helixnavigator.document.HPathElement;
 
+import com.jlbabilino.json.DeserializedJSONConstructor;
+import com.jlbabilino.json.DeserializedJSONEntry;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
+import com.jlbabilino.json.JSONDeserializable;
 import com.jlbabilino.json.JSONDeserializerException;
+import com.jlbabilino.json.JSONSerializable;
+import com.jlbabilino.json.SerializedJSONEntry;
 import com.jlbabilino.json.SerializedJSONObjectValue;
+import com.jlbabilino.json.JSONEntry.JSONType;
 
 public abstract class HTimelineElement extends HPathElement {
-    
+    @JSONSerializable(JSONType.STRING)
+    @JSONDeserializable({JSONType.STRING})
     public static enum TimelineElementType {
         WAYPOINT, INITIAL_GUESS_POINT, COMMAND_TRIGGER;
 
+        @DeserializedJSONConstructor
+        public static TimelineElementType forName(@DeserializedJSONEntry String name) {
+            return valueOf(name);
+        }
+
+        @SerializedJSONEntry
+        @Override
         public String toString() {
             return name().toLowerCase();
         }

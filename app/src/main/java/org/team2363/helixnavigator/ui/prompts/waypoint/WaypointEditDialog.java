@@ -5,7 +5,7 @@ import java.util.Collection;
 import javax.measure.quantity.Length;
 
 import org.team2363.helixnavigator.document.timeline.HInitialGuessPoint;
-import org.team2363.helixnavigator.document.timeline.HWaypoint;
+import org.team2363.helixnavigator.document.timeline.HHolonomicWaypoint;
 import org.team2363.helixnavigator.document.timeline.waypoint.HHardWaypoint;
 import org.team2363.helixnavigator.document.timeline.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.global.Standards;
@@ -28,14 +28,14 @@ import javafx.stage.Stage;
 
 public abstract class WaypointEditDialog {
 
-    public static WaypointEditDialog dialog(HWaypoint waypoint) {
+    public static WaypointEditDialog dialog(HHolonomicWaypoint waypoint) {
         switch (waypoint.getWaypointType()) {
             case SOFT:
                 return new SoftWaypointEditDialog((HSoftWaypoint) waypoint);
             case HARD:
                 return new HardWaypointEditDialog((HHardWaypoint) waypoint);
             case CUSTOM:
-                return new CustomWaypointEditDialog((HWaypoint) waypoint);
+                return new CustomWaypointEditDialog((HHolonomicWaypoint) waypoint);
             case INITIAL_GUESS:
                 return new InitialGuessWaypointEditDialog((HInitialGuessPoint) waypoint);
             default:
@@ -43,8 +43,8 @@ public abstract class WaypointEditDialog {
         }
     }
 
-    protected final HWaypoint waypoint;
-    protected final HWaypoint backupWaypoint;
+    protected final HHolonomicWaypoint waypoint;
+    protected final HHolonomicWaypoint backupWaypoint;
 
     private final Text nameText = new Text("Name:");
     private final FilteredTextField nameTextField = new FilteredTextField(Standards.MAX_NAME_LENGTH, Standards.VALID_NAME);
@@ -65,7 +65,7 @@ public abstract class WaypointEditDialog {
     private final Scene scene;
     private final Stage stage = new Stage();
 
-    public WaypointEditDialog(HWaypoint waypoint, HWaypoint backupWaypoint) {
+    public WaypointEditDialog(HHolonomicWaypoint waypoint, HHolonomicWaypoint backupWaypoint) {
         this.waypoint = waypoint;
         this.backupWaypoint = backupWaypoint;
 

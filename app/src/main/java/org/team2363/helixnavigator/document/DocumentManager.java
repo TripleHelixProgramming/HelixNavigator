@@ -5,15 +5,15 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+import org.team2363.helixnavigator.global.Standards;
+import org.team2363.lib.ui.prompts.SavePrompt;
+
 import com.jlbabilino.json.InvalidJSONTranslationConfiguration;
 import com.jlbabilino.json.JSONDeserializer;
 import com.jlbabilino.json.JSONDeserializerException;
 import com.jlbabilino.json.JSONParserException;
 import com.jlbabilino.json.JSONSerializer;
 import com.jlbabilino.json.JSONSerializerException;
-
-import org.team2363.helixnavigator.global.Standards;
-import org.team2363.lib.ui.prompts.SavePrompt;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
@@ -25,14 +25,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 public class DocumentManager {
 
-    private static final ExtensionFilter WAYPOINT_BUNDLE_FILE_TYPE = new ExtensionFilter("Waypoint Bundle (*.json)", "*.json");
-
-    private static final Logger logger = Logger.getLogger("org.team2363.helixnavigator.document");
+    private static final Logger LOGGER = Logger.getLogger("org.team2363.helixnavigator.document");
 
     private final DocumentActions actions;
     private final Stage stage;
@@ -51,7 +48,7 @@ public class DocumentManager {
     }
 
     private final void setDocument(HDocument value) {
-        logger.info("Setting document");
+        LOGGER.info("Setting document");
         setIsDocumentOpen(value != null); // spent about an hour trying to fix a bug:
         document.set(value);              // just had to switch these two lines
         if (actions.getLockZoom()) {
@@ -110,10 +107,10 @@ public class DocumentManager {
      * @return {@code true} if and only if a new document was created and loaded.
      */
     public final boolean requestNewDocument() {
-        logger.info("User requested \"New Document\".");
+        LOGGER.info("User requested \"New Document\".");
         if (requestCloseDocument()) {
-            logger.info("Document succesfully closed, setting to new blank document.");
-            setDocument(new HDocument());
+            LOGGER.info("Document succesfully closed, setting to new blank document.");
+            setDocument(HDocument.defaultDocument());
             actions.zoomToFit();
             return true;
         } else {
@@ -130,14 +127,14 @@ public class DocumentManager {
      */
     private final boolean openDocument(File file) {
         try {
-            logger.info("Opening file: " + file.getAbsolutePath());
+            LOGGER.info("Opening file: " + file.getAbsolutePath());
             HDocument openedDocument = JSONDeserializer.deserialize(file, HDocument.class);
             openedDocument.setSaveLocation(file);
             setDocument(openedDocument);
-            logger.info("File \"" + file.getAbsolutePath() + "\" successfully opened.");
+            LOGGER.info("File \"" + file.getAbsolutePath() + "\" successfully opened.");
             return true;
         } catch (IOException e) {
-            logger.finer("Could not read file " + file.getAbsolutePath() + ": " + e.getMessage());
+            LOGGER.finer("Could not read file " + file.getAbsolutePath() + ": " + e.getMessage());
             e.printStackTrace();
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("File Error");
@@ -145,17 +142,17 @@ public class DocumentManager {
             alert.showAndWait();
             return false;
         } catch (JSONParserException e) {
-            logger.finer("Could not parse JSON in file \"" + file.getName() + "\":" + e.getMessage());
+            LOGGER.finer("Could not parse JSON in file \"" + file.getName() + "\":" + e.getMessage());
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Parsing Error");
             alert.setContentText("Could not parse JSON in file \"" + file.getName() + "\":" + e.getMessage());
             alert.showAndWait();
             return false;
         } catch (InvalidJSONTranslationConfiguration e) {
-            logger.severe("Internal JSON translation configuration error: " + e.getMessage());
+            LOGGER.severe("Internal JSON translation configuration error: " + e.getMessage());
             return false;
         } catch (JSONDeserializerException e) {
-            logger.finer("Could not deserialize JSON data in file \"" + file.getName() + "\":" + e.getMessage());
+            LOGGER.finer("Could not deserialize JSON data in file \"" + file.getName() + "\":" + e.getMessage());
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("JSON Error");
             alert.setContentText(
@@ -212,10 +209,10 @@ public class DocumentManager {
             JSONSerializer.serializeFile(getDocument(), saveLocation);
             return true;
         } catch (InvalidJSONTranslationConfiguration e) {
-            logger.severe("Internal JSON translation configuration: " + e.getMessage());
+            LOGGER.severe("Internal JSON translation configuration: " + e.getMessage());
             return false;
         } catch (JSONSerializerException e) {
-            logger.severe("Internal JSON serialization error: " + e.getMessage());
+            LOGGER.severe("Internal JSON serialization error: " + e.getMessage());
             return false;
         } catch (IOException e) {
             Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -295,16 +292,16 @@ public class DocumentManager {
      *         {@code false} if document was not closed
      */
     public final boolean requestCloseDocument() {
-        logger.info("Document close reuqested.");
+        LOGGER.info("Document close reuqested.");
         if (!getIsDocumentOpen()) {
-            logger.info("no document was open, already closed.");
+            LOGGER.info("no document was open, already closed.");
             return true;
         } else if (getDocument().isSaved()) {
-            logger.info("Document is saved, closing without prompt.");
+            LOGGER.info("Document is saved, closing without prompt.");
             closeDocument();
             return true;
         } else {
-            logger.info("Document is not saved, prompting user...");
+            LOGGER.info("Document is not saved, prompting user...");
             SavePrompt prompt = new SavePrompt();
             Optional<ButtonType> response = prompt.showAndWait();
             if (response.isPresent()) {
@@ -321,36 +318,6 @@ public class DocumentManager {
             } else { // pressed x to close stage
                 return false;
             }
-        }
-    }
-
-    public final boolean requestExportWaypointBundle() {
-        logger.info("Export waypoint bundle requested.");
-        if (getIsDocumentOpen() && getDocument().isPathSelected()) {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters().add(WAYPOINT_BUNDLE_FILE_TYPE);
-            File saveLocation = fileChooser.showSaveDialog(stage);
-            if (saveLocation != null) {
-                HPath selectedPath = getDocument().getSelectedPath();
-                HWaypointBundle waypointBundle = new HWaypointBundle(selectedPath);
-                try {
-                    JSONSerializer.serializeFile(waypointBundle, saveLocation);
-                    return true;
-                } catch (InvalidJSONTranslationConfiguration e) {
-                    logger.severe("Internal JSON translation configuration error: " + e.getMessage());
-                    return false;
-                } catch (JSONSerializerException e) {
-                    logger.severe("Internal JSON serialization error: " + e.getMessage());
-                    return false;
-                } catch (IOException e) {
-                    logger.finer("Error while saving waypoint bundle");
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        } else {
-            return false;
         }
     }
 

@@ -10,7 +10,7 @@ import javax.measure.quantity.Time;
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
-import org.team2363.helixnavigator.document.HTrajectory;
+import org.team2363.helixnavigator.document.HHolonomicTrajectory;
 import org.team2363.helixnavigator.global.Standards;
 import org.team2363.helixtrajectory.Obstacle;
 import org.team2363.helixtrajectory.Path;
@@ -41,7 +41,7 @@ public class TrajectoryToolBar extends ToolBar {
     private final DocumentManager documentManager;
 
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
-    private final ChangeListener<? super HTrajectory> onTrajectoryChanged = this::trajectoryChanged;
+    private final ChangeListener<? super HHolonomicTrajectory> onTrajectoryChanged = this::trajectoryChanged;
 
     private final Button generateTraj = new Button("Generate Traj");
     private final Button importTraj = new Button("Import Traj");
@@ -68,7 +68,7 @@ public class TrajectoryToolBar extends ToolBar {
                 for (int i = 0; i < hPath.getObstacles().size(); i++) {
                     obstacles[i] = hPath.getObstacles().get(i).toObstacle();
                 }
-                hPath.setTrajectory(HTrajectory.fromTrajectory(TrajectoryGenerator.generate(drive, path, obstacles)));
+                hPath.setTrajectory(HHolonomicTrajectory.fromTrajectory(TrajectoryGenerator.generate(drive, path, obstacles)));
             }
         });
         importTraj.setOnAction(event -> {
@@ -76,7 +76,7 @@ public class TrajectoryToolBar extends ToolBar {
                 FileChooser chooser = new FileChooser();
                 File result = chooser.showOpenDialog(this.documentManager.getStage());
                 try {
-                    HTrajectory traj = JSONDeserializer.deserialize(result, HTrajectory.class);
+                    HHolonomicTrajectory traj = JSONDeserializer.deserialize(result, HHolonomicTrajectory.class);
                     this.documentManager.getDocument().getSelectedPath().setTrajectory(traj);
                     System.out.println("Loaded traj");
                 } catch (IOException | InvalidJSONTranslationConfiguration | JSONDeserializerException e) {
@@ -87,7 +87,7 @@ public class TrajectoryToolBar extends ToolBar {
         exportTraj.setOnAction(event -> {
             if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected() &&
                     this.documentManager.getDocument().getSelectedPath().getTrajectory() != null) {
-                HTrajectory traj = this.documentManager.getDocument().getSelectedPath().getTrajectory();
+                HHolonomicTrajectory traj = this.documentManager.getDocument().getSelectedPath().getTrajectory();
                 FileChooser chooser = new FileChooser();
                 chooser.getExtensionFilters().add(Standards.TRAJECTORY_FILE_TYPE);
                 File result = chooser.showSaveDialog(this.documentManager.getStage());
@@ -153,21 +153,21 @@ public class TrajectoryToolBar extends ToolBar {
         }
     }
 
-    private void trajectoryChanged(ObservableValue<? extends HTrajectory> currentTrajectory, HTrajectory oldTrajectory, HTrajectory newTrajectory) {
+    private void trajectoryChanged(ObservableValue<? extends HHolonomicTrajectory> currentTrajectory, HHolonomicTrajectory oldTrajectory, HHolonomicTrajectory newTrajectory) {
         unloadTrajectory(oldTrajectory);
         loadTrajectory(newTrajectory);
     }
-    private void unloadTrajectory(HTrajectory oldTrajectory) {
+    private void unloadTrajectory(HHolonomicTrajectory oldTrajectory) {
         if (oldTrajectory != null) {
             oldTrajectory.timestampProperty().unbind();
             updateAnimationMode(false);
         }
     }
-    private void loadTrajectory(HTrajectory newTrajectory) {
+    private void loadTrajectory(HHolonomicTrajectory newTrajectory) {
         if (newTrajectory != null) {
             timestampSlider.setMax(newTrajectory.duration);
             newTrajectory.timestampProperty().bind(timestampSlider.valueProperty());
-            HTrajectory traj = documentManager.getDocument().getSelectedPath().getTrajectory();
+            HHolonomicTrajectory traj = documentManager.getDocument().getSelectedPath().getTrajectory();
             KeyValue initialValue = new KeyValue(timestampSlider.valueProperty(), 0.0);
             KeyFrame initialFrame = new KeyFrame(Duration.ZERO, initialValue);
             KeyValue endValue = new KeyValue(timestampSlider.valueProperty(), traj.duration);

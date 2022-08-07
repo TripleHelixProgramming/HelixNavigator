@@ -7,12 +7,12 @@ import org.team2363.helixnavigator.document.field.image.HFieldImage;
 import org.team2363.helixnavigator.document.obstacle.HCircleObstacle;
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
+import org.team2363.helixnavigator.document.timeline.HHolonomicWaypoint;
 import org.team2363.helixnavigator.document.timeline.HInitialGuessPoint;
+import org.team2363.helixnavigator.document.timeline.HTimelineElement;
 import org.team2363.helixnavigator.document.timeline.HWaypoint;
-import org.team2363.helixnavigator.document.timeline.waypoint.HHardWaypoint;
-import org.team2363.helixnavigator.document.timeline.waypoint.HSoftWaypoint;
-import org.team2363.helixnavigator.ui.prompts.RobotConfigDialog;
 import org.team2363.helixnavigator.ui.prompts.TransformDialog;
+import org.team2363.helixnavigator.ui.prompts.documentconfig.DocumentConfigDialog;
 
 import com.jlbabilino.json.InvalidJSONTranslationConfiguration;
 import com.jlbabilino.json.JSONArray;
@@ -26,6 +26,7 @@ import com.jlbabilino.json.JSONSerializer;
 import com.jlbabilino.json.JSONSerializerException;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
@@ -44,7 +45,7 @@ public class DocumentActions {
     private final BooleanProperty showOrigin = new SimpleBooleanProperty(this, "showOrigin", false);
     private final BooleanProperty autoWaypoint = new SimpleBooleanProperty(this, "autoWaypoint", false);
 
-    private RobotConfigDialog robotConfigDialog = null;
+    private DocumentConfigDialog documentConfigDialog = null;
     private TransformDialog transformDialog = null;
 
     DocumentActions(DocumentManager documentManager) {
@@ -60,21 +61,21 @@ public class DocumentActions {
     }
     private void unloadDocument(HDocument oldDocument) {
         if (oldDocument != null) {
-            robotConfigDialog.close();
+            documentConfigDialog.close();
             transformDialog.close();
-            robotConfigDialog = null;
+            documentConfigDialog = null;
             transformDialog = null;
         }
     }
     private void loadDocument(HDocument newDocument) {
         if (newDocument != null) {
-            robotConfigDialog = new RobotConfigDialog(newDocument.getRobotConfiguration());
+            documentConfigDialog = new DocumentConfigDialog(newDocument);
             transformDialog = new TransformDialog(newDocument);
         }
     }
 
-    public RobotConfigDialog getRobotConfigDialog() {
-        return robotConfigDialog;
+    public DocumentConfigDialog getDocumentConfigDialog() {
+        return documentConfigDialog;
     }
     public TransformDialog getTransformDialog() {
         return transformDialog;
@@ -191,7 +192,7 @@ public class DocumentActions {
         }
     }
 
-    public void handleMouseDraggedAsWaypointDragged(MouseEvent event, HWaypoint triggeringWaypoint) {
+    public void handleMouseDraggedAsWaypointDragged(MouseEvent event, HHolonomicWaypoint triggeringWaypoint) {
         if (documentManager.getIsDocumentOpen() && event.getButton() == MouseButton.PRIMARY) {
             // System.out.println("X: " + event.getX() + " Y: " + event.getY());
             HDocument document = documentManager.getDocument();
@@ -245,6 +246,9 @@ public class DocumentActions {
 
     public Point2D calculatePathAreaCoordinates(HWaypoint waypoint) {
         return calculatePathAreaCoordinates(waypoint.getX(), waypoint.getY());
+    }
+    public Point2D calculatePathAreaCoordinates(HInitialGuessPoint initialGuessPoint) {
+        return calculatePathAreaCoordinates(initialGuessPoint.getX(), initialGuessPoint.getY());
     }
     public Point2D calculatePathAreaCoordinates(HCircleObstacle obstacle) {
         return calculatePathAreaCoordinates(obstacle.getCenterX(), obstacle.getCenterY());
@@ -314,7 +318,7 @@ public class DocumentActions {
                     data = JSONSerializer.serializeString(path.getObstaclesSelectionModel().getSelectedItem());
                 } else {
                     List<HPathElement> list = new ArrayList<>();
-                    for (HWaypoint waypoint : path.getTimelineSelectionModel().getSelectedItems()) {
+                    for (HTimelineElement waypoint : path.getTimelineSelectionModel().getSelectedItems()) {
                         list.add(waypoint);
                     }
                     for (HObstacle obstacle : path.getObstaclesSelectionModel().getSelectedItems()) {
@@ -345,7 +349,7 @@ public class DocumentActions {
                     } else if (document.isPathSelected()) {
                         HPath path = document.getSelectedPath();
                         if (jsonObject.containsKey("waypoint_type")) {
-                            HWaypoint waypoint = JSONDeserializer.deserialize(jsonEntry, HWaypoint.class);
+                            HHolonomicWaypoint waypoint = JSONDeserializer.deserialize(jsonEntry, HHolonomicWaypoint.class);
                             int index = path.getTimelineSelectionModel().getSelectedIndex() + 1;
                             path.getTimeline().add(index, waypoint);
                             path.getTimelineSelectionModel().select(index);
@@ -400,66 +404,66 @@ public class DocumentActions {
         }
     }
 
-    private void insertWaypoint(int index, HWaypoint waypoint) {
-        documentManager.getDocument().getSelectedPath().getTimeline().add(index, waypoint);
+    private void insertTimelineElement(int index, HTimelineElement timelineElement) {
+        documentManager.getDocument().getSelectedPath().getTimeline().add(index, timelineElement);
     }
-    public void newSoftWaypoint(int index) {
+    public void newPositionHolonomicWaypoint(int index) {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            HWaypoint newWaypoint = new HSoftWaypoint();
-            newWaypoint.setName("Soft Waypoint " + index);
-            insertWaypoint(index, newWaypoint);
+            HHolonomicWaypoint newWaypoint = HHolonomicWaypoint.positionHolonomicWaypoint();
+            newWaypoint.setName("Position Waypoint " + index);
+            insertTimelineElement(index, newWaypoint);
         }
     }
-    public void newHardWaypoint(int index) {
+    public void newHeadingHolonomicWaypoint(int index) {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            HWaypoint newWaypoint = new HHardWaypoint();
-            newWaypoint.setName("Hard Waypoint " + index);
-            insertWaypoint(index, newWaypoint);
+            HHolonomicWaypoint newWaypoint = HHolonomicWaypoint.headingHolonomicWaypoint();
+            newWaypoint.setName("Heading Waypoint " + index);
+            insertTimelineElement(index, newWaypoint);
         }
     }
-    public void newCustomWaypoint(int index) {
+    public void newStaticHolonomicWaypoint(int index) {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            HWaypoint newWaypoint = new HWaypoint();
+            HHolonomicWaypoint newWaypoint = HHolonomicWaypoint.staticHolonomicWaypoint();
             newWaypoint.setName("Custom Waypoint " + index);
-            insertWaypoint(index, newWaypoint);
+            insertTimelineElement(index, newWaypoint);
         }
     }
-    public void newInitialGuessWaypoint(int index) {
+    public void newInitialGuessPoint(int index) {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            HWaypoint newWaypoint = new HInitialGuessPoint();
-            newWaypoint.setName("Initial Guess Waypoint " + index);
-            insertWaypoint(index, newWaypoint);
+            HInitialGuessPoint newWaypoint = new HInitialGuessPoint();
+            newWaypoint.setName("Initial Guess Point " + index);
+            insertTimelineElement(index, newWaypoint);
         }
     }
-    public void newSoftWaypoint() {
+    public void newPositionHolonomicWaypoint() {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            newSoftWaypoint(documentManager.getDocument().getSelectedPath().getTimeline().size());
+            newPositionHolonomicWaypoint(documentManager.getDocument().getSelectedPath().getTimeline().size());
         }
     }
-    public void newHardWaypoint() {
+    public void newHeadingHolonomicWaypoint() {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            newHardWaypoint(documentManager.getDocument().getSelectedPath().getTimeline().size());
+            newHeadingHolonomicWaypoint(documentManager.getDocument().getSelectedPath().getTimeline().size());
         }
     }
-    public void newCustomWaypoint() {
+    public void newStaticHolonomicWaypoint() {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            newCustomWaypoint(documentManager.getDocument().getSelectedPath().getTimeline().size());
+            newStaticHolonomicWaypoint(documentManager.getDocument().getSelectedPath().getTimeline().size());
         }
     }
-    public void newInitialGuessWaypoint() {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            newInitialGuessWaypoint(documentManager.getDocument().getSelectedPath().getTimeline().size());
-        }
+
+    public final ReadOnlyObjectProperty<HDocument> documentProperty() {
+        return documentManager.documentProperty();
+    }
+    public final HDocument getDocument() {
+        return documentManager.getDocument();
     }
 
     public final BooleanProperty lockZoomProperty() {
         return lockZoom;
     }
-
     public final void setLockZoom(boolean value) {
         lockZoom.set(value);
     }
-
     public final boolean getLockZoom() {
         return lockZoom.get();
     }
@@ -467,11 +471,9 @@ public class DocumentActions {
     public final BooleanProperty showOriginProperty() {
         return showOrigin;
     }
-
     public final void setShowOrigin(boolean value) {
         showOrigin.set(value);
     }
-
     public final boolean getShowOrigin() {
         return showOrigin.get();
     }
@@ -479,11 +481,9 @@ public class DocumentActions {
     public final BooleanProperty autoWaypointProperty() {
         return autoWaypoint;
     }
-
     public final void setAutoWaypoint(boolean value) {
         autoWaypoint.set(value);
     }
-
     public final boolean getAutoWaypoint() {
         return autoWaypoint.get();
     }

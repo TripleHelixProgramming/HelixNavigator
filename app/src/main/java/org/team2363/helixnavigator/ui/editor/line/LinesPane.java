@@ -5,7 +5,7 @@ import java.util.List;
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
-import org.team2363.helixnavigator.document.timeline.HWaypoint;
+import org.team2363.helixnavigator.document.timeline.HHolonomicWaypoint;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -19,7 +19,7 @@ public class LinesPane extends Pane {
     // private final ObservableList<LineView> lineViews = FXCollections.<LineView>observableArrayList();
 
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
-    private final ListChangeListener<? super HWaypoint> onWaypointsChanged = this::waypointsChanged;
+    private final ListChangeListener<? super HHolonomicWaypoint> onWaypointsChanged = this::waypointsChanged;
     
     public LinesPane(DocumentManager documentManager) {
         this.documentManager = documentManager;
@@ -69,11 +69,11 @@ public class LinesPane extends Pane {
         }
     }
 
-    private void waypointsChanged(ListChangeListener.Change<? extends HWaypoint> change) {
+    private void waypointsChanged(ListChangeListener.Change<? extends HHolonomicWaypoint> change) {
         updateWaypoints(change.getList());
     }
 
-    private void updateWaypoints(List<? extends HWaypoint> list) {
+    private void updateWaypoints(List<? extends HHolonomicWaypoint> list) {
         // lineViews.clear();
         getChildren().clear();
         for (int i = 0; i < list.size() - 1; i++) {
@@ -84,7 +84,7 @@ public class LinesPane extends Pane {
         }
     }
 
-    private void linkLineView(LineView lineView, HWaypoint initialWaypoint, HWaypoint finalWaypoint) {
+    private void linkLineView(LineView lineView, HHolonomicWaypoint initialWaypoint, HHolonomicWaypoint finalWaypoint) {
         lineView.startPointXProperty().bind(initialWaypoint.xProperty());
         lineView.startPointYProperty().bind(initialWaypoint.yProperty());
         lineView.endPointXProperty().bind(finalWaypoint.xProperty());

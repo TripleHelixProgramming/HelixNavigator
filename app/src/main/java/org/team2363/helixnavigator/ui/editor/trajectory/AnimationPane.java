@@ -3,7 +3,7 @@ package org.team2363.helixnavigator.ui.editor.trajectory;
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
-import org.team2363.helixnavigator.document.HTrajectory;
+import org.team2363.helixnavigator.document.HHolonomicTrajectory;
 import org.team2363.helixnavigator.ui.editor.waypoint.RobotView;
 
 import javafx.beans.value.ChangeListener;
@@ -19,7 +19,7 @@ public class AnimationPane extends Pane {
     private final Translate robotTranslate = new Translate();
 
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
-    private final ChangeListener<? super HTrajectory> onTrajectoryChanged = this::trajectoryChanged;
+    private final ChangeListener<? super HHolonomicTrajectory> onTrajectoryChanged = this::trajectoryChanged;
     
     public AnimationPane(DocumentManager documentManager) {
         this.documentManager = documentManager;
@@ -76,11 +76,11 @@ public class AnimationPane extends Pane {
         }
     }
 
-    private void trajectoryChanged(ObservableValue<? extends HTrajectory> currentTrajectory, HTrajectory oldTrajectory, HTrajectory newTrajectory) {
+    private void trajectoryChanged(ObservableValue<? extends HHolonomicTrajectory> currentTrajectory, HHolonomicTrajectory oldTrajectory, HHolonomicTrajectory newTrajectory) {
         unloadTrajectory(oldTrajectory);
         loadTrajectory(newTrajectory);
     }
-    private void unloadTrajectory(HTrajectory oldTrajectory) {
+    private void unloadTrajectory(HHolonomicTrajectory oldTrajectory) {
         if (oldTrajectory != null) {
             robotTranslate.xProperty().unbind();
             robotTranslate.yProperty().unbind();
@@ -88,7 +88,7 @@ public class AnimationPane extends Pane {
             getChildren().clear();
         }
     }
-    private void loadTrajectory(HTrajectory newTrajectory) {
+    private void loadTrajectory(HHolonomicTrajectory newTrajectory) {
         if (newTrajectory != null) {
             robotTranslate.xProperty().bind(documentManager.getDocument().zoomScaleProperty().multiply(newTrajectory.robotLocation.xProperty()));
             robotTranslate.yProperty().bind(documentManager.getDocument().zoomScaleProperty().multiply(newTrajectory.robotLocation.yProperty().negate()));

@@ -10,6 +10,7 @@ import org.team2363.helixnavigator.document.obstacle.HObstacle.ObstacleType;
 import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
 import org.team2363.helixnavigator.document.obstacle.HRectangleObstacle;
 import org.team2363.helixnavigator.global.Standards;
+import org.team2363.helixnavigator.ui.editor.obstacle.CircleObstacleView;
 import org.team2363.helixnavigator.ui.prompts.obstacle.ObstacleEditDialog;
 import org.team2363.helixtrajectory.Obstacle;
 import org.team2363.lib.ui.OrderableListCell;
@@ -42,9 +43,9 @@ import javafx.util.Callback;
 
 public class ObstacleListCell extends OrderableListCell<HObstacle> {
 
-    private static final Image CIRCLE;
-    private static final Image POLYGON;
-    private static final Image RECTANGLE;
+    private final CircleObstacleView CIRCLE;
+    private final Image POLYGON;
+    private final Image RECTANGLE;
 
     public static final Callback<ListView<HObstacle>, ListCell<HObstacle>> obstacleCellFactory(DocumentManager documentManager) {
         return new Callback<ListView<HObstacle>, ListCell<HObstacle>>() {

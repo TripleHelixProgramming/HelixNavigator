@@ -17,6 +17,7 @@
 package org.team2363.helixnavigator.document;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -107,7 +108,7 @@ public class HDocument {
     /**
      * The robot configuration for this document
      */
-    private final HRobotConfiguration robotConfiguration = new HRobotConfiguration();
+    private final HRobotConfiguration robotConfiguration;
     /**
      * The default units to use in text input boxes
      */
@@ -123,22 +124,19 @@ public class HDocument {
     private final BooleanProperty savedProperty = new SimpleBooleanProperty(this, "saved", false); // change to true later when state management is added
 
     /**
-     * Constructs an {@code HDocument}.
+     * Constructs a blank {@code HDocument}.
      */
     public HDocument() {
-        paths.addListener((ListChangeListener.Change<? extends HPath> change) -> updateSelectedPathIndex());
-        selectedPathIndex.addListener((currentIndex, oldIndex, newIndex) -> updateSelectedPath());
+        this(Collections.emptyMap(), new HRobotConfiguration());
     }
 
-    // @DeserializedJSONConstructor
-    // public HDocument(@DeserializedJSONObjectValue(key = "paths") List<? extends HPath> initialPaths) {
-    //     this();
-    //     paths.setAll(initialPaths);
-    // }
-
     @DeserializedJSONConstructor
-    public HDocument(@DeserializedJSONObjectValue(key = "paths") Map<String, HPath> initialPathsMap) {
-        this();
+    public HDocument(
+            @DeserializedJSONObjectValue(key = "paths") Map<String, HPath> initialPathsMap,
+            @DeserializedJSONObjectValue(key = "robot_configuration") HRobotConfiguration robotConfiguration) {
+        paths.addListener((ListChangeListener.Change<? extends HPath> change) -> updateSelectedPathIndex());
+        selectedPathIndex.addListener((currentIndex, oldIndex, newIndex) -> updateSelectedPath());
+        this.robotConfiguration = robotConfiguration;
 
         initialPathsMap.entrySet().stream().sorted((a, b) -> a.getKey().compareTo(b.getKey())).forEach(entry -> {
             String pathName = entry.getKey();
@@ -321,10 +319,6 @@ public class HDocument {
     }
 
     @DeserializedJSONTarget
-    public final void importRobotConfiguration(@DeserializedJSONObjectValue(key = "robot_configuration") HRobotConfiguration otherConfiguration) {
-        robotConfiguration.importConfiguration(otherConfiguration);
-    }
-    @DeserializedJSONTarget
     public final void importUnitPreferences(@DeserializedJSONObjectValue(key = "unit_preferences") HUnitPreferences otherPreferences) {
         unitPreferences.importPreferences(otherPreferences);
     }
@@ -360,5 +354,11 @@ public class HDocument {
 
     public final boolean isSaved() {
         return savedProperty.get();
+    }
+
+    public static HDocument defaultDocument() {
+        HDocument document = new HDocument();
+        document.getPaths().add(HPath.defaultPath());
+        return document;
     }
 }
