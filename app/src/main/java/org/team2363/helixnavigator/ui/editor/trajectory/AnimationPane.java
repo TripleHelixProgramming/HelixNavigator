@@ -2,7 +2,7 @@ package org.team2363.helixnavigator.ui.editor.trajectory;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
-import org.team2363.helixnavigator.document.trajectory.HHolonomicTrajectory;
+import org.team2363.helixnavigator.document.compiled.HHolonomicTrajectory;
 import org.team2363.helixnavigator.document.HAutoRoutine;
 import org.team2363.helixnavigator.ui.editor.waypoint.RobotView;
 

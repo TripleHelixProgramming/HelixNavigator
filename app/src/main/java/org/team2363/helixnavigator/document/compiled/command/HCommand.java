@@ -1,4 +1,6 @@
-package org.team2363.helixnavigator.document.command;
+package org.team2363.helixnavigator.document.compiled.command;
+
+import java.util.Collection;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONDeterminer;
@@ -6,24 +8,17 @@ import com.jlbabilino.json.DeserializedJSONEntry;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.JSONDeserializable;
 import com.jlbabilino.json.JSONDeserializerException;
+import com.jlbabilino.json.JSONEntry.JSONType;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONEntry;
 import com.jlbabilino.json.SerializedJSONObjectValue;
-import com.jlbabilino.json.JSONEntry.JSONType;
 
 @JSONSerializable(JSONType.OBJECT)
-@JSONDeserializable({JSONType.OBJECT})
 public abstract class HCommand {
 
     @JSONSerializable(JSONType.STRING)
-    @JSONDeserializable({JSONType.STRING})
     public static enum CommandType {
         PARALLEL, SEQUENTIAL, DELAY, HOLONOMIC_TRAJECTORY_FOLLOWER, CUSTOM;
-
-        @DeserializedJSONConstructor
-        public static CommandType forName(@DeserializedJSONEntry String name) {
-            return valueOf(name.toUpperCase());
-        }
 
         @SerializedJSONEntry
         @Override
@@ -49,6 +44,9 @@ public abstract class HCommand {
     public boolean isCustom() {
         return false;
     }
+
+    public abstract double calculateDuration();
+    public abstract Collection<? extends HCommand> getRunningCommands(double timestamp);
 
     @DeserializedJSONDeterminer
     public static Class<? extends HCommand> commandDeterminer(@DeserializedJSONObjectValue(key = "command_type") CommandType commandType)

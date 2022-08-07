@@ -2,7 +2,7 @@ package org.team2363.helixnavigator.document;
 
 import java.util.List;
 
-import org.team2363.helixnavigator.document.command.HCompiledAutoRoutine;
+import org.team2363.helixnavigator.document.compiled.HCompiledAutoRoutine;
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;

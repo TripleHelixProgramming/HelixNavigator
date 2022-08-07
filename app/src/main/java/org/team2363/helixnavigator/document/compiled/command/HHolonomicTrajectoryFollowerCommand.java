@@ -1,4 +1,8 @@
-package org.team2363.helixnavigator.document.command;
+package org.team2363.helixnavigator.document.compiled.command;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.SerializedJSONObjectValue;
@@ -20,5 +24,15 @@ public class HHolonomicTrajectoryFollowerCommand extends HCommand {
     @Override
     public boolean isHolonomicTrajectoryFollower() {
         return true;
+    }
+    
+    @Override
+    public double calculateDuration() {
+        return 
+    }
+
+    @Override
+    public Collection<? extends HCommand> getRunningCommands(double timestamp) {
+        return timestamp <= duration ? List.of(this) : Collections.emptyList();
     }
 }

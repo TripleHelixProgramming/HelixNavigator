@@ -1,4 +1,4 @@
-package org.team2363.helixnavigator.document.command;
+package org.team2363.helixnavigator.document.compiled.command;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;

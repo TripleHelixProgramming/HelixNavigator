@@ -9,7 +9,7 @@ import javax.measure.quantity.Time;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
-import org.team2363.helixnavigator.document.trajectory.HHolonomicTrajectory;
+import org.team2363.helixnavigator.document.compiled.HHolonomicTrajectory;
 import org.team2363.helixnavigator.document.HAutoRoutine;
 import org.team2363.helixnavigator.global.Standards;
 import org.team2363.helixtrajectory.Obstacle;
