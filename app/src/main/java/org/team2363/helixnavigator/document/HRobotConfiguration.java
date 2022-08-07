@@ -1,7 +1,8 @@
 package org.team2363.helixnavigator.document;
 
-import org.team2363.helixnavigator.document.drive.HDrive;
+import org.team2363.helixnavigator.document.drivetrain.HDrivetrain;
 import org.team2363.helixnavigator.global.Standards.DefaultRobotConfiguration;
+import org.team2363.helixtrajectory.Drive;
 import org.team2363.helixtrajectory.SwerveDrive;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
@@ -22,7 +23,7 @@ import javafx.beans.property.SimpleObjectProperty;
 public class HRobotConfiguration {
     
     private final IntegerProperty teamNumber = new SimpleIntegerProperty(this, "teamNumber", DefaultRobotConfiguration.TEAM_NUMBER);
-    private final ObjectProperty<HDrive> drive = new SimpleObjectProperty<>(this, "drive", HDrive.defaultDrive());
+    private final ObjectProperty<HDrivetrain> drive = new SimpleObjectProperty<>(this, "drive", HDrivetrain.defaultDrivetrain());
 
     @DeserializedJSONConstructor
     public HRobotConfiguration() {
@@ -40,23 +41,19 @@ public class HRobotConfiguration {
         return teamNumber.get();
     }
 
-    public final ObjectProperty<HDrive> driveProperty() {
+    public final ObjectProperty<HDrivetrain> driveProperty() {
         return drive;
     }
     @DeserializedJSONTarget
-    public final void setDrive(@DeserializedJSONObjectValue(key = "drive") HDrive value) {
+    public final void setDrive(@DeserializedJSONObjectValue(key = "drive") HDrivetrain value) {
         drive.set(value);
     }
     @SerializedJSONObjectValue(key = "drive")
-    public final HDrive getDrive() {
+    public final HDrivetrain getDrive() {
         return drive.get();
     }
 
-    public SwerveDrive toDrive() {
-        // TODO: fix this
-        return null;
-        // return new SwerveDrive(getWheelHorizontalDistance(), getWheelVerticalDistance(),
-        //         getMass(), getMomentOfInertia(),
-        //         getMotorMaxAngularSpeed(), getMotorMaxTorque(), getWheelRadius(), getBumpers());
+    public Drive toDrive() {
+        return getDrive().toDrive();
     }
 }

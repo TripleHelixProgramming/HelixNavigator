@@ -9,8 +9,8 @@ import javax.measure.quantity.Time;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
-import org.team2363.helixnavigator.document.HPath;
-import org.team2363.helixnavigator.document.HHolonomicTrajectory;
+import org.team2363.helixnavigator.document.trajectory.HHolonomicTrajectory;
+import org.team2363.helixnavigator.document.HAutoRoutine;
 import org.team2363.helixnavigator.global.Standards;
 import org.team2363.helixtrajectory.Obstacle;
 import org.team2363.helixtrajectory.Path;
@@ -40,7 +40,7 @@ public class TrajectoryToolBar extends ToolBar {
 
     private final DocumentManager documentManager;
 
-    private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
+    private final ChangeListener<? super HAutoRoutine> onSelectedPathChanged = this::selectedPathChanged;
     private final ChangeListener<? super HHolonomicTrajectory> onTrajectoryChanged = this::trajectoryChanged;
 
     private final Button generateTraj = new Button("Generate Traj");
@@ -59,9 +59,9 @@ public class TrajectoryToolBar extends ToolBar {
         getItems().addAll(importTraj, exportTraj, generateTraj, timestampSlider, animateButton);
 
         generateTraj.setOnAction(event -> {
-            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
+            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isAutoRoutineSelected()) {
                 HDocument hDocument = this.documentManager.getDocument();
-                HPath hPath = this.documentManager.getDocument().getSelectedPath();
+                HAutoRoutine hPath = this.documentManager.getDocument().getSelectedAutoRoutine();
                 SwerveDrive drive = hDocument.getRobotConfiguration().toDrive();
                 Path path = hPath.toPath();
                 Obstacle[] obstacles = new Obstacle[hPath.getObstacles().size()];
@@ -72,12 +72,12 @@ public class TrajectoryToolBar extends ToolBar {
             }
         });
         importTraj.setOnAction(event -> {
-            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
+            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isAutoRoutineSelected()) {
                 FileChooser chooser = new FileChooser();
                 File result = chooser.showOpenDialog(this.documentManager.getStage());
                 try {
                     HHolonomicTrajectory traj = JSONDeserializer.deserialize(result, HHolonomicTrajectory.class);
-                    this.documentManager.getDocument().getSelectedPath().setTrajectory(traj);
+                    this.documentManager.getDocument().getSelectedAutoRoutine().setTrajectory(traj);
                     System.out.println("Loaded traj");
                 } catch (IOException | InvalidJSONTranslationConfiguration | JSONDeserializerException e) {
                     System.out.println("Error when importing traj: " + e.getMessage());
@@ -85,9 +85,9 @@ public class TrajectoryToolBar extends ToolBar {
             }
         });
         exportTraj.setOnAction(event -> {
-            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected() &&
-                    this.documentManager.getDocument().getSelectedPath().getTrajectory() != null) {
-                HHolonomicTrajectory traj = this.documentManager.getDocument().getSelectedPath().getTrajectory();
+            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isAutoRoutineSelected() &&
+                    this.documentManager.getDocument().getSelectedAutoRoutine().getCompiledAutoRoutine() != null) {
+                HHolonomicTrajectory traj = this.documentManager.getDocument().getSelectedAutoRoutine().getCompiledAutoRoutine();
                 FileChooser chooser = new FileChooser();
                 chooser.getExtensionFilters().add(Standards.TRAJECTORY_FILE_TYPE);
                 File result = chooser.showSaveDialog(this.documentManager.getStage());
@@ -102,8 +102,8 @@ public class TrajectoryToolBar extends ToolBar {
             }
         });
         animateButton.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
-            if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected() &&
-                    documentManager.getDocument().getSelectedPath().getTrajectory() != null) {
+            if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isAutoRoutineSelected() &&
+                    documentManager.getDocument().getSelectedAutoRoutine().getCompiledAutoRoutine() != null) {
                 updateAnimationMode(isSelected);
             }
         });
@@ -122,34 +122,34 @@ public class TrajectoryToolBar extends ToolBar {
 
     private void unloadDocument(HDocument oldDocument) {
         if (oldDocument != null) {
-            unloadSelectedPath(oldDocument.getSelectedPath());
+            unloadSelectedPath(oldDocument.getSelectedAutoRoutine());
             oldDocument.selectedPathProperty().removeListener(onSelectedPathChanged);
         }
     }
 
     private void loadDocument(HDocument newDocument) {
         if (newDocument != null) {
-            loadSelectedPath(newDocument.getSelectedPath());
+            loadSelectedPath(newDocument.getSelectedAutoRoutine());
             newDocument.selectedPathProperty().addListener(onSelectedPathChanged);
         }
     }
 
-    private void selectedPathChanged(ObservableValue<? extends HPath> currentPath, HPath oldPath, HPath newPath) {
+    private void selectedPathChanged(ObservableValue<? extends HAutoRoutine> currentPath, HAutoRoutine oldPath, HAutoRoutine newPath) {
         unloadSelectedPath(oldPath);
         loadSelectedPath(newPath);
     }
 
-    private void unloadSelectedPath(HPath oldPath) {
+    private void unloadSelectedPath(HAutoRoutine oldPath) {
         if (oldPath != null) {
-            unloadTrajectory(oldPath.getTrajectory());
-            oldPath.trajectoryProperty().removeListener(onTrajectoryChanged);
+            unloadTrajectory(oldPath.getCompiledAutoRoutine());
+            oldPath.compiledAutoRoutineProperty().removeListener(onTrajectoryChanged);
         }
     }
 
-    private void loadSelectedPath(HPath newPath) {
+    private void loadSelectedPath(HAutoRoutine newPath) {
         if (newPath != null) {
-            loadTrajectory(newPath.getTrajectory());
-            newPath.trajectoryProperty().addListener(onTrajectoryChanged);
+            loadTrajectory(newPath.getCompiledAutoRoutine());
+            newPath.compiledAutoRoutineProperty().addListener(onTrajectoryChanged);
         }
     }
 
@@ -167,7 +167,7 @@ public class TrajectoryToolBar extends ToolBar {
         if (newTrajectory != null) {
             timestampSlider.setMax(newTrajectory.duration);
             newTrajectory.timestampProperty().bind(timestampSlider.valueProperty());
-            HHolonomicTrajectory traj = documentManager.getDocument().getSelectedPath().getTrajectory();
+            HHolonomicTrajectory traj = documentManager.getDocument().getSelectedAutoRoutine().getCompiledAutoRoutine();
             KeyValue initialValue = new KeyValue(timestampSlider.valueProperty(), 0.0);
             KeyFrame initialFrame = new KeyFrame(Duration.ZERO, initialValue);
             KeyValue endValue = new KeyValue(timestampSlider.valueProperty(), traj.duration);

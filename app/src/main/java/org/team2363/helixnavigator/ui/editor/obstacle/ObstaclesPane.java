@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
-import org.team2363.helixnavigator.document.HPath;
+import org.team2363.helixnavigator.document.HAutoRoutine;
 import org.team2363.helixnavigator.document.obstacle.HCircleObstacle;
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
@@ -26,7 +26,7 @@ public class ObstaclesPane extends Pane {
     private final Pane obstaclesPane = new Pane();
     private final PolygonPointsPane polygonPointsPane;
 
-    private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
+    private final ChangeListener<? super HAutoRoutine> onSelectedPathChanged = this::selectedPathChanged;
     private final ListChangeListener<? super HObstacle> onObstaclesChanged = this::obstaclesChanged;
     
     public ObstaclesPane(DocumentManager documentManager) {
@@ -49,31 +49,31 @@ public class ObstaclesPane extends Pane {
 
     private void unloadDocument(HDocument oldDocument) {
         if (oldDocument != null) {
-            unloadSelectedPath(oldDocument.getSelectedPath());
+            unloadSelectedPath(oldDocument.getSelectedAutoRoutine());
             oldDocument.selectedPathProperty().removeListener(onSelectedPathChanged);
         }
     }
 
     private void loadDocument(HDocument newDocument) {
         if (newDocument != null) {
-            loadSelectedPath(newDocument.getSelectedPath());
+            loadSelectedPath(newDocument.getSelectedAutoRoutine());
             newDocument.selectedPathProperty().addListener(onSelectedPathChanged);
         }
     }
 
-    private void selectedPathChanged(ObservableValue<? extends HPath> currentPath, HPath oldPath, HPath newPath) {
+    private void selectedPathChanged(ObservableValue<? extends HAutoRoutine> currentPath, HAutoRoutine oldPath, HAutoRoutine newPath) {
         unloadSelectedPath(oldPath);
         loadSelectedPath(newPath);
     }
 
-    private void unloadSelectedPath(HPath oldPath) {
+    private void unloadSelectedPath(HAutoRoutine oldPath) {
         if (oldPath != null) {
             obstaclesPane.getChildren().clear();
             oldPath.getObstacles().removeListener(onObstaclesChanged);
         }
     }
 
-    private void loadSelectedPath(HPath newPath) {
+    private void loadSelectedPath(HAutoRoutine newPath) {
         if (newPath != null) {
             updateObstacles(newPath.getObstacles());
             newPath.getObstacles().addListener(onObstaclesChanged);
@@ -119,10 +119,10 @@ public class ObstaclesPane extends Pane {
         };
         EventHandler<MouseEvent> onMouseDragBegin = event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                if (!event.isShortcutDown() && !documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().isSelected(index)) {
-                    documentManager.getDocument().getSelectedPath().clearSelection();
+                if (!event.isShortcutDown() && !documentManager.getDocument().getSelectedAutoRoutine().getObstaclesSelectionModel().isSelected(index)) {
+                    documentManager.getDocument().getSelectedAutoRoutine().clearSelection();
                 }
-                documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().select(index);
+                documentManager.getDocument().getSelectedAutoRoutine().getObstaclesSelectionModel().select(index);
                 documentManager.actions().handleMouseDragBeginAsElementsDragBegin(event);
             }
         };
@@ -136,11 +136,11 @@ public class ObstaclesPane extends Pane {
         EventHandler<MouseEvent> onMouseReleased = event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 if (!event.isShortcutDown()) {
-                    boolean selected = documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().isSelected(index);
-                    documentManager.getDocument().getSelectedPath().clearSelection();
-                    documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().setSelected(index, selected);
+                    boolean selected = documentManager.getDocument().getSelectedAutoRoutine().getObstaclesSelectionModel().isSelected(index);
+                    documentManager.getDocument().getSelectedAutoRoutine().clearSelection();
+                    documentManager.getDocument().getSelectedAutoRoutine().getObstaclesSelectionModel().setSelected(index, selected);
                 }
-                documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().toggle(index);
+                documentManager.getDocument().getSelectedAutoRoutine().getObstaclesSelectionModel().toggle(index);
             }
         };
 

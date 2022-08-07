@@ -2,7 +2,7 @@ package org.team2363.helixnavigator.ui.editor.obstacle;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
-import org.team2363.helixnavigator.document.HPath;
+import org.team2363.helixnavigator.document.HAutoRoutine;
 import org.team2363.helixnavigator.document.HSelectionModel;
 import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
 import org.team2363.lib.ui.MouseEventWrapper;
@@ -20,7 +20,7 @@ public class PolygonPointsPane extends Pane {
 
     private final DocumentManager documentManager;
 
-    private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
+    private final ChangeListener<? super HAutoRoutine> onSelectedPathChanged = this::selectedPathChanged;
     private final ChangeListener<? super HSelectionModel<HPolygonPoint>> onSelectionModelChanged = this::selectionModelChanged;
     private final ListChangeListener<? super HPolygonPoint> onPointsListChanged = this::pointsListChanged;
 
@@ -40,31 +40,31 @@ public class PolygonPointsPane extends Pane {
 
     private void unloadDocument(HDocument oldDocument) {
         if (oldDocument != null) {
-            unloadSelectedPath(oldDocument.getSelectedPath());
+            unloadSelectedPath(oldDocument.getSelectedAutoRoutine());
             oldDocument.selectedPathProperty().removeListener(onSelectedPathChanged);
         }
     }
 
     private void loadDocument(HDocument newDocument) {
         if (newDocument != null) {
-            loadSelectedPath(newDocument.getSelectedPath());
+            loadSelectedPath(newDocument.getSelectedAutoRoutine());
             newDocument.selectedPathProperty().addListener(onSelectedPathChanged);
         }
     }
 
-    private void selectedPathChanged(ObservableValue<? extends HPath> currentPath, HPath oldPath, HPath newPath) {
+    private void selectedPathChanged(ObservableValue<? extends HAutoRoutine> currentPath, HAutoRoutine oldPath, HAutoRoutine newPath) {
         unloadSelectedPath(oldPath);
         loadSelectedPath(newPath);
     }
 
-    private void unloadSelectedPath(HPath oldPath) {
+    private void unloadSelectedPath(HAutoRoutine oldPath) {
         if (oldPath != null) {
             unloadSelectionModel(oldPath.getPolygonPointsSelectionModel());
             oldPath.polygonPointsSelectionModelProperty().removeListener(onSelectionModelChanged);
         }
     }
 
-    private void loadSelectedPath(HPath newPath) {
+    private void loadSelectedPath(HAutoRoutine newPath) {
         if (newPath != null) {
             loadSelectionModel(newPath.getPolygonPointsSelectionModel());
             newPath.polygonPointsSelectionModelProperty().addListener(onSelectionModelChanged);
@@ -114,10 +114,10 @@ public class PolygonPointsPane extends Pane {
         };
         EventHandler<MouseEvent> onMouseDragBegin = event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                if (!event.isShortcutDown() && !documentManager.getDocument().getSelectedPath().getPolygonPointsSelectionModel().isSelected(index)) {
-                    documentManager.getDocument().getSelectedPath().clearPolygonPointSelection();
+                if (!event.isShortcutDown() && !documentManager.getDocument().getSelectedAutoRoutine().getPolygonPointsSelectionModel().isSelected(index)) {
+                    documentManager.getDocument().getSelectedAutoRoutine().clearPolygonPointSelection();
                 }
-                documentManager.getDocument().getSelectedPath().getPolygonPointsSelectionModel().select(index);
+                documentManager.getDocument().getSelectedAutoRoutine().getPolygonPointsSelectionModel().select(index);
             }
         };
         EventHandler<MouseEvent> onMouseDragged = event -> {
@@ -130,11 +130,11 @@ public class PolygonPointsPane extends Pane {
         EventHandler<MouseEvent> onMouseReleased = event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 if (!event.isShortcutDown()) {
-                    boolean selected = documentManager.getDocument().getSelectedPath().getPolygonPointsSelectionModel().isSelected(index);
-                    documentManager.getDocument().getSelectedPath().clearPolygonPointSelection();
-                    documentManager.getDocument().getSelectedPath().getPolygonPointsSelectionModel().setSelected(index, selected);
+                    boolean selected = documentManager.getDocument().getSelectedAutoRoutine().getPolygonPointsSelectionModel().isSelected(index);
+                    documentManager.getDocument().getSelectedAutoRoutine().clearPolygonPointSelection();
+                    documentManager.getDocument().getSelectedAutoRoutine().getPolygonPointsSelectionModel().setSelected(index, selected);
                 }
-                documentManager.getDocument().getSelectedPath().getPolygonPointsSelectionModel().toggle(index);
+                documentManager.getDocument().getSelectedAutoRoutine().getPolygonPointsSelectionModel().toggle(index);
             }
         };
 

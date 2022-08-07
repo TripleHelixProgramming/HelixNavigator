@@ -8,9 +8,12 @@ import org.team2363.helixnavigator.document.obstacle.HCircleObstacle;
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HObstacle.ObstacleType;
 import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
+import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
 import org.team2363.helixnavigator.document.obstacle.HRectangleObstacle;
 import org.team2363.helixnavigator.global.Standards;
 import org.team2363.helixnavigator.ui.editor.obstacle.CircleObstacleView;
+import org.team2363.helixnavigator.ui.editor.obstacle.PolygonObstacleView;
+import org.team2363.helixnavigator.ui.editor.obstacle.RectangleObstacleView;
 import org.team2363.helixnavigator.ui.prompts.obstacle.ObstacleEditDialog;
 import org.team2363.helixtrajectory.Obstacle;
 import org.team2363.lib.ui.OrderableListCell;
@@ -43,10 +46,6 @@ import javafx.util.Callback;
 
 public class ObstacleListCell extends OrderableListCell<HObstacle> {
 
-    private final CircleObstacleView CIRCLE;
-    private final Image POLYGON;
-    private final Image RECTANGLE;
-
     public static final Callback<ListView<HObstacle>, ListCell<HObstacle>> obstacleCellFactory(DocumentManager documentManager) {
         return new Callback<ListView<HObstacle>, ListCell<HObstacle>>() {
             @Override
@@ -56,17 +55,11 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
         };
     }
 
-    static {
-        CIRCLE = null;
-        POLYGON = null;
-        RECTANGLE = null;
-    }
-
     private final DocumentManager documentManager;
 
-    private final ImageView circleView = new ImageView(CIRCLE);
-    private final ImageView polygonView = new ImageView(POLYGON);
-    private final ImageView rectangleView = new ImageView(RECTANGLE);
+    private final CircleObstacleView circleView;
+    private final PolygonObstacleView polygonView;
+    private final RectangleObstacleView rectangleView;
     private final TextField textField = new FilteredTextField(Standards.MAX_NAME_LENGTH, Standards.VALID_NAME);
     private final HBox graphicBox = new HBox();
 
@@ -94,11 +87,35 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
     public ObstacleListCell(DocumentManager documentManager) {
         this.documentManager = documentManager;
 
-        circleView.setPreserveRatio(true);
-        circleView.setFitHeight(20);
-        polygonView.setPreserveRatio(true);
-        polygonView.setFitHeight(20);
-        graphicBox.getChildren().add(circleView); // have to use one image here even though we don't know which it is yet
+        HCircleObstacle circleObstacle = new HCircleObstacle();
+        circleObstacle.setCenterX(0.0);
+        circleObstacle.setCenterY(0.0);
+        circleObstacle.setRadius(5.0);
+        circleView = new CircleObstacleView(circleObstacle);
+        HPolygonObstacle polygonObstacle = new HPolygonObstacle();
+        HPolygonPoint point0 = new HPolygonPoint();
+        point0.setX(1);
+        point0.setY(-1);
+        HPolygonPoint point1 = new HPolygonPoint();
+        point1.setX(-1);
+        point1.setY(0);
+        HPolygonPoint point2 = new HPolygonPoint();
+        point2.setX(-1);
+        point2.setY(2);
+        HPolygonPoint point3 = new HPolygonPoint();
+        point3.setX(0);
+        point3.setY(1);
+        HPolygonPoint point4 = new HPolygonPoint();
+        point4.setX(2);
+        point4.setY(2);
+        polygonObstacle.getPoints().addAll(point0, point1, point2, point3, point4);
+        polygonView = new PolygonObstacleView(polygonObstacle);
+        HRectangleObstacle rectangleObstacle = new HRectangleObstacle();
+        rectangleObstacle.setLength(6);
+        rectangleObstacle.setWidth(10);
+        rectangleView = new RectangleObstacleView(rectangleObstacle);
+        graphicBox.getChildren().add(circleView.getView()); // have to use one image here even though we don't know which it is yet
+
         setEditable(true);
         setOrderable(true);
         // cancel edit if ENTER is pressed:
@@ -162,13 +179,13 @@ public class ObstacleListCell extends OrderableListCell<HObstacle> {
     private void updateObstacleType(ObstacleType newType) {
         switch (newType) {
             case CIRCLE:
-                graphicBox.getChildren().set(0, circleView);
+                graphicBox.getChildren().set(0, circleView.getView());
                 break;
             case POLYGON:
-                graphicBox.getChildren().set(0, polygonView);
+                graphicBox.getChildren().set(0, polygonView.getView());
                 break;
             case RECTANGLE:
-                graphicBox.getChildren().set(0, rectangleView);
+                graphicBox.getChildren().set(0, rectangleView.getView());
                 break;
         }
     }

@@ -1,4 +1,4 @@
-package org.team2363.helixnavigator.document.drive;
+package org.team2363.helixnavigator.document.drivetrain;
 
 import org.team2363.helixnavigator.global.Standards.DefaultSwerveModule;
 

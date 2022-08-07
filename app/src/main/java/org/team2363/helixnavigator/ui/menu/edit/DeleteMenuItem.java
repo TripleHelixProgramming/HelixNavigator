@@ -19,7 +19,7 @@ public class DeleteMenuItem extends MenuItem {
     }
 
     public void action(ActionEvent event) {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isAutoRoutineSelected()) {
             documentManager.actions().deleteSelection();
         }
     }

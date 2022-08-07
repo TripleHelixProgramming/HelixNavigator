@@ -1,4 +1,4 @@
-package org.team2363.helixnavigator.document.drive;
+package org.team2363.helixnavigator.document.drivetrain;
 
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
@@ -25,15 +25,15 @@ import javafx.beans.property.SimpleObjectProperty;
 
 @JSONSerializable(JSONType.OBJECT)
 @JSONDeserializable({JSONType.OBJECT})
-public abstract class HDrive {
+public abstract class HDrivetrain {
 
     @JSONSerializable(JSONType.STRING)
     @JSONDeserializable({JSONType.STRING})
-    public static enum DriveType {
+    public static enum DrivetrainType {
         HOLONOMIC;
 
         @DeserializedJSONConstructor
-        public static DriveType forName(@DeserializedJSONEntry String name) {
+        public static DrivetrainType forName(@DeserializedJSONEntry String name) {
             return valueOf(name.toUpperCase());
         }
 
@@ -48,9 +48,9 @@ public abstract class HDrive {
     private final DoubleProperty momentOfInertia = new SimpleDoubleProperty(this, "momentOfInertia", DefaultDrive.MOMENT_OF_INERTIA);
     private final ObjectProperty<HObstacle> bumpers = new SimpleObjectProperty<>(this, "bumpers", defaultBumpers());
 
-    @SerializedJSONObjectValue(key = "drive_type")
-    public abstract DriveType getDriveType();
-    public boolean isHolonomicDrive() {
+    @SerializedJSONObjectValue(key = "drivetrain_type")
+    public abstract DrivetrainType getDrivetrainType();
+    public boolean isHolonomicDrivetrain() {
         return false;
     }
 
@@ -107,19 +107,19 @@ public abstract class HDrive {
         return defaultBumpers;
     }
 
-    public static HDrive defaultDrive() {
-        return HHolonomicDrive.defaultHolonomicDrive();
+    public static HDrivetrain defaultDrivetrain() {
+        return HHolonomicDrivetrain.defaultHolonomicDrivetrain();
     }
 
     @DeserializedJSONDeterminer
-    public static Class<? extends HDrive> driveDeterminer(@DeserializedJSONObjectValue(key = "drive_type") DriveType driveType) throws JSONDeserializerException {
+    public static Class<? extends HDrivetrain> drivetrainDeterminer(@DeserializedJSONObjectValue(key = "drivetrain_type") DrivetrainType driveType) throws JSONDeserializerException {
         switch (driveType) {
             case HOLONOMIC:
-                return HHolonomicDrive.class;
+                return HHolonomicDrivetrain.class;
             // case DIFFERENTIAL:
             //     return HDifferentialDrive.class;
             default:
-                throw new JSONDeserializerException("Cannot have a null drive type");
+                throw new JSONDeserializerException("Cannot have a null drivetrain type");
         }
     }
 }

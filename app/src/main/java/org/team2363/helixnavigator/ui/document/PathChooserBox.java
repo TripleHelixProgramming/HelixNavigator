@@ -2,7 +2,7 @@ package org.team2363.helixnavigator.ui.document;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
-import org.team2363.helixnavigator.document.HPath;
+import org.team2363.helixnavigator.document.HAutoRoutine;
 import org.team2363.helixnavigator.global.Standards;
 import org.team2363.lib.ui.validation.FilteredTextInputDialog;
 
@@ -21,11 +21,11 @@ import javafx.scene.layout.Priority;
 
 public class PathChooserBox extends HBox {
 
-    private static final ObservableList<HPath> BLANK = FXCollections.<HPath>observableArrayList();
+    private static final ObservableList<HAutoRoutine> BLANK = FXCollections.<HAutoRoutine>observableArrayList();
 
     private final DocumentManager documentManager;
 
-    private final ComboBox<HPath> pathChooser = new ComboBox<>(); // starts with blank array
+    private final ComboBox<HAutoRoutine> pathChooser = new ComboBox<>(); // starts with blank array
     private final Button plusButton = new Button("+");
     private final Button minusButton = new Button("-");
     private final Button renameButton = new Button("R");
@@ -55,7 +55,7 @@ public class PathChooserBox extends HBox {
     }
 
     private void pathSelected(ActionEvent event) {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().hasPaths()) {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().hasAutoRoutines()) {
             int newIndex = pathChooser.getSelectionModel().getSelectedIndex();
             if (newIndex < 0) {
                 newIndex = 0; // this fixes a bug in ComboBox where
@@ -63,7 +63,7 @@ public class PathChooserBox extends HBox {
                               // causes the selected index to go to -1
                 pathChooser.getSelectionModel().select(newIndex);
             }
-            documentManager.getDocument().setSelectedPathIndex(newIndex);
+            documentManager.getDocument().setSelectedAutoRoutineIndex(newIndex);
         }
     }
 
@@ -75,35 +75,35 @@ public class PathChooserBox extends HBox {
             prompt.setMaxChars(Standards.MAX_NAME_LENGTH);
             prompt.setValidator(Standards.VALID_NAME);
             prompt.showAndWait().ifPresent(response -> {
-                HPath path = new HPath();
+                HAutoRoutine path = new HAutoRoutine();
                 path.setName(response);
-                int newPathIndex = documentManager.getDocument().getPaths().size();
-                documentManager.getDocument().getPaths().add(path);
-                documentManager.getDocument().setSelectedPathIndex(newPathIndex);
+                int newPathIndex = documentManager.getDocument().getAutoRoutines().size();
+                documentManager.getDocument().getAutoRoutines().add(path);
+                documentManager.getDocument().setSelectedAutoRoutineIndex(newPathIndex);
             });
         }
     }
 
     private void minusButtonPressed(ActionEvent event) {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isAutoRoutineSelected()) {
             Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this path \""
                     + pathChooser.getValue().getName() + "\"?");
             alert.showAndWait().filter(result -> result == ButtonType.OK).ifPresent(result -> {
-                documentManager.getDocument().getPaths().remove(documentManager.getDocument().getSelectedPathIndex());
+                documentManager.getDocument().getAutoRoutines().remove(documentManager.getDocument().getSelectedAutoRoutineIndex());
                 // this will trigger pathSelected()
             });
         }
     }
 
     private void renameButtonPressed(ActionEvent event) {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isAutoRoutineSelected()) {
             FilteredTextInputDialog prompt = new FilteredTextInputDialog();
             prompt.setHeaderText("Enter a valid path name");
             prompt.getEditor().setPromptText("Renamed path name");
             prompt.setMaxChars(Standards.MAX_NAME_LENGTH);
             prompt.setValidator(Standards.VALID_NAME);
             prompt.showAndWait().ifPresent(response -> {
-                documentManager.getDocument().getSelectedPath().setName(response);
+                documentManager.getDocument().getSelectedAutoRoutine().setName(response);
                 // TODO: the name on the combo box doesn't update dynamically,
                 // meaning renaming doesn't have a visual effect.
                 // This can be fixed by making a custom cell for HPath
@@ -120,15 +120,15 @@ public class PathChooserBox extends HBox {
     private void unloadDocument(HDocument oldDocument) {
         if (oldDocument != null) {
             pathChooser.setItems(BLANK);
-            oldDocument.selectedPathIndexProperty().removeListener(onSelectedPathIndexChanged);
+            oldDocument.selectedAutoRoutineIndexProperty().removeListener(onSelectedPathIndexChanged);
         }
     }
 
     private void loadDocument(HDocument newDocument) {
         if (newDocument != null) {
-            pathChooser.setItems(newDocument.getPaths());
-            loadSelectedPathIndex(newDocument.getSelectedPathIndex());
-            newDocument.selectedPathIndexProperty().addListener(onSelectedPathIndexChanged);
+            pathChooser.setItems(newDocument.getAutoRoutines());
+            loadSelectedPathIndex(newDocument.getSelectedAutoRoutineIndex());
+            newDocument.selectedAutoRoutineIndexProperty().addListener(onSelectedPathIndexChanged);
         }
     }
 

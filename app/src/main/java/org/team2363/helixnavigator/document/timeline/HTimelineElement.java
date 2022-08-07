@@ -20,7 +20,7 @@ public abstract class HTimelineElement extends HPathElement {
 
         @DeserializedJSONConstructor
         public static TimelineElementType forName(@DeserializedJSONEntry String name) {
-            return valueOf(name);
+            return valueOf(name.toUpperCase());
         }
 
         @SerializedJSONEntry

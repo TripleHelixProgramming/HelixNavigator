@@ -1,4 +1,4 @@
-package org.team2363.helixnavigator.document;
+package org.team2363.helixnavigator.document.trajectory;
 
 import java.util.ArrayList;
 import java.util.Collections;

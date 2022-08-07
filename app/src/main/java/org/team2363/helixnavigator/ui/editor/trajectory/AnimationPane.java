@@ -2,8 +2,8 @@ package org.team2363.helixnavigator.ui.editor.trajectory;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
-import org.team2363.helixnavigator.document.HPath;
-import org.team2363.helixnavigator.document.HHolonomicTrajectory;
+import org.team2363.helixnavigator.document.trajectory.HHolonomicTrajectory;
+import org.team2363.helixnavigator.document.HAutoRoutine;
 import org.team2363.helixnavigator.ui.editor.waypoint.RobotView;
 
 import javafx.beans.value.ChangeListener;
@@ -18,7 +18,7 @@ public class AnimationPane extends Pane {
     private final RobotView robotView = new RobotView();
     private final Translate robotTranslate = new Translate();
 
-    private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
+    private final ChangeListener<? super HAutoRoutine> onSelectedPathChanged = this::selectedPathChanged;
     private final ChangeListener<? super HHolonomicTrajectory> onTrajectoryChanged = this::trajectoryChanged;
     
     public AnimationPane(DocumentManager documentManager) {
@@ -42,7 +42,7 @@ public class AnimationPane extends Pane {
             robotView.bumperLengthProperty().unbind();
             robotView.bumperWidthProperty().unbind();
             robotView.zoomScaleProperty().unbind();
-            unloadSelectedPath(oldDocument.getSelectedPath());
+            unloadSelectedPath(oldDocument.getSelectedAutoRoutine());
             oldDocument.selectedPathProperty().removeListener(onSelectedPathChanged);
         }
     }
@@ -52,27 +52,27 @@ public class AnimationPane extends Pane {
             robotView.bumperLengthProperty().bind(newDocument.getRobotConfiguration().bumperLengthProperty());
             robotView.bumperWidthProperty().bind(newDocument.getRobotConfiguration().bumperWidthProperty());
             robotView.zoomScaleProperty().bind(newDocument.zoomScaleProperty());
-            loadSelectedPath(newDocument.getSelectedPath());
+            loadSelectedPath(newDocument.getSelectedAutoRoutine());
             newDocument.selectedPathProperty().addListener(onSelectedPathChanged);
         }
     }
 
-    private void selectedPathChanged(ObservableValue<? extends HPath> currentPath, HPath oldPath, HPath newPath) {
+    private void selectedPathChanged(ObservableValue<? extends HAutoRoutine> currentPath, HAutoRoutine oldPath, HAutoRoutine newPath) {
         unloadSelectedPath(oldPath);
         loadSelectedPath(newPath);
     }
 
-    private void unloadSelectedPath(HPath oldPath) {
+    private void unloadSelectedPath(HAutoRoutine oldPath) {
         if (oldPath != null) {
-            unloadTrajectory(oldPath.getTrajectory());
-            oldPath.trajectoryProperty().removeListener(onTrajectoryChanged);
+            unloadTrajectory(oldPath.getCompiledAutoRoutine());
+            oldPath.compiledAutoRoutineProperty().removeListener(onTrajectoryChanged);
         }
     }
 
-    private void loadSelectedPath(HPath newPath) {
+    private void loadSelectedPath(HAutoRoutine newPath) {
         if (newPath != null) {
-            loadTrajectory(newPath.getTrajectory());
-            newPath.trajectoryProperty().addListener(onTrajectoryChanged);
+            loadTrajectory(newPath.getCompiledAutoRoutine());
+            newPath.compiledAutoRoutineProperty().addListener(onTrajectoryChanged);
         }
     }
 

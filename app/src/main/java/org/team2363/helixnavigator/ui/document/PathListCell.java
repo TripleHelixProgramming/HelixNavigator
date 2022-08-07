@@ -1,17 +1,17 @@
 package org.team2363.helixnavigator.ui.document;
 
-import org.team2363.helixnavigator.document.HPath;
+import org.team2363.helixnavigator.document.HAutoRoutine;
 
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.util.Callback;
 
-public class PathListCell extends ListCell<HPath> {
+public class PathListCell extends ListCell<HAutoRoutine> {
 
-    public static final Callback<ListView<HPath>, ListCell<HPath>> PATH_CELL_FACTORY = 
-            new Callback<ListView<HPath>, ListCell<HPath>>() {
+    public static final Callback<ListView<HAutoRoutine>, ListCell<HAutoRoutine>> PATH_CELL_FACTORY = 
+            new Callback<ListView<HAutoRoutine>, ListCell<HAutoRoutine>>() {
         @Override
-        public ListCell<HPath> call(ListView<HPath> listView) {
+        public ListCell<HAutoRoutine> call(ListView<HAutoRoutine> listView) {
             return new PathListCell();
         }
     };
@@ -20,7 +20,7 @@ public class PathListCell extends ListCell<HPath> {
     }
 
     @Override
-    public void updateItem(HPath item, boolean empty) {
+    public void updateItem(HAutoRoutine item, boolean empty) {
         super.updateItem(item, empty);
         textProperty().unbind();
         if (empty || item == null) {

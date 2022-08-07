@@ -2,7 +2,7 @@ package org.team2363.helixnavigator.ui.document;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
-import org.team2363.helixnavigator.document.HPath;
+import org.team2363.helixnavigator.document.HAutoRoutine;
 import org.team2363.helixnavigator.document.obstacle.HCircleObstacle;
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
@@ -35,7 +35,7 @@ public class ObstacleListView extends ListView<HObstacle> {
     private final Label placeholder = new Label("RIGHT-CLICK TO CREATE AN OBSTACLE");
 
     private final ListChangeListener<? super Integer> onListViewSelectedIndicesChanged = this::listViewSelectedIndicesChanged;
-    private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
+    private final ChangeListener<? super HAutoRoutine> onSelectedPathChanged = this::selectedPathChanged;
     private final ListChangeListener<? super Integer> onPathSelectedObstaclesIndicesChanged = this::pathSelectedObstaclesIndicesChanged;
 
     public ObstacleListView(DocumentManager documentManager) {
@@ -75,11 +75,11 @@ public class ObstacleListView extends ListView<HObstacle> {
     }
 
     private void listViewSelectedIndicesChanged(ListChangeListener.Change<? extends Integer> change) {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().getSelectedIndices().removeListener(onPathSelectedObstaclesIndicesChanged);
-            documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().clearSelection();
-            documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().selectIndices(getSelectionModel().getSelectedIndices());
-            documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().getSelectedIndices().addListener(onPathSelectedObstaclesIndicesChanged);
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isAutoRoutineSelected()) {
+            documentManager.getDocument().getSelectedAutoRoutine().getObstaclesSelectionModel().getSelectedIndices().removeListener(onPathSelectedObstaclesIndicesChanged);
+            documentManager.getDocument().getSelectedAutoRoutine().getObstaclesSelectionModel().clearSelection();
+            documentManager.getDocument().getSelectedAutoRoutine().getObstaclesSelectionModel().selectIndices(getSelectionModel().getSelectedIndices());
+            documentManager.getDocument().getSelectedAutoRoutine().getObstaclesSelectionModel().getSelectedIndices().addListener(onPathSelectedObstaclesIndicesChanged);
         }
     }
 
@@ -90,21 +90,21 @@ public class ObstacleListView extends ListView<HObstacle> {
 
     private void unloadDocument(HDocument oldDocument) {
         if (oldDocument != null) {
-            unloadSelectedPath(oldDocument.getSelectedPath());
+            unloadSelectedPath(oldDocument.getSelectedAutoRoutine());
             oldDocument.selectedPathProperty().removeListener(onSelectedPathChanged);
         }
     }
     private void loadDocument(HDocument newDocument) {
         if (newDocument != null) {
-            loadSelectedPath(newDocument.getSelectedPath());
+            loadSelectedPath(newDocument.getSelectedAutoRoutine());
             newDocument.selectedPathProperty().addListener(onSelectedPathChanged);
         }
     }
-    private void selectedPathChanged(ObservableValue<? extends HPath> currentPath, HPath oldPath, HPath newPath) {
+    private void selectedPathChanged(ObservableValue<? extends HAutoRoutine> currentPath, HAutoRoutine oldPath, HAutoRoutine newPath) {
         unloadSelectedPath(oldPath);
         loadSelectedPath(newPath);
     }
-    private void unloadSelectedPath(HPath oldPath) {
+    private void unloadSelectedPath(HAutoRoutine oldPath) {
         if (oldPath != null) {
             // Must remove the listener -- When you clear items in ListView,
             // the selection model clears selected indices too
@@ -115,11 +115,11 @@ public class ObstacleListView extends ListView<HObstacle> {
             oldPath.getObstaclesSelectionModel().getSelectedIndices().removeListener(onPathSelectedObstaclesIndicesChanged);
         }
     }
-    private void loadSelectedPath(HPath newPath) {
+    private void loadSelectedPath(HAutoRoutine newPath) {
         if (newPath != null) {
             setItems(newPath.getObstacles());
             setContextMenu(noneSelectedContextMenu);
-            for (int index : documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().getSelectedIndices()) {
+            for (int index : documentManager.getDocument().getSelectedAutoRoutine().getObstaclesSelectionModel().getSelectedIndices()) {
                 getSelectionModel().select(index);
             }
             newPath.getObstaclesSelectionModel().getSelectedIndices().addListener(onPathSelectedObstaclesIndicesChanged);

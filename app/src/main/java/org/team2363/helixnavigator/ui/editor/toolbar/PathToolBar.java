@@ -25,9 +25,9 @@ public class PathToolBar extends ToolBar {
         this.documentManager.actions().autoWaypointProperty().bind(autoWaypoint.selectedProperty());
         debug.setOnAction(event -> {
             if (this.documentManager.getIsDocumentOpen() &&
-                    this.documentManager.getDocument().isPathSelected() &&
-                    !this.documentManager.getDocument().getSelectedPath().getTimeline().isEmpty()) {
-                debug.setText(String.valueOf(this.documentManager.getDocument().getSelectedPath().getTimeline().get(0).isSelected()));
+                    this.documentManager.getDocument().isAutoRoutineSelected() &&
+                    !this.documentManager.getDocument().getSelectedAutoRoutine().getTimeline().isEmpty()) {
+                debug.setText(String.valueOf(this.documentManager.getDocument().getSelectedAutoRoutine().getTimeline().get(0).isSelected()));
             }
         });
 

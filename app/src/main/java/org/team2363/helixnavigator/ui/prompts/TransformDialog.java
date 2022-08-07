@@ -102,24 +102,24 @@ public class TransformDialog {
         rotate.angleProperty().bind(DoubleProperty.doubleProperty(angleTextField.valueProperty()).multiply(180 / Math.PI));
 
         applyTranslate.setOnAction(event -> {
-            if (this.document.isPathSelected()) {
-                this.document.getSelectedPath().transformSelectedElementsRelative(translate);
+            if (this.document.isAutoRoutineSelected()) {
+                this.document.getSelectedAutoRoutine().transformSelectedElementsRelative(translate);
             }
         });
         applyInverseTranslate.setOnAction(event -> {
-            if (document.isPathSelected()) {
-                this.document.getSelectedPath().transformSelectedElementsRelative(translate.createInverse());
+            if (document.isAutoRoutineSelected()) {
+                this.document.getSelectedAutoRoutine().transformSelectedElementsRelative(translate.createInverse());
             }
         });
         applyRotate.setOnAction(event -> {
-            if (document.isPathSelected()) {
-                this.document.getSelectedPath().transformSelectedElementsRelative(rotate);
+            if (document.isAutoRoutineSelected()) {
+                this.document.getSelectedAutoRoutine().transformSelectedElementsRelative(rotate);
             }
         });
         applyInverseRotate.setOnAction(event -> {
-            if (document.isPathSelected()) {
+            if (document.isAutoRoutineSelected()) {
                 try {
-                    this.document.getSelectedPath().transformSelectedElementsRelative(rotate.createInverse());
+                    this.document.getSelectedAutoRoutine().transformSelectedElementsRelative(rotate.createInverse());
                 } catch (NonInvertibleTransformException e) {
                 }
             }

@@ -2,7 +2,7 @@ package org.team2363.helixnavigator.ui.document;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
-import org.team2363.helixnavigator.document.HPath;
+import org.team2363.helixnavigator.document.HAutoRoutine;
 import org.team2363.helixnavigator.document.HSelectionModel;
 import org.team2363.helixnavigator.document.timeline.HHolonomicWaypoint;
 
@@ -33,7 +33,7 @@ public class WaypointListView extends ListView<HHolonomicWaypoint> {
 
     private final Label placeholder = new Label("RIGHT-CLICK TO CREATE A WAYPOINT");
 
-    private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
+    private final ChangeListener<? super HAutoRoutine> onSelectedPathChanged = this::selectedPathChanged;
 
     public WaypointListView(DocumentManager documentManager) {
         this.documentManager = documentManager;
@@ -77,28 +77,28 @@ public class WaypointListView extends ListView<HHolonomicWaypoint> {
 
     private void unloadDocument(HDocument oldDocument) {
         if (oldDocument != null) {
-            unloadSelectedPath(oldDocument.getSelectedPath());
+            unloadSelectedPath(oldDocument.getSelectedAutoRoutine());
             oldDocument.selectedPathProperty().removeListener(onSelectedPathChanged);
         }
     }
     private void loadDocument(HDocument newDocument) {
         if (newDocument != null) {
-            loadSelectedPath(newDocument.getSelectedPath());
+            loadSelectedPath(newDocument.getSelectedAutoRoutine());
             newDocument.selectedPathProperty().addListener(onSelectedPathChanged);
         }
     }
-    private void selectedPathChanged(ObservableValue<? extends HPath> currentPath, HPath oldPath, HPath newPath) {
+    private void selectedPathChanged(ObservableValue<? extends HAutoRoutine> currentPath, HAutoRoutine oldPath, HAutoRoutine newPath) {
         unloadSelectedPath(oldPath);
         loadSelectedPath(newPath);
     }
-    private void unloadSelectedPath(HPath oldPath) {
+    private void unloadSelectedPath(HAutoRoutine oldPath) {
         if (oldPath != null) {
             setItems(blankItems);
             setSelectionModel(blankSelecitonModel);
             setContextMenu(null);
         }
     }
-    private void loadSelectedPath(HPath newPath) {
+    private void loadSelectedPath(HAutoRoutine newPath) {
         if (newPath != null) {
             setItems(newPath.getTimeline());
             setSelectionModel(newPath.getTimelineSelectionModel());

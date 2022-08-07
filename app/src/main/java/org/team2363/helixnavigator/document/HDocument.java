@@ -34,14 +34,14 @@ import com.jlbabilino.json.JSONEntry.JSONType;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONObjectValue;
 
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -79,7 +79,7 @@ public class HDocument {
     /**
      * The list of paths in this document
      */
-    private final ObservableList<HPath> paths = FXCollections.<HPath>observableArrayList();
+    private final ObservableList<HAutoRoutine> autoRoutines = FXCollections.<HAutoRoutine>observableArrayList();
     /**
      * <p>
      * The currently selected path index. It will equal {@code -1} if and only if
@@ -91,7 +91,7 @@ public class HDocument {
      * with the above conditions.
      * </p>
      */
-    private final ReadOnlyIntegerWrapper selectedPathIndex = new ReadOnlyIntegerWrapper(this, "selectedPathIndex", -1);
+    private final ReadOnlyIntegerWrapper selectedAutoRoutineIndex = new ReadOnlyIntegerWrapper(this, "selectedAutoRoutineIndex", -1);
     /**
      * <p>
      * The currently selected path that aligns with the currently selected index.
@@ -104,7 +104,7 @@ public class HDocument {
      * This is read only so that it cannot be put in illegal states that don't comply
      * with the above conditions.
      */
-    private final ReadOnlyObjectWrapper<HPath> selectedPath = new ReadOnlyObjectWrapper<>(this, "selectedPath", null);
+    private final ReadOnlyObjectWrapper<HAutoRoutine> selectedAutoRoutine = new ReadOnlyObjectWrapper<>(this, "selectedAutoRoutine", null);
     /**
      * The robot configuration for this document
      */
@@ -112,7 +112,7 @@ public class HDocument {
     /**
      * The default units to use in text input boxes
      */
-    private final HUnitPreferences unitPreferences = new HUnitPreferences();
+    private final HUnitPreferences unitPreferences;
     /**
      * The file path that this document should be saved to
      */
@@ -121,28 +121,30 @@ public class HDocument {
      * the property representing whether or not this document has been saved in its
      * entirety to a file
      */
-    private final BooleanProperty savedProperty = new SimpleBooleanProperty(this, "saved", false); // change to true later when state management is added
+    private final ReadOnlyBooleanWrapper savedProperty = new ReadOnlyBooleanWrapper(this, "saved", false); // change to true later when state management is added
 
     /**
      * Constructs a blank {@code HDocument}.
      */
     public HDocument() {
-        this(Collections.emptyMap(), new HRobotConfiguration());
+        this(Collections.emptyMap(), new HRobotConfiguration(), new HUnitPreferences());
     }
 
     @DeserializedJSONConstructor
     public HDocument(
-            @DeserializedJSONObjectValue(key = "paths") Map<String, HPath> initialPathsMap,
-            @DeserializedJSONObjectValue(key = "robot_configuration") HRobotConfiguration robotConfiguration) {
-        paths.addListener((ListChangeListener.Change<? extends HPath> change) -> updateSelectedPathIndex());
-        selectedPathIndex.addListener((currentIndex, oldIndex, newIndex) -> updateSelectedPath());
+            @DeserializedJSONObjectValue(key = "auto_routines") Map<String, HAutoRoutine> initialAutoRoutinesMap,
+            @DeserializedJSONObjectValue(key = "robot_configuration") HRobotConfiguration robotConfiguration,
+            @DeserializedJSONObjectValue(key = "unit_preferences") HUnitPreferences unitPreferences) {
+        autoRoutines.addListener((ListChangeListener.Change<? extends HAutoRoutine> change) -> updateSelectedAutoRoutineIndex());
+        selectedAutoRoutineIndex.addListener((currentIndex, oldIndex, newIndex) -> updateSelectedAutoRoutine());
         this.robotConfiguration = robotConfiguration;
+        this.unitPreferences = unitPreferences;
 
-        initialPathsMap.entrySet().stream().sorted((a, b) -> a.getKey().compareTo(b.getKey())).forEach(entry -> {
-            String pathName = entry.getKey();
-            HPath path = entry.getValue();
-            path.setName(pathName);
-            paths.add(path);
+        initialAutoRoutinesMap.entrySet().stream().sorted((a, b) -> a.getKey().compareTo(b.getKey())).forEach(entry -> {
+            String autoRoutineName = entry.getKey();
+            HAutoRoutine autoRoutine = entry.getValue();
+            autoRoutine.setName(autoRoutineName);
+            autoRoutines.add(autoRoutine);
         }); 
     }
 
@@ -150,14 +152,14 @@ public class HDocument {
      * Called when the path list is changed, this method controls the selected path index
      * and prevents it from being in an illegal state.
      */
-    private void updateSelectedPathIndex() {
-        if (!hasPaths()) {
-            setSelectedPathIndex(-1);
-        } else if (!isPathSelected()) {
-            setSelectedPathIndex(0);    // if the selected path index is now out of bounds, 
+    private void updateSelectedAutoRoutineIndex() {
+        if (!hasAutoRoutines()) {
+            setSelectedAutoRoutineIndex(-1);
+        } else if (!isAutoRoutineSelected()) {
+            setSelectedAutoRoutineIndex(0);    // if the selected path index is now out of bounds, 
                                         // and you can select a path, select one!
         } else {
-            updateSelectedPath();
+            updateSelectedAutoRoutine();
         }
     }
 
@@ -165,11 +167,11 @@ public class HDocument {
      * Called when the selected path index changes, this method 
      * synchronizes the {@code selectedPathIndex} with the {@code selectedPath}.
      */
-    private void updateSelectedPath() {
-        if (isPathSelected()) {
-            setSelectedPath(paths.get(getSelectedPathIndex()));
+    private void updateSelectedAutoRoutine() {
+        if (isAutoRoutineSelected()) {
+            setSelectedAutoRoutine(autoRoutines.get(getSelectedAutoRoutineIndex()));
         } else {
-            setSelectedPath(null);
+            setSelectedAutoRoutine(null);
         }
     }
 
@@ -183,8 +185,8 @@ public class HDocument {
      * 
      * @return {@code true} if and only if the path list is not empty
      */
-    public final boolean hasPaths() {
-        return !getPaths().isEmpty();
+    public final boolean hasAutoRoutines() {
+        return !getAutoRoutines().isEmpty();
     }
 
     /**
@@ -202,8 +204,8 @@ public class HDocument {
      * 
      * @return {@code true} if and only if the selected path index is within bounds
      */
-    public final boolean isPathSelected() {
-        return getSelectedPathIndex() >= 0 && getSelectedPathIndex() < getPaths().size();
+    public final boolean isAutoRoutineSelected() {
+        return getSelectedAutoRoutineIndex() >= 0 && getSelectedAutoRoutineIndex() < getAutoRoutines().size();
     }
 
     /**
@@ -218,12 +220,10 @@ public class HDocument {
     public final ObjectProperty<HFieldImage> fieldImageProperty() {
         return fieldImage;
     }
-
     @DeserializedJSONTarget
     public final void setFieldImage(@DeserializedJSONObjectValue(key = "field_image") HFieldImage value) {
         fieldImage.set(value);
     }
-
     @SerializedJSONObjectValue(key = "field_image")
     public final HFieldImage getFieldImage() {
         return fieldImage.get();
@@ -232,12 +232,10 @@ public class HDocument {
     public final DoubleProperty zoomScaleProperty() {
         return zoomScale;
     }
-
     // @DeserializedJSONTarget
     public final void setZoomScale(@DeserializedJSONObjectValue(key = "zoom_scale") double value) {
         zoomScale.set(value);
     }
-
     // @SerializedJSONObjectValue(key = "zoom_scale")
     public final double getZoomScale() {
         return zoomScale.get();
@@ -246,12 +244,10 @@ public class HDocument {
     public final DoubleProperty zoomTranslateXProperty() {
         return zoomTranslateX;
     }
-
     // @DeserializedJSONTarget
     public final void setZoomTranslateX(@DeserializedJSONObjectValue(key = "zoom_translate_x") double value) {
         zoomTranslateX.set(value);
     }
-
     // @SerializedJSONObjectValue(key = "zoom_translate_x")
     public final double getZoomTranslateX() {
         return zoomTranslateX.get();
@@ -260,73 +256,62 @@ public class HDocument {
     public final DoubleProperty zoomTranslateYProperty() {
         return zoomTranslateY;
     }
-
     // @DeserializedJSONTarget
     public final void setZoomTranslateY(@DeserializedJSONObjectValue(key = "zoom_translate_y") double value) {
         zoomTranslateY.set(value);
     }
-
     // @SerializedJSONObjectValue(key = "zoom_translate_y")
     public final double getZoomTranslateY() {
         return zoomTranslateY.get();
     }
 
-    // @SerializedJSONObjectValue(key = "paths")
-    public final ObservableList<HPath> getPaths() {
-        return paths;
+    // @SerializedJSONObjectValue(key = "auto_routines")
+    public final ObservableList<HAutoRoutine> getAutoRoutines() {
+        return autoRoutines;
     }
-
-    @SerializedJSONObjectValue(key = "paths")
-    public final Map<String, HPath> getPathsMap() {
-        Map<String, HPath> map = new HashMap<>(getPaths().size());
-        for (HPath path : getPaths()) {
-            map.put(path.getName(), path);
+    @SerializedJSONObjectValue(key = "auto_routines")
+    public final Map<String, HAutoRoutine> getAutoRoutinesMap() {
+        Map<String, HAutoRoutine> map = new HashMap<>(getAutoRoutines().size());
+        for (HAutoRoutine autoRoutine : getAutoRoutines()) {
+            map.put(autoRoutine.getName(), autoRoutine);
         }
         return map;
     }
 
-    public final ReadOnlyIntegerProperty selectedPathIndexProperty() {
-        return selectedPathIndex.getReadOnlyProperty();
+    public final ReadOnlyIntegerProperty selectedAutoRoutineIndexProperty() {
+        return selectedAutoRoutineIndex.getReadOnlyProperty();
     }
-
-    @DeserializedJSONTarget
-    public final void setSelectedPathIndex(@DeserializedJSONObjectValue(key = "selected_path_index") int value) {
-        if (value < 0 && hasPaths()) {
+    // @DeserializedJSONTarget
+    public final void setSelectedAutoRoutineIndex(@DeserializedJSONObjectValue(key = "selected_auto_routine_index") int value) {
+        if (value < 0 && hasAutoRoutines()) {
             LOGGER.warning("WARNING: illegal selected path index was attempted: " + value);
             value = 0;
-        } else if (value >= paths.size()) {
+        } else if (value >= autoRoutines.size()) {
             LOGGER.warning("WARNING: illegal selected path index was attempted: " + value);
-            value = paths.size() - 1;
+            value = autoRoutines.size() - 1;
         }
-        selectedPathIndex.set(value);
+        selectedAutoRoutineIndex.set(value);
+    }
+    // @SerializedJSONObjectValue(key = "selected_path_index")
+    public final int getSelectedAutoRoutineIndex() {
+        return selectedAutoRoutineIndex.get();
     }
 
-    @SerializedJSONObjectValue(key = "selected_path_index")
-    public final int getSelectedPathIndex() {
-        return selectedPathIndex.get();
+    public final ReadOnlyObjectProperty<HAutoRoutine> selectedAutoRoutineProperty() {
+        return selectedAutoRoutine.getReadOnlyProperty();
     }
-
-    public final ReadOnlyObjectProperty<HPath> selectedPathProperty() {
-        return selectedPath.getReadOnlyProperty();
+    private final void setSelectedAutoRoutine(HAutoRoutine value) {
+        selectedAutoRoutine.set(value);
     }
-
-    private final void setSelectedPath(HPath value) {
-        selectedPath.set(value);
-    }
-
-    public final HPath getSelectedPath() {
-        return selectedPath.get();
-    }
-
-    @DeserializedJSONTarget
-    public final void importUnitPreferences(@DeserializedJSONObjectValue(key = "unit_preferences") HUnitPreferences otherPreferences) {
-        unitPreferences.importPreferences(otherPreferences);
+    public final HAutoRoutine getSelectedAutoRoutine() {
+        return selectedAutoRoutine.get();
     }
 
     @SerializedJSONObjectValue(key = "robot_configuration")
     public final HRobotConfiguration getRobotConfiguration() {
         return robotConfiguration;
     }
+
     @SerializedJSONObjectValue(key = "unit_preferences")
     public final HUnitPreferences getUnitPreferences() {
         return unitPreferences;
@@ -335,30 +320,26 @@ public class HDocument {
     public final ObjectProperty<File> saveLocationProperty() {
         return saveLocation;
     }
-
     public final void setSaveLocation(File value) {
         saveLocation.set(value);
     }
-
     public final File getSaveLocation() {
         return saveLocation.get();
     }
 
-    public final BooleanProperty savedProperty() {
-        return savedProperty;
+    public final ReadOnlyBooleanProperty savedProperty() {
+        return savedProperty.getReadOnlyProperty();
     }
-
-    public final void setSaved(boolean value) {
+    final void setSaved(boolean value) {
         savedProperty.set(value);
     }
-
     public final boolean isSaved() {
         return savedProperty.get();
     }
 
     public static HDocument defaultDocument() {
         HDocument document = new HDocument();
-        document.getPaths().add(HPath.defaultPath());
+        document.getAutoRoutines().add(HAutoRoutine.defaultPath());
         return document;
     }
 }

@@ -186,7 +186,7 @@ public class DocumentActions {
             double deltaY = event.getSceneY() - lastElementsDragY;
             double scaledDeltaX = deltaX / document.getZoomScale();
             double scaledDeltaY = -deltaY / document.getZoomScale(); // negative since coordinate system is mirrored vertically
-            document.getSelectedPath().moveSelectedElementsRelative(scaledDeltaX, scaledDeltaY);
+            document.getSelectedAutoRoutine().moveSelectedElementsRelative(scaledDeltaX, scaledDeltaY);
             lastElementsDragX = event.getSceneX();
             lastElementsDragY = event.getSceneY();
         }
@@ -206,7 +206,7 @@ public class DocumentActions {
             double deltaY = newY - triggeringWaypoint.getY();
             triggeringWaypoint.setX(newX);
             triggeringWaypoint.setY(newY);
-            document.getSelectedPath().moveSelectedElementsRelative(deltaX, deltaY, triggeringWaypoint);
+            document.getSelectedAutoRoutine().moveSelectedElementsRelative(deltaX, deltaY, triggeringWaypoint);
         }
     }
 
@@ -220,15 +220,15 @@ public class DocumentActions {
             double deltaY = newY - triggeringPolygonPoint.getY();
             triggeringPolygonPoint.setX(newX);
             triggeringPolygonPoint.setY(newY);
-            document.getSelectedPath().moveSelectedPolygonPointsRelative(deltaX, deltaY, triggeringPolygonPoint);
+            document.getSelectedAutoRoutine().moveSelectedPolygonPointsRelative(deltaX, deltaY, triggeringPolygonPoint);
         }
     }
 
     public void handleMouseClickedAsClearSelection(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY
                 && this.documentManager.getIsDocumentOpen()
-                && this.documentManager.getDocument().isPathSelected()) {
-            this.documentManager.getDocument().getSelectedPath().clearSelection();
+                && this.documentManager.getDocument().isAutoRoutineSelected()) {
+            this.documentManager.getDocument().getSelectedAutoRoutine().clearSelection();
         }
     }
 
@@ -258,21 +258,21 @@ public class DocumentActions {
     } 
 
     public void clearSelection() {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            documentManager.getDocument().getSelectedPath().clearSelection();
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isAutoRoutineSelected()) {
+            documentManager.getDocument().getSelectedAutoRoutine().clearSelection();
         }
     }
 
     public void selectAll() {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            documentManager.getDocument().getSelectedPath().getTimelineSelectionModel().selectAll();
-            documentManager.getDocument().getSelectedPath().getObstaclesSelectionModel().selectAll();
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isAutoRoutineSelected()) {
+            documentManager.getDocument().getSelectedAutoRoutine().getTimelineSelectionModel().selectAll();
+            documentManager.getDocument().getSelectedAutoRoutine().getObstaclesSelectionModel().selectAll();
         }
     }
 
     public void deleteSelectedWaypoints() {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            HPath path = documentManager.getDocument().getSelectedPath();
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isAutoRoutineSelected()) {
+            HAutoRoutine path = documentManager.getDocument().getSelectedAutoRoutine();
             Integer[] selectedIndices = path.getTimelineSelectionModel().getSelectedIndices().toArray(new Integer[0]);
             path.clearTimelineSelection();
             for (int i = selectedIndices.length - 1; i >= 0; i--) {
@@ -282,8 +282,8 @@ public class DocumentActions {
     }
 
     public void deleteSelectedObstacles() {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            HPath path = documentManager.getDocument().getSelectedPath();
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isAutoRoutineSelected()) {
+            HAutoRoutine path = documentManager.getDocument().getSelectedAutoRoutine();
             Integer[] selectedIndices = path.getObstaclesSelectionModel().getSelectedIndices().toArray(new Integer[0]);
             path.clearObstaclesSelection();
             for (int i = selectedIndices.length - 1; i >= 0; i--) {
@@ -303,9 +303,9 @@ public class DocumentActions {
     }
 
     public void copy() {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isAutoRoutineSelected()) {
             String data;
-            HPath path = documentManager.getDocument().getSelectedPath();
+            HAutoRoutine path = documentManager.getDocument().getSelectedAutoRoutine();
             int selectedWaypointsCount = path.getTimelineSelectionModel().getSelectedItems().size();
             int selectedObstaclesCount = path.getObstaclesSelectionModel().getSelectedItems().size();
             int totalCount = selectedWaypointsCount + selectedObstaclesCount;
@@ -343,11 +343,11 @@ public class DocumentActions {
                 if (jsonEntry.isObject()) {
                     JSONObject jsonObject = (JSONObject) jsonEntry;
                     if (jsonObject.containsKey("waypoints")) {
-                        HPath pastedPath = JSONDeserializer.deserialize(jsonEntry, HPath.class);
-                        document.getPaths().add(pastedPath);
-                        document.setSelectedPathIndex(document.getPaths().size() - 1);
-                    } else if (document.isPathSelected()) {
-                        HPath path = document.getSelectedPath();
+                        HAutoRoutine pastedPath = JSONDeserializer.deserialize(jsonEntry, HAutoRoutine.class);
+                        document.getAutoRoutines().add(pastedPath);
+                        document.setSelectedAutoRoutineIndex(document.getAutoRoutines().size() - 1);
+                    } else if (document.isAutoRoutineSelected()) {
+                        HAutoRoutine path = document.getSelectedAutoRoutine();
                         if (jsonObject.containsKey("waypoint_type")) {
                             HHolonomicWaypoint waypoint = JSONDeserializer.deserialize(jsonEntry, HHolonomicWaypoint.class);
                             int index = path.getTimelineSelectionModel().getSelectedIndex() + 1;
@@ -389,65 +389,65 @@ public class DocumentActions {
     private static final Rotate ROTATE_90_COUNTERCLOCKWISE = new Rotate(90);
     private static final Rotate ROTATE_180 = new Rotate(180);
     public void rotateSelection90Clockwise() {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            documentManager.getDocument().getSelectedPath().transformSelectedElementsRelative(ROTATE_90_CLOCKWISE);
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isAutoRoutineSelected()) {
+            documentManager.getDocument().getSelectedAutoRoutine().transformSelectedElementsRelative(ROTATE_90_CLOCKWISE);
         }
     }
     public void rotateSelection90Counterclockwise() {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            documentManager.getDocument().getSelectedPath().transformSelectedElementsRelative(ROTATE_90_COUNTERCLOCKWISE);
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isAutoRoutineSelected()) {
+            documentManager.getDocument().getSelectedAutoRoutine().transformSelectedElementsRelative(ROTATE_90_COUNTERCLOCKWISE);
         }
     }
     public void rotateSelection180() {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            documentManager.getDocument().getSelectedPath().transformSelectedElementsRelative(ROTATE_180);
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isAutoRoutineSelected()) {
+            documentManager.getDocument().getSelectedAutoRoutine().transformSelectedElementsRelative(ROTATE_180);
         }
     }
 
     private void insertTimelineElement(int index, HTimelineElement timelineElement) {
-        documentManager.getDocument().getSelectedPath().getTimeline().add(index, timelineElement);
+        documentManager.getDocument().getSelectedAutoRoutine().getTimeline().add(index, timelineElement);
     }
     public void newPositionHolonomicWaypoint(int index) {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isAutoRoutineSelected()) {
             HHolonomicWaypoint newWaypoint = HHolonomicWaypoint.positionHolonomicWaypoint();
             newWaypoint.setName("Position Waypoint " + index);
             insertTimelineElement(index, newWaypoint);
         }
     }
     public void newHeadingHolonomicWaypoint(int index) {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isAutoRoutineSelected()) {
             HHolonomicWaypoint newWaypoint = HHolonomicWaypoint.headingHolonomicWaypoint();
             newWaypoint.setName("Heading Waypoint " + index);
             insertTimelineElement(index, newWaypoint);
         }
     }
     public void newStaticHolonomicWaypoint(int index) {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isAutoRoutineSelected()) {
             HHolonomicWaypoint newWaypoint = HHolonomicWaypoint.staticHolonomicWaypoint();
             newWaypoint.setName("Custom Waypoint " + index);
             insertTimelineElement(index, newWaypoint);
         }
     }
     public void newInitialGuessPoint(int index) {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isAutoRoutineSelected()) {
             HInitialGuessPoint newWaypoint = new HInitialGuessPoint();
             newWaypoint.setName("Initial Guess Point " + index);
             insertTimelineElement(index, newWaypoint);
         }
     }
     public void newPositionHolonomicWaypoint() {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            newPositionHolonomicWaypoint(documentManager.getDocument().getSelectedPath().getTimeline().size());
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isAutoRoutineSelected()) {
+            newPositionHolonomicWaypoint(documentManager.getDocument().getSelectedAutoRoutine().getTimeline().size());
         }
     }
     public void newHeadingHolonomicWaypoint() {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            newHeadingHolonomicWaypoint(documentManager.getDocument().getSelectedPath().getTimeline().size());
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isAutoRoutineSelected()) {
+            newHeadingHolonomicWaypoint(documentManager.getDocument().getSelectedAutoRoutine().getTimeline().size());
         }
     }
     public void newStaticHolonomicWaypoint() {
-        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            newStaticHolonomicWaypoint(documentManager.getDocument().getSelectedPath().getTimeline().size());
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isAutoRoutineSelected()) {
+            newStaticHolonomicWaypoint(documentManager.getDocument().getSelectedAutoRoutine().getTimeline().size());
         }
     }
 

@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.team2363.helixnavigator.document.DocumentManager;
-import org.team2363.helixnavigator.document.HPath;
+import org.team2363.helixnavigator.document.HAutoRoutine;
 import org.team2363.helixnavigator.document.timeline.HHolonomicWaypoint;
 import org.team2363.helixnavigator.document.timeline.waypoint.HHardWaypoint;
 import org.team2363.helixnavigator.global.Standards;
@@ -60,11 +60,11 @@ public class BackgroundRectangle extends Pane {
             selectionRectangle.setX(selectionRectangleX);
             selectionRectangle.setY(selectionRectangleY);
             selectionRectangle.setOpacity(1.0);
-            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
+            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isAutoRoutineSelected()) {
                 if (event.isShortcutDown()) {
-                    initialSelectedWaypointIndices = new ArrayList<>(this.documentManager.getDocument().getSelectedPath()
+                    initialSelectedWaypointIndices = new ArrayList<>(this.documentManager.getDocument().getSelectedAutoRoutine()
                             .getTimelineSelectionModel().getSelectedIndices());
-                    initialSelectedObstacleIndices = new ArrayList<>(this.documentManager.getDocument().getSelectedPath()
+                    initialSelectedObstacleIndices = new ArrayList<>(this.documentManager.getDocument().getSelectedAutoRoutine()
                             .getObstaclesSelectionModel().getSelectedIndices());
                 } else {
                     initialSelectedWaypointIndices = Collections.emptyList();
@@ -96,8 +96,8 @@ public class BackgroundRectangle extends Pane {
                 selectionRectangle.setY(selectionRectangleY);
                 selectionRectangle.setHeight(y - selectionRectangleY);
             }
-            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
-                HPath path = this.documentManager.getDocument().getSelectedPath();
+            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isAutoRoutineSelected()) {
+                HAutoRoutine path = this.documentManager.getDocument().getSelectedAutoRoutine();
                 for (int waypointIndex = 0; waypointIndex < path.getTimeline().size(); waypointIndex++) {
                     if (initialSelectedWaypointIndices == null || !initialSelectedWaypointIndices.contains(waypointIndex)) {
                         HHolonomicWaypoint waypoint = path.getTimeline().get(waypointIndex);
@@ -121,7 +121,7 @@ public class BackgroundRectangle extends Pane {
         EventHandler<MouseEvent> onMouseReleased = event -> {
             if (event.getButton() == MouseButton.PRIMARY
                     && this.documentManager.getIsDocumentOpen()
-                    && this.documentManager.getDocument().isPathSelected()) {
+                    && this.documentManager.getDocument().isAutoRoutineSelected()) {
                 this.documentManager.actions().clearSelection();
                 if (this.documentManager.actions().getAutoWaypoint()) {
                     HHolonomicWaypoint newWaypoint;
@@ -130,10 +130,10 @@ public class BackgroundRectangle extends Pane {
                     double y = -(event.getY() - this.documentManager.getPathAreaHeight() / 2 - this.documentManager.getDocument().getZoomTranslateY()) / this.documentManager.getDocument().getZoomScale();
                     newWaypoint.setX(x);
                     newWaypoint.setY(y);
-                    int index = this.documentManager.getDocument().getSelectedPath().getTimeline().size();
+                    int index = this.documentManager.getDocument().getSelectedAutoRoutine().getTimeline().size();
                     newWaypoint.setName("Hard Waypoint " + index);
-                    this.documentManager.getDocument().getSelectedPath().getTimeline().add(index, newWaypoint);
-                    this.documentManager.getDocument().getSelectedPath().getTimelineSelectionModel().select(index);
+                    this.documentManager.getDocument().getSelectedAutoRoutine().getTimeline().add(index, newWaypoint);
+                    this.documentManager.getDocument().getSelectedAutoRoutine().getTimelineSelectionModel().select(index);
                 }
             }
         };

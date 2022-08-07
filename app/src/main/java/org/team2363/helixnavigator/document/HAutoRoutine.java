@@ -2,6 +2,7 @@ package org.team2363.helixnavigator.document;
 
 import java.util.List;
 
+import org.team2363.helixnavigator.document.command.HCompiledAutoRoutine;
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
@@ -32,7 +33,7 @@ import javafx.scene.transform.Transform;
 
 @JSONSerializable(JSONType.OBJECT)
 @JSONDeserializable({JSONType.OBJECT})
-public class HPath implements HNamedElement {
+public class HAutoRoutine implements HNamedElement {
 
     private final StringProperty name = new SimpleStringProperty(this, "name", "");
     private final ObservableList<HTimelineElement> timeline = FXCollections.observableArrayList();
@@ -41,10 +42,10 @@ public class HPath implements HNamedElement {
     private final HSelectionModel<HObstacle> obstaclesSelectionModel = new HSelectionModel<>(obstacles);
     private final ReadOnlyBooleanWrapper inPolygonPointMode = new ReadOnlyBooleanWrapper(this, "inPolygonPointMode", false);
     private final ReadOnlyObjectWrapper<HSelectionModel<HPolygonPoint>> polygonPointsSelectionModel = new ReadOnlyObjectWrapper<>(this, "polygonPointsSelectionModel", null);
-    private final ReadOnlyObjectWrapper<HHolonomicTrajectory> trajectory = new ReadOnlyObjectWrapper<HHolonomicTrajectory>(this, "trajectory", null);
+    private final ReadOnlyObjectWrapper<HCompiledAutoRoutine> compiledAutoRoutine = new ReadOnlyObjectWrapper<>(this, "compiledAutoRoutine", null);
 
     @DeserializedJSONConstructor
-    public HPath() {
+    public HAutoRoutine() {
         timelineSelectionModel.getSelectedItems().addListener((ListChangeListener.Change<? extends HTimelineElement> change) -> {
             updateInPolygonPointMode();
             updatePolygonPointsSelectionModel();
@@ -183,22 +184,22 @@ public class HPath implements HNamedElement {
         return polygonPointsSelectionModel.get();
     }
 
-    public final ReadOnlyObjectProperty<HHolonomicTrajectory> trajectoryProperty() {
-        return trajectory.getReadOnlyProperty();
+    public final ReadOnlyObjectProperty<HCompiledAutoRoutine> compiledAutoRoutineProperty() {
+        return compiledAutoRoutine.getReadOnlyProperty();
+    }
+    private final void setCompiledAutoRoutine(HCompiledAutoRoutine value) {
+        compiledAutoRoutine.set(value);
+    }
+    public final HCompiledAutoRoutine getCompiledAutoRoutine() {
+        return compiledAutoRoutine.get();
     }
 
-    // TODO: Make this private eventually
-    // there should be a method to generate a trajectory
-    public final void setTrajectory(HHolonomicTrajectory value) {
-        trajectory.set(value);
+    public boolean compileAutoRoutine() {
+
     }
 
-    public final HHolonomicTrajectory getTrajectory() {
-        return trajectory.get();
-    }
-
-    public static HPath defaultPath() {
-        HPath path = new HPath();
+    public static HAutoRoutine defaultPath() {
+        HAutoRoutine path = new HAutoRoutine();
         return path;
     }
 

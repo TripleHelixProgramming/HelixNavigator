@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
-import org.team2363.helixnavigator.document.HPath;
+import org.team2363.helixnavigator.document.HAutoRoutine;
 import org.team2363.helixnavigator.document.timeline.HHolonomicWaypoint;
 
 import javafx.beans.value.ChangeListener;
@@ -18,7 +18,7 @@ public class LinesPane extends Pane {
 
     // private final ObservableList<LineView> lineViews = FXCollections.<LineView>observableArrayList();
 
-    private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
+    private final ChangeListener<? super HAutoRoutine> onSelectedPathChanged = this::selectedPathChanged;
     private final ListChangeListener<? super HHolonomicWaypoint> onWaypointsChanged = this::waypointsChanged;
     
     public LinesPane(DocumentManager documentManager) {
@@ -37,24 +37,24 @@ public class LinesPane extends Pane {
 
     private void unloadDocument(HDocument oldDocument) {
         if (oldDocument != null) {
-            unloadSelectedPath(oldDocument.getSelectedPath());
+            unloadSelectedPath(oldDocument.getSelectedAutoRoutine());
             oldDocument.selectedPathProperty().removeListener(onSelectedPathChanged);
         }
     }
 
     private void loadDocument(HDocument newDocument) {
         if (newDocument != null) {
-            loadSelectedPath(newDocument.getSelectedPath());
+            loadSelectedPath(newDocument.getSelectedAutoRoutine());
             newDocument.selectedPathProperty().addListener(onSelectedPathChanged);
         }
     }
 
-    private void selectedPathChanged(ObservableValue<? extends HPath> currentPath, HPath oldPath, HPath newPath) {
+    private void selectedPathChanged(ObservableValue<? extends HAutoRoutine> currentPath, HAutoRoutine oldPath, HAutoRoutine newPath) {
         unloadSelectedPath(oldPath);
         loadSelectedPath(newPath);
     }
 
-    private void unloadSelectedPath(HPath oldPath) {
+    private void unloadSelectedPath(HAutoRoutine oldPath) {
         if (oldPath != null) {
             // lineViews.clear();
             getChildren().clear();
@@ -62,7 +62,7 @@ public class LinesPane extends Pane {
         }
     }
 
-    private void loadSelectedPath(HPath newPath) {
+    private void loadSelectedPath(HAutoRoutine newPath) {
         if (newPath != null) {
             updateWaypoints(newPath.getTimeline());
             newPath.getTimeline().addListener(onWaypointsChanged);

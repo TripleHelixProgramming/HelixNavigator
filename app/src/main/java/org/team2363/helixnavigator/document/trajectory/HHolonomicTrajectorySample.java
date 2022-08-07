@@ -1,4 +1,4 @@
-package org.team2363.helixnavigator.document;
+package org.team2363.helixnavigator.document.trajectory;
 
 import org.team2363.helixtrajectory.HolonomicTrajectorySample;
 

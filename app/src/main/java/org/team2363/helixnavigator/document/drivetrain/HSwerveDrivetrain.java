@@ -1,4 +1,4 @@
-package org.team2363.helixnavigator.document.drive;
+package org.team2363.helixnavigator.document.drivetrain;
 
 import java.util.List;
 
@@ -13,20 +13,20 @@ import com.jlbabilino.json.SerializedJSONObjectValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class HSwerveDrive extends HHolonomicDrive {
+public class HSwerveDrivetrain extends HHolonomicDrivetrain {
     
     private final ObservableList<HSwerveModule> modules = FXCollections.observableArrayList();
 
     @DeserializedJSONConstructor
-    public HSwerveDrive() {
+    public HSwerveDrivetrain() {
     }
 
     @Override
-    public HolonomicDriveType getHolonomicDriveType() {
-        return HolonomicDriveType.SWERVE;
+    public HolonomicDrivetrainType getHolonomicDrivetrainType() {
+        return HolonomicDrivetrainType.SWERVE;
     }
     @Override
-    public boolean isSwerveHolonomicDrive() {
+    public boolean isSwerveHolonomicDrivetrain() {
         return true;
     }
 
@@ -39,12 +39,12 @@ public class HSwerveDrive extends HHolonomicDrive {
         return modules;
     }
 
-    public static HSwerveDrive defaultSwerveDrive() {
-        HSwerveDrive swerveDrive = new HSwerveDrive();
+    public static HSwerveDrivetrain defaultSwerveDrivetrain() {
+        HSwerveDrivetrain swerveDrive = new HSwerveDrivetrain();
 
         swerveDrive.setMass(DefaultDrive.MASS);
         swerveDrive.setMomentOfInertia(DefaultDrive.MOMENT_OF_INERTIA);
-        swerveDrive.setBumpers(HDrive.defaultBumpers());
+        swerveDrive.setBumpers(HDrivetrain.defaultBumpers());
 
         HSwerveModule module0 = HSwerveModule.defaultSwerveModule();
         module0.setX(+DefaultSwerveDrive.WHEELBASE_X);

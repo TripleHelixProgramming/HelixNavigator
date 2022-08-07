@@ -31,7 +31,7 @@ public abstract class HObstacle extends HPathElement {
 
         @DeserializedJSONConstructor
         public static ObstacleType forName(@DeserializedJSONEntry String name) {
-            return valueOf(name);
+            return valueOf(name.toUpperCase());
         }
 
         @SerializedJSONEntry

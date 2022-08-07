@@ -31,10 +31,11 @@ public abstract class HWaypoint extends HTimelineElement {
 
         @DeserializedJSONConstructor
         public static WaypointType forName(@DeserializedJSONEntry String name) {
-            return valueOf(name);
+            return valueOf(name.toUpperCase());
         }
 
         @SerializedJSONEntry
+        @Override
         public String toString() {
             return name().toLowerCase();
         }
