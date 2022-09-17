@@ -3,13 +3,19 @@ package org.team2363.helixnavigator.document.compiled;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleWrapper;
 
-public abstract class PositionState {
+public class PositionState {
     
     private final ReadOnlyDoubleWrapper x = new ReadOnlyDoubleWrapper(this, "x", 0.0);
     private final ReadOnlyDoubleWrapper y = new ReadOnlyDoubleWrapper(this, "y", 0.0);
     private final ReadOnlyDoubleWrapper heading = new ReadOnlyDoubleWrapper(this, "heading", 0.0);
 
-    protected PositionState() {
+    public PositionState() {
+    }
+
+    void applyTrajectorySample(HTrajectorySample sample) {
+        setX(sample.x);
+        setY(sample.y);
+        setHeading(sample.heading);
     }
 
     public final ReadOnlyDoubleProperty xProperty() {

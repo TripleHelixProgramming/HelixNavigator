@@ -2,18 +2,15 @@ package org.team2363.helixnavigator.document.compiled.command;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
-import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.SerializedJSONObjectValue;
 
 public class HHolonomicTrajectoryFollowerCommand extends HCommand {
     
     @SerializedJSONObjectValue(key = "trajectory_id")
-    public final String trajectoryID;
+    public final HTrajectoryIDLink trajectoryID;
 
-    public HHolonomicTrajectoryFollowerCommand(
-            @DeserializedJSONObjectValue(key = "trajectory_id") String trajectoryID) {
+    public HHolonomicTrajectoryFollowerCommand(HTrajectoryIDLink trajectoryID) {
         this.trajectoryID = trajectoryID;
     }
 
@@ -27,12 +24,12 @@ public class HHolonomicTrajectoryFollowerCommand extends HCommand {
     }
     
     @Override
-    public double calculateDuration() {
-        return 
+    public double getDuration() {
+        return trajectoryID.trajectory.duration;
     }
 
     @Override
-    public Collection<? extends HCommand> getRunningCommands(double timestamp) {
-        return timestamp <= duration ? List.of(this) : Collections.emptyList();
+    public Collection<HCommand> getRunningSubCommands(double timestamp) {
+        return Collections.emptyList();
     }
 }

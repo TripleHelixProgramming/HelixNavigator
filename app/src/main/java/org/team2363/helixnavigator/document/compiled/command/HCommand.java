@@ -2,12 +2,6 @@ package org.team2363.helixnavigator.document.compiled.command;
 
 import java.util.Collection;
 
-import com.jlbabilino.json.DeserializedJSONConstructor;
-import com.jlbabilino.json.DeserializedJSONDeterminer;
-import com.jlbabilino.json.DeserializedJSONEntry;
-import com.jlbabilino.json.DeserializedJSONObjectValue;
-import com.jlbabilino.json.JSONDeserializable;
-import com.jlbabilino.json.JSONDeserializerException;
 import com.jlbabilino.json.JSONEntry.JSONType;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONEntry;
@@ -18,7 +12,7 @@ public abstract class HCommand {
 
     @JSONSerializable(JSONType.STRING)
     public static enum CommandType {
-        PARALLEL, SEQUENTIAL, DELAY, HOLONOMIC_TRAJECTORY_FOLLOWER, CUSTOM;
+        PARALLEL, SEQUENTIAL, DELAY, HOLONOMIC_TRAJECTORY_FOLLOWER;
 
         @SerializedJSONEntry
         @Override
@@ -45,25 +39,9 @@ public abstract class HCommand {
         return false;
     }
 
-    public abstract double calculateDuration();
-    public abstract Collection<? extends HCommand> getRunningCommands(double timestamp);
-
-    @DeserializedJSONDeterminer
-    public static Class<? extends HCommand> commandDeterminer(@DeserializedJSONObjectValue(key = "command_type") CommandType commandType)
-            throws JSONDeserializerException {
-        switch (commandType) {
-            case PARALLEL:
-                return HParallelCommand.class;
-            case SEQUENTIAL:
-                return HSequentialCommand.class;
-            case DELAY:
-                return HDelayCommand.class;
-            case HOLONOMIC_TRAJECTORY_FOLLOWER:
-                return HHolonomicTrajectoryFollowerCommand.class;
-            case CUSTOM:
-                return HCustomCommand.class;
-            default:
-                throw new JSONDeserializerException("Cannot have null command type");
-        }
+    public abstract double getDuration();
+    public boolean isRunning(double timestamp) {
+        return timestamp <= getDuration();
     }
+    public abstract Collection<HCommand> getRunningSubCommands(double timestamp);
 }

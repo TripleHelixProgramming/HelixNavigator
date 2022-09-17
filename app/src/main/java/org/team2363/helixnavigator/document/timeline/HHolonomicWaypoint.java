@@ -1,5 +1,6 @@
 package org.team2363.helixnavigator.document.timeline;
 
+import org.team2363.helixnavigator.document.compiled.HHolonomicTrajectory;
 import org.team2363.helixtrajectory.HolonomicWaypoint;
 import org.team2363.helixtrajectory.InitialGuessPoint;
 
@@ -30,8 +31,9 @@ public class HHolonomicWaypoint extends HWaypoint {
     private final BooleanProperty velocityYConstrained = new SimpleBooleanProperty(this, "velocityYConstrained", true);
     private final BooleanProperty velocityMagnitudeConstrained = new SimpleBooleanProperty(this, "velocityMagnitudeConstrained", true);
     private final BooleanProperty angularVelocityConstrained = new SimpleBooleanProperty(this, "angularVelocityConstrained", true);
-
     private final ReadOnlyObjectWrapper<VelocityConstraintType> velocityConstraintType = new ReadOnlyObjectWrapper<>(this, "velocityConstraintType", VelocityConstraintType.STATIC);
+
+    private final ReadOnlyObjectWrapper<HHolonomicTrajectory> holonomicTrajectorySegment = new ReadOnlyObjectWrapper<>(this, "holonomicTrajectorySegment", null);
 
     @DeserializedJSONConstructor
     public HHolonomicWaypoint() {
@@ -85,8 +87,8 @@ public class HHolonomicWaypoint extends HWaypoint {
     }
 
     @Override
-    public WaypointType getWaypointType() {
-        return WaypointType.HOLONOMIC;
+    public TimelineElementType getTimelineElementType() {
+        return TimelineElementType.HOLONOMIC_WAYPOINT;
     }
     @Override
     public boolean isHolonomicWaypoint() {

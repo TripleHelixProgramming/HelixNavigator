@@ -13,10 +13,11 @@ import com.jlbabilino.json.SerializedJSONObjectValue;
 import com.jlbabilino.json.JSONEntry.JSONType;
 
 public abstract class HTimelineElement extends HPathElement {
+
     @JSONSerializable(JSONType.STRING)
     @JSONDeserializable({JSONType.STRING})
     public static enum TimelineElementType {
-        WAYPOINT, INITIAL_GUESS_POINT, COMMAND_TRIGGER;
+        HOLONOMIC_WAYPOINT, INITIAL_GUESS_POINT, SEQUENTIAL_COMMAND_TRIGGER, PARALLEL_COMMAND_TRIGGER;
 
         @DeserializedJSONConstructor
         public static TimelineElementType forName(@DeserializedJSONEntry String name) {
@@ -32,26 +33,31 @@ public abstract class HTimelineElement extends HPathElement {
 
     @SerializedJSONObjectValue(key = "timeline_element_type")
     public abstract TimelineElementType getTimelineElementType();
-    public boolean isWaypoint() {
-        return false;
+    public boolean isHolonomicWaypoint() {
+        return getTimelineElementType() == TimelineElementType.HOLONOMIC_WAYPOINT;
     }
-    public boolean isInitialGuessPoint() {
-        return false;
+    public final boolean isInitialGuessPoint() {
+        return getTimelineElementType() == TimelineElementType.INITIAL_GUESS_POINT;
     }
-    public boolean isCommandTrigger() {
-        return false;
+    public final boolean isSequentialCommandTrigger() {
+        return getTimelineElementType() == TimelineElementType.SEQUENTIAL_COMMAND_TRIGGER;
+    }
+    public final boolean isParallelCommandTrigger() {
+        return getTimelineElementType() == TimelineElementType.PARALLEL_COMMAND_TRIGGER;
     }
 
     public static Class<? extends HTimelineElement> timelineElementDeterminer(
             @DeserializedJSONObjectValue(key = "timeline_element_type") TimelineElementType timelineElementType) 
             throws JSONDeserializerException {
         switch (timelineElementType) {
-            case WAYPOINT:
+            case HOLONOMIC_WAYPOINT:
                 return HWaypoint.class;
             case INITIAL_GUESS_POINT:
                 return HInitialGuessPoint.class;
-            case COMMAND_TRIGGER:
-                return HCommandTrigger.class;
+            case PARALLEL_COMMAND_TRIGGER:
+                return HParallelCommandTrigger.class;
+            case SEQUENTIAL_COMMAND_TRIGGER:
+                return HSequentialCommandTrigger.class;
             default:
                 throw new JSONDeserializerException("Cannot have null timeline element type");
         }

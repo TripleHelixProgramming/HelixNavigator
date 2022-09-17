@@ -1,5 +1,6 @@
 package org.team2363.helixnavigator.document.compiled.command;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -30,11 +31,21 @@ public class HParallelCommand extends HCommand {
     }
 
     @Override
-    public double calculateDuration() {
-        return deadlineCommand.calculateDuration();
+    public double getDuration() {
+        return deadlineCommand.getDuration();
     }
 
     @Override
-    public Collection<? extends HCommand> getRunningCommands() {
+    public Collection<HCommand> getRunningSubCommands(double timestamp) {
+        List<HCommand> runningCommands = new ArrayList<>();
+        if (deadlineCommand.isRunning(timestamp)) {
+            runningCommands.add(deadlineCommand);
+            for (HCommand parallelCommand : parallelCommands) {
+                if (parallelCommand.isRunning(timestamp)) {
+                    runningCommands.add(parallelCommand);
+                }
+            }
+        }
+        return runningCommands;
     }
 }

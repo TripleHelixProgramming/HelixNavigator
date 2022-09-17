@@ -1,16 +1,8 @@
 package org.team2363.helixnavigator.document.timeline;
 
-import com.jlbabilino.json.DeserializedJSONConstructor;
-import com.jlbabilino.json.DeserializedJSONDeterminer;
-import com.jlbabilino.json.DeserializedJSONEntry;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.DeserializedJSONTarget;
-import com.jlbabilino.json.JSONDeserializable;
-import com.jlbabilino.json.JSONDeserializerException;
-import com.jlbabilino.json.JSONSerializable;
-import com.jlbabilino.json.SerializedJSONEntry;
 import com.jlbabilino.json.SerializedJSONObjectValue;
-import com.jlbabilino.json.JSONEntry.JSONType;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -22,24 +14,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.geometry.Point2D;
 import javafx.scene.transform.Transform;
 
-public abstract class HWaypoint extends HTimelineElement {
-
-    @JSONSerializable(JSONType.STRING)
-    @JSONDeserializable({JSONType.STRING})
-    public static enum WaypointType {
-        HOLONOMIC;
-
-        @DeserializedJSONConstructor
-        public static WaypointType forName(@DeserializedJSONEntry String name) {
-            return valueOf(name.toUpperCase());
-        }
-
-        @SerializedJSONEntry
-        @Override
-        public String toString() {
-            return name().toLowerCase();
-        }
-    }
+public abstract class HWaypoint extends HSequentialAction {
 
     public static enum PositionConstraintType {
         ERROR, X, X_AND_Y, Y;
@@ -52,7 +27,6 @@ public abstract class HWaypoint extends HTimelineElement {
     private final BooleanProperty xConstrained = new SimpleBooleanProperty(this, "xConstrained", true);
     private final BooleanProperty yConstrained = new SimpleBooleanProperty(this, "yConstrained", true);
     private final BooleanProperty headingConstrained = new SimpleBooleanProperty(this, "headingConstrained", true);
-
     private final ReadOnlyObjectWrapper<PositionConstraintType> positionConstraintType = new ReadOnlyObjectWrapper<>(this, "positionConstraintType", PositionConstraintType.X_AND_Y);
 
     protected HWaypoint() {
@@ -88,21 +62,6 @@ public abstract class HWaypoint extends HTimelineElement {
         setY(newPoint.getY());
         double deltaAngle = Math.atan2(transform.getMyx(), transform.getMxx());
         setHeading(getHeading() + deltaAngle);
-    }
-
-    @Override
-    public TimelineElementType getTimelineElementType() {
-        return TimelineElementType.WAYPOINT;
-    }
-    @Override
-    public boolean isWaypoint() {
-        return true;
-    }
-
-    @SerializedJSONObjectValue(key = "waypoint_type")
-    public abstract WaypointType getWaypointType();
-    public boolean isHolonomicWaypoint() {
-        return false;
     }
 
     public boolean isPositionStateKnown() {
@@ -193,16 +152,5 @@ public abstract class HWaypoint extends HTimelineElement {
     @SerializedJSONObjectValue(key = "heading_constrained")
     public final boolean isHeadingConstrained() {
         return headingConstrained.get();
-    }
-
-    @DeserializedJSONDeterminer
-    public static Class<? extends HWaypoint> waypointDeterminer(
-            @DeserializedJSONObjectValue(key = "waypoint_type") WaypointType waypointType) throws JSONDeserializerException {
-        switch (waypointType) {
-            case HOLONOMIC:
-                return HHolonomicWaypoint.class;
-            default:
-                throw new JSONDeserializerException("Waypoint type cannot be null");
-        }
     }
 }

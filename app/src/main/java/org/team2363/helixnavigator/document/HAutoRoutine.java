@@ -3,6 +3,7 @@ package org.team2363.helixnavigator.document;
 import java.util.List;
 
 import org.team2363.helixnavigator.document.compiled.HCompiledAutoRoutine;
+import org.team2363.helixnavigator.document.drivetrain.HDrivetrain;
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
@@ -194,45 +195,49 @@ public class HAutoRoutine implements HNamedElement {
         return compiledAutoRoutine.get();
     }
 
-    public boolean compileAutoRoutine() {
-
+    public boolean compileAutoRoutine(HDrivetrain drivetrain) {
+        
+        return false;
     }
+
+    private 
 
     public static HAutoRoutine defaultPath() {
         HAutoRoutine path = new HAutoRoutine();
         return path;
     }
 
-    public Path toPath() {
-        // List<Waypoint> htWaypoints = new ArrayList<>();
-        // int i = 0;
-        // while (timelineElements.get(i).isInitialGuess()) {
-        //     i++;
-        // }
-        // while (i < timelineElements.size()) {
-        //     int waypointIndex = i;
-        //     i++;
-        //     List<InitialGuessPoint> initialGuessPoints = new ArrayList<>();
-        //     while (i < timelineElements.size() && timelineElements.get(i).isInitialGuess()) {
-        //         initialGuessPoints.add(((HInitialGuessPoint) timelineElements.get(i)).toInitialGuessPoint());
-        //         i++;
-        //     }
-        //     InitialGuessPoint[] initialGuessPointsArray = initialGuessPoints.toArray(new InitialGuessPoint[0]);
-        //     switch (timelineElements.get(waypointIndex).getWaypointType()) {
-        //         case SOFT:
-        //             htWaypoints.add(((HSoftWaypoint) timelineElements.get(waypointIndex)).toWaypoint(initialGuessPointsArray));
-        //             break;
-        //         case HARD:
-        //             htWaypoints.add(((HHardWaypoint) timelineElements.get(waypointIndex)).toWaypoint(initialGuessPointsArray));
-        //             break;
-        //         case CUSTOM:
-        //             htWaypoints.add(((HWaypoint) timelineElements.get(waypointIndex)).toWaypoint(initialGuessPointsArray));
-        //             break;
-        //         default:
-        //             break;
-        //     }
-        // }
-        // return new Path(htWaypoints.toArray(new Waypoint[0]));
+    private Path toPath(int firstWaypointIndex, ) {
+        
+        List<Waypoint> htWaypoints = new ArrayList<>();
+        int i = firstWaypointIndex;
+        while (timelineElements.get(i).isInitialGuess()) {
+            i++;
+        }
+        while (i < timelineElements.size()) {
+            int waypointIndex = i;
+            i++;
+            List<InitialGuessPoint> initialGuessPoints = new ArrayList<>();
+            while (i < timelineElements.size() && timelineElements.get(i).isInitialGuess()) {
+                initialGuessPoints.add(((HInitialGuessPoint) timelineElements.get(i)).toInitialGuessPoint());
+                i++;
+            }
+            InitialGuessPoint[] initialGuessPointsArray = initialGuessPoints.toArray(new InitialGuessPoint[0]);
+            switch (timelineElements.get(waypointIndex).getWaypointType()) {
+                case SOFT:
+                    htWaypoints.add(((HSoftWaypoint) timelineElements.get(waypointIndex)).toWaypoint(initialGuessPointsArray));
+                    break;
+                case HARD:
+                    htWaypoints.add(((HHardWaypoint) timelineElements.get(waypointIndex)).toWaypoint(initialGuessPointsArray));
+                    break;
+                case CUSTOM:
+                    htWaypoints.add(((HWaypoint) timelineElements.get(waypointIndex)).toWaypoint(initialGuessPointsArray));
+                    break;
+                default:
+                    break;
+            }
+        }
+        return new Path(htWaypoints.toArray(new Waypoint[0]));
         return null; //TODO: fix this
     }
 

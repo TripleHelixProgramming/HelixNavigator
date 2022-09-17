@@ -1,5 +1,6 @@
 package org.team2363.helixnavigator.document.compiled.command;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
@@ -25,11 +26,28 @@ public class HSequentialCommand extends HCommand {
     }
 
     @Override
-    public double calculateDuration() {
+    public double getDuration() {
         double duration = 0.0;
         for (HCommand command : sequentialCommands) {
-            duration += command.calculateDuration();
+            duration += command.getDuration();
         }
         return duration;
+    }
+
+    @Override
+    public Collection<HCommand> getRunningSubCommands(double timestamp) {
+        if (timestamp < 0.0) {
+            return List.of();
+        }
+        HCommand currentCommand = null;
+        double rollingTimestamp = 0.0;
+        for (int index = 0; index < sequentialCommands.size() + 1; index++) {
+            if (timestamp < rollingTimestamp) {
+                currentCommand = sequentialCommands.get(index - 1);
+                break;
+            }
+            rollingTimestamp += sequentialCommands.get(index).getDuration();
+        }
+        return List.of(currentCommand);
     }
 }

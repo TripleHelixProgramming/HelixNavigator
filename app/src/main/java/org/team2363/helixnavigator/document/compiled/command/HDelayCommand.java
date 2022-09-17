@@ -2,7 +2,6 @@ package org.team2363.helixnavigator.document.compiled.command;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.SerializedJSONObjectValue;
@@ -26,12 +25,12 @@ public class HDelayCommand extends HCommand {
     }
 
     @Override
-    public double calculateDuration() {
+    public double getDuration() {
         return duration;
     }
 
     @Override
-    public Collection<? extends HCommand> getRunningCommands(double timestamp) {
-        return timestamp <= duration ? List.of(this) : Collections.emptyList();
+    public Collection<HCommand> getRunningSubCommands(double timestamp) {
+        return Collections.emptyList();
     }
 }
