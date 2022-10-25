@@ -1,6 +1,6 @@
 package org.team2363.helixnavigator.ui.prompts.waypoint;
 
-import org.team2363.helixnavigator.document.timeline.HInitialGuessPoint;
+import org.team2363.helixnavigator.document.timeline.waypoint.HInitialGuessPoint;
 
 public class InitialGuessWaypointEditDialog extends WaypointEditDialog {
 

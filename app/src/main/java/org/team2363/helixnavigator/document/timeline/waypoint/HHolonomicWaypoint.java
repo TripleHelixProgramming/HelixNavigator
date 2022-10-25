@@ -1,6 +1,8 @@
-package org.team2363.helixnavigator.document.timeline;
+package org.team2363.helixnavigator.document.timeline.waypoint;
 
 import org.team2363.helixnavigator.document.compiled.HHolonomicTrajectory;
+import org.team2363.helixnavigator.document.timeline.HTimelineElement;
+import org.team2363.helixnavigator.document.timeline.HTimelineElement.TimelineElementType;
 import org.team2363.helixtrajectory.HolonomicWaypoint;
 import org.team2363.helixtrajectory.InitialGuessPoint;
 
@@ -20,7 +22,7 @@ import javafx.beans.value.ChangeListener;
 public class HHolonomicWaypoint extends HWaypoint {
 
     public static enum VelocityConstraintType {
-        NONE, DIRECTION, MAGNITUDE, DIRECTION_AND_MAGNITUDE, X, Y, STATIC
+        NONE, MAGNITUDE, DIRECTION, COMPONENT, VECTOR, STATIC
     }
 
     private final DoubleProperty velocityX = new SimpleDoubleProperty(this, "velocityX", 0.0);

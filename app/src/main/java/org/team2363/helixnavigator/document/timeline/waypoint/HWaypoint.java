@@ -1,4 +1,6 @@
-package org.team2363.helixnavigator.document.timeline;
+package org.team2363.helixnavigator.document.timeline.waypoint;
+
+import org.team2363.helixnavigator.document.timeline.HSequentialAction;
 
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.DeserializedJSONTarget;
@@ -17,7 +19,7 @@ import javafx.scene.transform.Transform;
 public abstract class HWaypoint extends HSequentialAction {
 
     public static enum PositionConstraintType {
-        ERROR, X, X_AND_Y, Y;
+        NONE, X, Y, X_AND_Y;
     }
 
     private final DoubleProperty x = new SimpleDoubleProperty(this, "x", 0.0);
@@ -43,7 +45,7 @@ public abstract class HWaypoint extends HSequentialAction {
         } else if (!isXConstrained() && isYConstrained()) {
             setPositionConstraintType(PositionConstraintType.Y);
         } else { // should be at least one constraining
-            setPositionConstraintType(PositionConstraintType.ERROR);
+            setPositionConstraintType(PositionConstraintType.NONE);
         }
     }
 

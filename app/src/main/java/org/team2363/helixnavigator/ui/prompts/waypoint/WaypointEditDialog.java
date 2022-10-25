@@ -4,9 +4,9 @@ import java.util.Collection;
 
 import javax.measure.quantity.Length;
 
-import org.team2363.helixnavigator.document.timeline.HInitialGuessPoint;
-import org.team2363.helixnavigator.document.timeline.HHolonomicWaypoint;
 import org.team2363.helixnavigator.document.timeline.waypoint.HHardWaypoint;
+import org.team2363.helixnavigator.document.timeline.waypoint.HHolonomicWaypoint;
+import org.team2363.helixnavigator.document.timeline.waypoint.HInitialGuessPoint;
 import org.team2363.helixnavigator.document.timeline.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.global.Standards;
 import org.team2363.helixnavigator.global.Standards.ExportedUnits;

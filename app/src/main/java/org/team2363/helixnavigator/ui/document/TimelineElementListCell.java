@@ -5,12 +5,12 @@ import java.util.List;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
-import org.team2363.helixnavigator.document.timeline.HInitialGuessPoint;
 import org.team2363.helixnavigator.document.timeline.HTimelineElement;
-import org.team2363.helixnavigator.document.timeline.HHolonomicWaypoint;
-import org.team2363.helixnavigator.document.timeline.HHolonomicWaypoint.WaypointType;
 import org.team2363.helixnavigator.document.timeline.waypoint.HHardWaypoint;
+import org.team2363.helixnavigator.document.timeline.waypoint.HHolonomicWaypoint;
+import org.team2363.helixnavigator.document.timeline.waypoint.HInitialGuessPoint;
 import org.team2363.helixnavigator.document.timeline.waypoint.HSoftWaypoint;
+import org.team2363.helixnavigator.document.timeline.waypoint.HHolonomicWaypoint.WaypointType;
 import org.team2363.helixnavigator.global.Standards;
 import org.team2363.helixnavigator.ui.editor.waypoint.CustomWaypointView;
 import org.team2363.helixnavigator.ui.editor.waypoint.HardWaypointView;

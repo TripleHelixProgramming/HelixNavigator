@@ -1,6 +1,8 @@
 package org.team2363.helixnavigator.document.timeline;
 
 import org.team2363.helixnavigator.document.HPathElement;
+import org.team2363.helixnavigator.document.timeline.waypoint.HInitialGuessPoint;
+import org.team2363.helixnavigator.document.timeline.waypoint.HWaypoint;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONEntry;

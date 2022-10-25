@@ -7,10 +7,10 @@ import org.team2363.helixnavigator.document.field.image.HFieldImage;
 import org.team2363.helixnavigator.document.obstacle.HCircleObstacle;
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
-import org.team2363.helixnavigator.document.timeline.HHolonomicWaypoint;
-import org.team2363.helixnavigator.document.timeline.HInitialGuessPoint;
 import org.team2363.helixnavigator.document.timeline.HTimelineElement;
-import org.team2363.helixnavigator.document.timeline.HWaypoint;
+import org.team2363.helixnavigator.document.timeline.waypoint.HHolonomicWaypoint;
+import org.team2363.helixnavigator.document.timeline.waypoint.HInitialGuessPoint;
+import org.team2363.helixnavigator.document.timeline.waypoint.HWaypoint;
 import org.team2363.helixnavigator.ui.prompts.TransformDialog;
 import org.team2363.helixnavigator.ui.prompts.documentconfig.DocumentConfigDialog;
 

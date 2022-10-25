@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
+import org.team2363.helixnavigator.document.timeline.waypoint.HHolonomicWaypoint;
 import org.team2363.helixnavigator.document.HAutoRoutine;
-import org.team2363.helixnavigator.document.timeline.HHolonomicWaypoint;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
