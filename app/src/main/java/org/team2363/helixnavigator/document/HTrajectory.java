@@ -5,7 +5,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
-import org.team2363.helixtrajectory.Trajectory;
+import org.team2363.helixtrajectory.HolonomicTrajectory;
+import org.team2363.helixtrajectory.HolonomicTrajectorySample;
+import org.team2363.helixtrajectory.HolonomicTrajectorySegment;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONEntry;
@@ -101,10 +103,14 @@ public class HTrajectory {
         return timestamp.get();
     }
 
-    public static HTrajectory fromTrajectory(Trajectory trajectory) {
+    public static HTrajectory fromTrajectory(HolonomicTrajectory trajectory) {
         List<HTrajectorySample> hSamples = new ArrayList<>();
-        for (int i = 0; i < trajectory.length(); i++) {
-            hSamples.add(HTrajectorySample.fromTrajectorySample(trajectory.get(i)));
+        double timestamp = 0.0;
+        for (HolonomicTrajectorySegment segment : trajectory.holonomicSegments) {
+            for (HolonomicTrajectorySample sample : segment.holonomicSamples) {
+                timestamp += sample.intervalDuration;
+                hSamples.add(HTrajectorySample.fromTrajectorySample(sample, timestamp));
+            }
         }
         return new HTrajectory(hSamples);
     }

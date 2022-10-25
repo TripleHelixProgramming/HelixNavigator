@@ -1,5 +1,7 @@
 package org.team2363.helixnavigator.document.obstacle;
 
+import java.util.List;
+
 import org.team2363.helixnavigator.document.HPathElement;
 import org.team2363.helixnavigator.global.Standards.DefaultRobotConfiguration;
 import org.team2363.helixtrajectory.Obstacle;
@@ -89,6 +91,6 @@ public abstract class HObstacle extends HPathElement {
         ObstaclePoint point2 = new ObstaclePoint(-DefaultRobotConfiguration.BUMPER_LENGTH / 2, +DefaultRobotConfiguration.BUMPER_WIDTH / 2);
         ObstaclePoint point3 = new ObstaclePoint(-DefaultRobotConfiguration.BUMPER_LENGTH / 2, -DefaultRobotConfiguration.BUMPER_WIDTH / 2);
         ObstaclePoint point4 = new ObstaclePoint(+DefaultRobotConfiguration.BUMPER_LENGTH / 2, -DefaultRobotConfiguration.BUMPER_WIDTH / 2);
-        return new Obstacle(0, point1, point2, point3, point4);
+        return new Obstacle(0, true, List.of(point1, point2, point3, point4));
     }
 }

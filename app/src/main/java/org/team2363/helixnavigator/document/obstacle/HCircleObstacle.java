@@ -1,5 +1,7 @@
 package org.team2363.helixnavigator.document.obstacle;
 
+import java.util.List;
+
 import org.team2363.helixtrajectory.Obstacle;
 import org.team2363.helixtrajectory.ObstaclePoint;
 
@@ -25,7 +27,7 @@ public class HCircleObstacle extends HObstacle {
 
     @Override
     public Obstacle toObstacle() {
-        return new Obstacle(getSafetyDistance() + getRadius(), new ObstaclePoint(getCenterX(), getCenterY()));
+        return new Obstacle(getSafetyDistance() + getRadius(), true, List.of(new ObstaclePoint(getCenterX(), getCenterY())));
     }
 
     @Override

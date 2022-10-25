@@ -1,5 +1,6 @@
 package org.team2363.helixnavigator.document.obstacle;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.team2363.helixtrajectory.Obstacle;
@@ -38,11 +39,11 @@ public class HPolygonObstacle extends HObstacle {
 
     @Override
     public Obstacle toObstacle() {
-        ObstaclePoint[] obstaclePoints = new ObstaclePoint[points.size()];
+        List<ObstaclePoint> obstaclePoints = new ArrayList<>(points.size());
         for (int i = 0; i < points.size(); i++) {
-            obstaclePoints[i] = points.get(i).toObstaclePoint();
+            obstaclePoints.add(points.get(i).toObstaclePoint());
         }
-        return new Obstacle(getSafetyDistance(), obstaclePoints);
+        return new Obstacle(getSafetyDistance(), true, obstaclePoints);
     }
 
     @Override

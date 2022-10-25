@@ -1,13 +1,13 @@
 package org.team2363.helixnavigator.document;
 
-import org.team2363.helixtrajectory.TrajectorySample;
+import org.team2363.helixtrajectory.HolonomicTrajectorySample;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.JSONDeserializable;
+import com.jlbabilino.json.JSONEntry.JSONType;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONObjectValue;
-import com.jlbabilino.json.JSONEntry.JSONType;
 
 @JSONSerializable(JSONType.OBJECT)
 @JSONDeserializable({JSONType.OBJECT})
@@ -58,8 +58,8 @@ public class HTrajectorySample {
         return new HTrajectorySample(ts, x, y, heading, vx, vy, omega);
     }
 
-    public static HTrajectorySample fromTrajectorySample(TrajectorySample sample) {
-        return new HTrajectorySample(sample.ts, sample.x, sample.y, sample.heading,
-                sample.vx, sample.vy, sample.omega);
+    public static HTrajectorySample fromTrajectorySample(HolonomicTrajectorySample sample, double timestamp) {
+        return new HTrajectorySample(timestamp, sample.x, sample.y, sample.heading,
+                sample.velocityX, sample.velocityY, sample.angularVelocity);
     }
 }

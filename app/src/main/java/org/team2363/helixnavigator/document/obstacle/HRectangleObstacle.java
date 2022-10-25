@@ -1,5 +1,7 @@
 package org.team2363.helixnavigator.document.obstacle;
 
+import java.util.List;
+
 import org.team2363.helixtrajectory.Obstacle;
 import org.team2363.helixtrajectory.ObstaclePoint;
 
@@ -38,11 +40,11 @@ public class HRectangleObstacle extends HObstacle {
                       getCenterY() + diagonal * Math.sin(getRotateAngle() + angles[1]),
                       getCenterY() + diagonal * Math.sin(getRotateAngle() + angles[2]),
                       getCenterY() + diagonal * Math.sin(getRotateAngle() + angles[3])};
-        ObstaclePoint[] obstaclePoints = {new ObstaclePoint(x[0], y[0]),
+        List<ObstaclePoint> obstaclePoints = List.of(new ObstaclePoint(x[0], y[0]),
                                           new ObstaclePoint(x[1], y[1]),
                                           new ObstaclePoint(x[2], y[2]),
-                                          new ObstaclePoint(x[3], y[3])};
-        return new Obstacle(getSafetyDistance(), obstaclePoints);
+                                          new ObstaclePoint(x[3], y[3]));
+        return new Obstacle(getSafetyDistance(), true, obstaclePoints);
     }
 
     @Override

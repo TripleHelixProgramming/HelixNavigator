@@ -1,17 +1,20 @@
 package org.team2363.helixnavigator.document;
 
+import java.util.List;
+
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.global.Standards.DefaultRobotConfiguration;
 import org.team2363.helixtrajectory.Obstacle;
-import org.team2363.helixtrajectory.SwerveDrive;
+import org.team2363.helixtrajectory.SwerveDrivetrain;
+import org.team2363.helixtrajectory.SwerveModule;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.DeserializedJSONTarget;
 import com.jlbabilino.json.JSONDeserializable;
+import com.jlbabilino.json.JSONEntry.JSONType;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONObjectValue;
-import com.jlbabilino.json.JSONEntry.JSONType;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -212,9 +215,11 @@ public class HRobotConfiguration {
         setBumpers(otherConfiguration.getBumpers());
     }
 
-    public SwerveDrive toDrive() {
-        return new SwerveDrive(getWheelHorizontalDistance(), getWheelVerticalDistance(),
-                getMass(), getMomentOfInertia(),
-                getMotorMaxAngularSpeed(), getMotorMaxTorque(), getWheelRadius(), getBumpers());
+    public SwerveDrivetrain toDrive() {
+        SwerveModule module0 = new SwerveModule(+getWheelHorizontalDistance(), +getWheelVerticalDistance(), getWheelRadius(), getMotorMaxAngularSpeed(), getMotorMaxTorque());
+        SwerveModule module1 = new SwerveModule(+getWheelHorizontalDistance(), -getWheelVerticalDistance(), getWheelRadius(), getMotorMaxAngularSpeed(), getMotorMaxTorque());
+        SwerveModule module2 = new SwerveModule(-getWheelHorizontalDistance(), +getWheelVerticalDistance(), getWheelRadius(), getMotorMaxAngularSpeed(), getMotorMaxTorque());
+        SwerveModule module3 = new SwerveModule(-getWheelHorizontalDistance(), -getWheelVerticalDistance(), getWheelRadius(), getMotorMaxAngularSpeed(), getMotorMaxTorque());
+        return new SwerveDrivetrain(getMass(), getMomentOfInertia(), List.of(module0, module1, module2, module3), getBumpers());
     }
 }

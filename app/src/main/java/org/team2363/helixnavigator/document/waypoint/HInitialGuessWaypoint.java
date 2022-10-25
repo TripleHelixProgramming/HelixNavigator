@@ -21,6 +21,6 @@ public class HInitialGuessWaypoint extends HWaypoint {
     }
 
     public InitialGuessPoint toInitialGuessPoint() {
-        return new InitialGuessPoint(getX(), getY());
+        return new InitialGuessPoint(getX(), getY(), 0.0);
     }
 }

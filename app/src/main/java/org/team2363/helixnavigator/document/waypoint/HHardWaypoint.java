@@ -1,7 +1,9 @@
 package org.team2363.helixnavigator.document.waypoint;
 
+import java.util.List;
+
+import org.team2363.helixtrajectory.HolonomicWaypoint;
 import org.team2363.helixtrajectory.InitialGuessPoint;
-import org.team2363.helixtrajectory.Waypoint;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
@@ -51,7 +53,7 @@ public class HHardWaypoint extends HWaypoint {
         return heading.get();
     }
 
-    public Waypoint toWaypoint(InitialGuessPoint[] initialGuessPoints) {
-        return new Waypoint(getX(), getY(), getHeading(), 0.0, 0.0, 0.0, true, true, true, false, false, false, false, initialGuessPoints);
+    public HolonomicWaypoint toWaypoint(List<InitialGuessPoint> initialGuessPoints) {
+        return new HolonomicWaypoint(getX(), getY(), getHeading(), 0.0, 0.0, 0.0, true, true, true, false, false, false, false, 100, initialGuessPoints, List.of());
     }
 }

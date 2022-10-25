@@ -19,6 +19,13 @@ repositories {
     maven {
         url = uri("https://jitpack.io")
     }
+    maven {
+        url = uri("https://maven.pkg.github.com/jlbabilino/HelixTrajectory")
+        credentials {
+            username = "jlbabilino"
+            password = "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"
+        }
+    }
 }
 
 dependencies {
@@ -31,7 +38,7 @@ dependencies {
     implementation("systems.uom:systems-quantity:2.1")
     // implementation "org.djunits:djunits:4.01.07"
 
-    implementation(files("../libs/jar/helixtrajectoryj.jar"))
+    implementation("org.team2363:helixtrajectory:0.0.0-pre4")
 }
 
 application {
@@ -74,7 +81,7 @@ tasks.register("jpackage") {
                     "--input", jarDir,
                     "--java-options", javaOptions,
                     "--main-jar", jarName,
-                    // "--main-class", "org.team2363.helixnavigator.Main",
+                    "--main-class", "org.team2363.helixnavigator.Main",
                     "--dest", dest,
                     "--name", project.name,
                     "--type", "dmg",

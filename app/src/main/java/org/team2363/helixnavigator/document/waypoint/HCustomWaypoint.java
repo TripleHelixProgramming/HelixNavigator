@@ -1,7 +1,9 @@
 package org.team2363.helixnavigator.document.waypoint;
 
+import java.util.List;
+
+import org.team2363.helixtrajectory.HolonomicWaypoint;
 import org.team2363.helixtrajectory.InitialGuessPoint;
-import org.team2363.helixtrajectory.Waypoint;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
@@ -182,9 +184,9 @@ public class HCustomWaypoint extends HWaypoint {
         return angularVelocityConstrained.get();
     }
 
-    public Waypoint toWaypoint(InitialGuessPoint[] initialGuessPoints) {
-        return new Waypoint(getX(), getY(), getHeading(), getVelocityX(), getVelocityY(), getAngularVelocity(),
+    public HolonomicWaypoint toWaypoint(List<InitialGuessPoint> initialGuessPoints) {
+        return new HolonomicWaypoint(getX(), getY(), getHeading(), getVelocityX(), getVelocityY(), getAngularVelocity(),
                             isXConstrained(), isYConstrained(), isHeadingConstrained(), isVelocityXConstrained(),
-                            isVelocityYConstrained(), isVelocityMagnitudeConstrained(), isAngularVelocityConstrained(), initialGuessPoints);
+                            isVelocityYConstrained(), isVelocityMagnitudeConstrained(), isAngularVelocityConstrained(), 100, initialGuessPoints, List.of());
     }
 }

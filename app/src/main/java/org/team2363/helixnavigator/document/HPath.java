@@ -11,20 +11,20 @@ import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HInitialGuessWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+import org.team2363.helixtrajectory.HolonomicPath;
+import org.team2363.helixtrajectory.HolonomicWaypoint;
 import org.team2363.helixtrajectory.InitialGuessPoint;
-import org.team2363.helixtrajectory.Path;
-import org.team2363.helixtrajectory.Waypoint;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
 import com.jlbabilino.json.DeserializedJSONTarget;
 import com.jlbabilino.json.InvalidJSONTranslationConfiguration;
 import com.jlbabilino.json.JSONDeserializable;
+import com.jlbabilino.json.JSONEntry.JSONType;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.JSONSerializer;
 import com.jlbabilino.json.JSONSerializerException;
 import com.jlbabilino.json.SerializedJSONObjectValue;
-import com.jlbabilino.json.JSONEntry.JSONType;
 
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
@@ -205,8 +205,8 @@ public class HPath {
         return trajectory.get();
     }
 
-    public Path toPath() {
-        List<Waypoint> htWaypoints = new ArrayList<>();
+    public HolonomicPath toPath() {
+        List<HolonomicWaypoint> htWaypoints = new ArrayList<>();
         int i = 0;
         while (waypoints.get(i).isInitialGuess()) {
             i++;
@@ -219,22 +219,21 @@ public class HPath {
                 initialGuessPoints.add(((HInitialGuessWaypoint) waypoints.get(i)).toInitialGuessPoint());
                 i++;
             }
-            InitialGuessPoint[] initialGuessPointsArray = initialGuessPoints.toArray(new InitialGuessPoint[0]);
             switch (waypoints.get(waypointIndex).getWaypointType()) {
                 case SOFT:
-                    htWaypoints.add(((HSoftWaypoint) waypoints.get(waypointIndex)).toWaypoint(initialGuessPointsArray));
+                    htWaypoints.add(((HSoftWaypoint) waypoints.get(waypointIndex)).toWaypoint(initialGuessPoints));
                     break;
                 case HARD:
-                    htWaypoints.add(((HHardWaypoint) waypoints.get(waypointIndex)).toWaypoint(initialGuessPointsArray));
+                    htWaypoints.add(((HHardWaypoint) waypoints.get(waypointIndex)).toWaypoint(initialGuessPoints));
                     break;
                 case CUSTOM:
-                    htWaypoints.add(((HCustomWaypoint) waypoints.get(waypointIndex)).toWaypoint(initialGuessPointsArray));
+                    htWaypoints.add(((HCustomWaypoint) waypoints.get(waypointIndex)).toWaypoint(initialGuessPoints));
                     break;
                 default:
                     break;
             }
         }
-        return new Path(htWaypoints.toArray(new Waypoint[0]));
+        return new HolonomicPath(htWaypoints);
     }
 
     @Override
