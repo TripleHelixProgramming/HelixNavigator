@@ -12,8 +12,10 @@ import com.jlbabilino.json.SerializedJSONObjectValue;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.transform.Transform;
 
 public class HCustomWaypoint extends HWaypoint {
@@ -30,6 +32,8 @@ public class HCustomWaypoint extends HWaypoint {
     private final BooleanProperty velocityYConstrained = new SimpleBooleanProperty(this, "velocityYConstrained", false);
     private final BooleanProperty velocityMagnitudeConstrained = new SimpleBooleanProperty(this, "velocityMagnitudeConstrained", false);
     private final BooleanProperty angularVelocityConstrained = new SimpleBooleanProperty(this, "angularVelocityConstrained", false);
+    
+    private final IntegerProperty controlIntervalCount = new SimpleIntegerProperty(this, "controlIntervalCount", 100);
 
     @DeserializedJSONConstructor
     public HCustomWaypoint() {
@@ -184,9 +188,21 @@ public class HCustomWaypoint extends HWaypoint {
         return angularVelocityConstrained.get();
     }
 
+    public final IntegerProperty controlIntervalCountProperty() {
+        return controlIntervalCount;
+    }
+
+    public final void setControlIntervalCount(int value) {
+        controlIntervalCount.set(value);
+    }
+
+    public final int getControlIntervalCount() {
+        return controlIntervalCount.get();
+    }
+
     public HolonomicWaypoint toWaypoint(List<InitialGuessPoint> initialGuessPoints) {
         return new HolonomicWaypoint(getX(), getY(), getHeading(), getVelocityX(), getVelocityY(), getAngularVelocity(),
                             isXConstrained(), isYConstrained(), isHeadingConstrained(), isVelocityXConstrained(),
-                            isVelocityYConstrained(), isVelocityMagnitudeConstrained(), isAngularVelocityConstrained(), 100, initialGuessPoints, List.of());
+                            isVelocityYConstrained(), isVelocityMagnitudeConstrained(), isAngularVelocityConstrained(), getControlIntervalCount(), initialGuessPoints, List.of());
     }
 }

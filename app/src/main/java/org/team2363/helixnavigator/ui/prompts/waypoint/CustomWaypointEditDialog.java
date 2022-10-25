@@ -10,6 +10,7 @@ import javax.measure.quantity.Speed;
 import org.team2363.helixnavigator.document.waypoint.HCustomWaypoint;
 import org.team2363.helixnavigator.global.Standards.SupportedUnits.SupportedAngularSpeed;
 import org.team2363.helixnavigator.global.Standards.SupportedUnits.SupportedSpeed;
+import org.team2363.lib.ui.validation.IntegerTextField;
 import org.team2363.lib.ui.validation.UnitTextField;
 
 import javafx.scene.control.CheckBox;
@@ -39,6 +40,8 @@ public class CustomWaypointEditDialog extends WaypointEditDialog {
     private final CheckBox velocityYConstrainedCheckBox = new CheckBox("Velocity Y");
     private final CheckBox velocityMagnitudeConstrainedCheckBox = new CheckBox("Velocity Magnitude");
     private final CheckBox angularVelocityConstrainedCheckBox = new CheckBox("Angular Velocity");
+    private final Text controlIntervalCountText = new Text("Control Interval Count:");
+    private final IntegerTextField controlIntervalCountTextField = new IntegerTextField(0, Integer.MAX_VALUE);
 
     public CustomWaypointEditDialog(HCustomWaypoint customWaypoint) {
         super(customWaypoint, new HCustomWaypoint());
@@ -52,9 +55,12 @@ public class CustomWaypointEditDialog extends WaypointEditDialog {
         GridPane.setConstraints(velocityYTextField, 1, ADDITIONAL_PROPERTIES_ROW + 2);
         GridPane.setConstraints(angularVelocityText, 0, ADDITIONAL_PROPERTIES_ROW + 3);
         GridPane.setConstraints(angularVelocityTextField, 1, ADDITIONAL_PROPERTIES_ROW + 3);
+        GridPane.setConstraints(controlIntervalCountText, 0, ADDITIONAL_PROPERTIES_ROW + 4);
+        GridPane.setConstraints(controlIntervalCountTextField, 1, ADDITIONAL_PROPERTIES_ROW + 4);
 
         addGridItems(List.of(headingText, headingTextField, velocityXText, velocityXTextField,
-                velocityYText, velocityYTextField, angularVelocityText, angularVelocityTextField));
+                velocityYText, velocityYTextField, angularVelocityText, angularVelocityTextField,
+                controlIntervalCountText, controlIntervalCountTextField));
 
         vBox.getChildren().add(ADDITIONAL_NODES_ROW    , activeConstraints);
         vBox.getChildren().add(ADDITIONAL_NODES_ROW + 1, xConstrainedCheckBox);
@@ -86,6 +92,7 @@ public class CustomWaypointEditDialog extends WaypointEditDialog {
         velocityYConstrainedCheckBox.setSelected(customWaypoint.isVelocityYConstrained());
         velocityMagnitudeConstrainedCheckBox.setSelected(customWaypoint.isVelocityMagnitudeConstrained());
         angularVelocityConstrainedCheckBox.setSelected(customWaypoint.isAngularVelocityConstrained());
+        controlIntervalCountTextField.setValue(customWaypoint.getControlIntervalCount());
     }
 
     @Override
@@ -102,6 +109,7 @@ public class CustomWaypointEditDialog extends WaypointEditDialog {
         customWaypoint.velocityYConstrainedProperty().unbind();
         customWaypoint.velocityMagnitudeConstrainedProperty().unbind();
         customWaypoint.angularVelocityConstrainedProperty().unbind();
+        customWaypoint.controlIntervalCountProperty().unbind();
     }
 
     @Override
@@ -118,7 +126,7 @@ public class CustomWaypointEditDialog extends WaypointEditDialog {
         customWaypoint.velocityYConstrainedProperty().bind(velocityYConstrainedCheckBox.selectedProperty());
         customWaypoint.velocityMagnitudeConstrainedProperty().bind(velocityMagnitudeConstrainedCheckBox.selectedProperty());
         customWaypoint.angularVelocityConstrainedProperty().bind(angularVelocityConstrainedCheckBox.selectedProperty());
-
+        customWaypoint.controlIntervalCountProperty().bind(controlIntervalCountTextField.valueProperty());
     }
 
     @Override
@@ -135,6 +143,7 @@ public class CustomWaypointEditDialog extends WaypointEditDialog {
         backupCustomWaypoint.setVelocityYConstrained(customWaypoint.isVelocityYConstrained());
         backupCustomWaypoint.setVelocityMagnitudeConstrained(customWaypoint.isVelocityMagnitudeConstrained());
         backupCustomWaypoint.setAngularVelocityConstrained(customWaypoint.isAngularVelocityConstrained());
+        backupCustomWaypoint.setControlIntervalCount(customWaypoint.getControlIntervalCount());
     }
 
     @Override
@@ -151,5 +160,6 @@ public class CustomWaypointEditDialog extends WaypointEditDialog {
         customWaypoint.setVelocityYConstrained(backupCustomWaypoint.isVelocityYConstrained());
         customWaypoint.setVelocityMagnitudeConstrained(backupCustomWaypoint.isVelocityMagnitudeConstrained());
         customWaypoint.setAngularVelocityConstrained(backupCustomWaypoint.isAngularVelocityConstrained());
+        customWaypoint.setControlIntervalCount(backupCustomWaypoint.getControlIntervalCount());
     }
 }
