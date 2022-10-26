@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.team2363.helixtrajectory.HolonomicWaypoint;
 import org.team2363.helixtrajectory.InitialGuessPoint;
+import org.team2363.helixtrajectory.Obstacle;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
@@ -200,9 +201,9 @@ public class HCustomWaypoint extends HWaypoint {
         return controlIntervalCount.get();
     }
 
-    public HolonomicWaypoint toWaypoint(List<InitialGuessPoint> initialGuessPoints) {
+    public HolonomicWaypoint toWaypoint(List<InitialGuessPoint> initialGuessPoints, List<Obstacle> obstacles) {
         return new HolonomicWaypoint(getX(), getY(), getHeading(), getVelocityX(), getVelocityY(), getAngularVelocity(),
                             isXConstrained(), isYConstrained(), isHeadingConstrained(), isVelocityXConstrained(),
-                            isVelocityYConstrained(), isVelocityMagnitudeConstrained(), isAngularVelocityConstrained(), getControlIntervalCount(), initialGuessPoints, List.of());
+                            isVelocityYConstrained(), isVelocityMagnitudeConstrained(), isAngularVelocityConstrained(), getControlIntervalCount(), initialGuessPoints, obstacles);
     }
 }

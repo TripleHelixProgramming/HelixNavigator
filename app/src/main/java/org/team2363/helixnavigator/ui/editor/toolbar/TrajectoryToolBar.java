@@ -69,17 +69,17 @@ public class TrajectoryToolBar extends ToolBar {
                 HDocument hDocument = this.documentManager.getDocument();
                 HPath hPath = this.documentManager.getDocument().getSelectedPath();
                 SwerveDrivetrain drive = hDocument.getRobotConfiguration().toDrive();
-                HolonomicPath path = hPath.toPath();
                 List<Obstacle> obstacles = new ArrayList<>(hPath.getObstacles().size());
                 for (int i = 0; i < hPath.getObstacles().size(); i++) {
                     obstacles.add(hPath.getObstacles().get(i).toObstacle());
                 }
+                HolonomicPath path = hPath.toPath(obstacles);
                 try {
+                    System.out.println("Path optimizing: " + path.toString());
                     HolonomicTrajectory traj = OptimalTrajectoryGenerator.generate(drive, path);
                     hPath.setTrajectory(HTrajectory.fromTrajectory(traj));
                 } catch (InvalidPathException | PluginLoadException | TrajectoryGenerationException e) {
                     System.out.println("Error generating path: " + e.getMessage() + System.lineSeparator());
-                    System.out.println("Path optimizing: " + path.toString());
                 }
             }
         });
