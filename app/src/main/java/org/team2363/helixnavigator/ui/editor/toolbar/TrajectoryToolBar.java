@@ -4,8 +4,6 @@ import static org.team2363.helixnavigator.global.Standards.ExportedUnits.TIME_UN
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.measure.quantity.Time;
 
@@ -14,14 +12,6 @@ import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
 import org.team2363.helixnavigator.document.HTrajectory;
 import org.team2363.helixnavigator.global.Standards;
-import org.team2363.helixtrajectory.HolonomicPath;
-import org.team2363.helixtrajectory.HolonomicTrajectory;
-import org.team2363.helixtrajectory.InvalidPathException;
-import org.team2363.helixtrajectory.Obstacle;
-import org.team2363.helixtrajectory.OptimalTrajectoryGenerator;
-import org.team2363.helixtrajectory.PluginLoadException;
-import org.team2363.helixtrajectory.SwerveDrivetrain;
-import org.team2363.helixtrajectory.TrajectoryGenerationException;
 import org.team2363.lib.ui.validation.UnitTextField;
 
 import com.jlbabilino.json.InvalidJSONTranslationConfiguration;
@@ -65,23 +55,7 @@ public class TrajectoryToolBar extends ToolBar {
         getItems().addAll(importTraj, exportTraj, generateTraj, timestampSlider, animateButton);
 
         generateTraj.setOnAction(event -> {
-            if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {
-                HDocument hDocument = this.documentManager.getDocument();
-                HPath hPath = this.documentManager.getDocument().getSelectedPath();
-                SwerveDrivetrain drive = hDocument.getRobotConfiguration().toDrive();
-                List<Obstacle> obstacles = new ArrayList<>(hPath.getObstacles().size());
-                for (int i = 0; i < hPath.getObstacles().size(); i++) {
-                    obstacles.add(hPath.getObstacles().get(i).toObstacle());
-                }
-                HolonomicPath path = hPath.toPath(obstacles);
-                try {
-                    System.out.println("Path optimizing: " + path.toString());
-                    HolonomicTrajectory traj = OptimalTrajectoryGenerator.generate(drive, path);
-                    hPath.setTrajectory(HTrajectory.fromTrajectory(traj));
-                } catch (InvalidPathException | PluginLoadException | TrajectoryGenerationException e) {
-                    System.out.println("Error generating path: " + e.getMessage() + System.lineSeparator());
-                }
-            }
+            documentManager.actions().toggleTrajectoryGeneration();
         });
         importTraj.setOnAction(event -> {
             if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {

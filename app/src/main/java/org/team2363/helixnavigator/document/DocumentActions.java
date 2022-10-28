@@ -14,6 +14,14 @@ import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
 import org.team2363.helixnavigator.document.waypoint.HWaypoint;
 import org.team2363.helixnavigator.ui.prompts.RobotConfigDialog;
 import org.team2363.helixnavigator.ui.prompts.TransformDialog;
+import org.team2363.helixtrajectory.HolonomicPath;
+import org.team2363.helixtrajectory.HolonomicTrajectory;
+import org.team2363.helixtrajectory.InvalidPathException;
+import org.team2363.helixtrajectory.Obstacle;
+import org.team2363.helixtrajectory.OptimalTrajectoryGenerator;
+import org.team2363.helixtrajectory.PluginLoadException;
+import org.team2363.helixtrajectory.SwerveDrivetrain;
+import org.team2363.helixtrajectory.TrajectoryGenerationException;
 
 import com.jlbabilino.json.InvalidJSONTranslationConfiguration;
 import com.jlbabilino.json.JSONArray;
@@ -27,8 +35,12 @@ import com.jlbabilino.json.JSONSerializer;
 import com.jlbabilino.json.JSONSerializerException;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -379,6 +391,66 @@ public class DocumentActions {
                 paste(jsonEntry);
             } catch (JSONParserException e) {
             }
+        }
+    }
+
+    private static class TrajectoryGenerationService extends Service<HolonomicTrajectory> {
+
+        // private final ObjectProperty<SwerveDrivetrain> drive = new SimpleObjectProperty<>(this, "drive", null);
+        // private final ObjectProperty<HolonomicPath> path = new SimpleObjectProperty<>(this, "path", null);
+        private SwerveDrivetrain drive = null;
+        private HolonomicPath path = null;
+
+        TrajectoryGenerationService() {
+        }
+
+        @Override
+        protected Task<HolonomicTrajectory> createTask() {
+            Task<HolonomicTrajectory> optimizeTask = new Task<HolonomicTrajectory>() {
+                @Override
+                protected HolonomicTrajectory call() throws PluginLoadException, InvalidPathException, TrajectoryGenerationException {
+                    System.out.println("Path optimizing: " + path.toString());
+                    if (drive != null && path != null) {
+                        return OptimalTrajectoryGenerator.generate(drive, path);
+                    } else {
+                        throw new TrajectoryGenerationException("No path specified for optimization service.");
+                    }
+                    // System.out.println("Error generating path: " + e.getMessage() + System.lineSeparator());
+                }
+            };
+            return optimizeTask;
+        }
+    }
+
+    private static final TrajectoryGenerationService SERVICE = new TrajectoryGenerationService();
+    public void generateTrajectory() {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+            HDocument hDocument = documentManager.getDocument();
+            HPath hPath = documentManager.getDocument().getSelectedPath();
+            SwerveDrivetrain drive = hDocument.getRobotConfiguration().toDrive();
+            List<Obstacle> obstacles = new ArrayList<>(hPath.getObstacles().size());
+            for (int i = 0; i < hPath.getObstacles().size(); i++) {
+                obstacles.add(hPath.getObstacles().get(i).toObstacle());
+            }
+            HolonomicPath path = hPath.toPath(obstacles);
+            SERVICE.drive = drive;
+            SERVICE.path = path;
+            SERVICE.setOnSucceeded(workerState -> {
+                HolonomicTrajectory traj = (HolonomicTrajectory) workerState.getSource().getValue();
+                hPath.setTrajectory(HTrajectory.fromTrajectory(traj));
+            });
+            if (!SERVICE.isRunning()) {
+                SERVICE.restart();
+            }
+        }
+    }
+    public void toggleTrajectoryGeneration() {
+        if (SERVICE.isRunning()) {
+            System.out.println("Cancelling trajopt");
+            SERVICE.cancel();
+        } else {
+            System.out.println("Restarting trajopt");
+            generateTrajectory();
         }
     }
 

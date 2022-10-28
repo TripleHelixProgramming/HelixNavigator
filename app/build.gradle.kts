@@ -23,7 +23,7 @@ repositories {
         url = uri("https://maven.pkg.github.com/jlbabilino/HelixTrajectory")
         credentials {
             username = "jlbabilino"
-            password = "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"
+            password = "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"
         }
     }
 }
@@ -38,7 +38,7 @@ dependencies {
     implementation("systems.uom:systems-quantity:2.1")
     // implementation "org.djunits:djunits:4.01.07"
 
-    implementation("org.team2363:helixtrajectory:0.0.0-pre4")
+    implementation("org.team2363:helixtrajectory:0.0.0-pre5")
 }
 
 application {
