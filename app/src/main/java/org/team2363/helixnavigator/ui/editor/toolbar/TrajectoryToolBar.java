@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import javax.measure.quantity.Time;
 
+import org.team2363.helixnavigator.document.DocumentActions;
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
@@ -39,7 +40,7 @@ public class TrajectoryToolBar extends ToolBar {
     private final ChangeListener<? super HPath> onSelectedPathChanged = this::selectedPathChanged;
     private final ChangeListener<? super HTrajectory> onTrajectoryChanged = this::trajectoryChanged;
 
-    private final Button generateTraj = new Button("Generate Traj");
+    private final Button generateTraj = new Button("Generate");
     private final Button importTraj = new Button("Import Traj");
     private final Button exportTraj = new Button ("Export Traj");
     private final Slider timestampSlider = new Slider();
@@ -54,8 +55,17 @@ public class TrajectoryToolBar extends ToolBar {
         timestampSlider.setMinWidth(400.0);
         getItems().addAll(importTraj, exportTraj, generateTraj, timestampSlider, animateButton);
 
+        DocumentActions.IS_GENERATION_RUNNING.addListener((obsVal, isIdle, isGenerating) -> {
+            System.out.println("Generation status changed to: " + isGenerating);
+            if (isIdle) {
+                generateTraj.setText("Generate");
+            } else {
+                generateTraj.setText("Generating...");
+            }
+            generateTraj.setDisable(isGenerating);
+        });
         generateTraj.setOnAction(event -> {
-            documentManager.actions().toggleTrajectoryGeneration();
+            documentManager.actions().generateTrajectory();
         });
         importTraj.setOnAction(event -> {
             if (this.documentManager.getIsDocumentOpen() && this.documentManager.getDocument().isPathSelected()) {

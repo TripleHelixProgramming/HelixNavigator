@@ -36,6 +36,7 @@ import com.jlbabilino.json.JSONSerializerException;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
@@ -409,9 +410,16 @@ public class DocumentActions {
             Task<HolonomicTrajectory> optimizeTask = new Task<HolonomicTrajectory>() {
                 @Override
                 protected HolonomicTrajectory call() throws PluginLoadException, InvalidPathException, TrajectoryGenerationException {
+                    // Thread generationThread = Thread.currentThread();
                     System.out.println("Path optimizing: " + path.toString());
                     if (drive != null && path != null) {
-                        return OptimalTrajectoryGenerator.generate(drive, path);
+                        // new Thread(() -> {
+                        //     while (!isCancelled()) {}
+                        //     generationThread.stop();
+                        // }).start();
+                        HolonomicTrajectory traj = OptimalTrajectoryGenerator.generate(drive, path);
+                        System.out.println("Generation complete, closing task...");
+                        return traj;
                     } else {
                         throw new TrajectoryGenerationException("No path specified for optimization service.");
                     }
@@ -423,6 +431,7 @@ public class DocumentActions {
     }
 
     private static final TrajectoryGenerationService SERVICE = new TrajectoryGenerationService();
+    public static final ReadOnlyBooleanProperty IS_GENERATION_RUNNING = SERVICE.runningProperty();
     public void generateTrajectory() {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
             HDocument hDocument = documentManager.getDocument();
@@ -444,15 +453,20 @@ public class DocumentActions {
             }
         }
     }
-    public void toggleTrajectoryGeneration() {
-        if (SERVICE.isRunning()) {
-            System.out.println("Cancelling trajopt");
-            SERVICE.cancel();
-        } else {
-            System.out.println("Restarting trajopt");
-            generateTrajectory();
-        }
-    }
+    // public void toggleTrajectoryGeneration() {
+    //     if (SERVICE.isRunning()) {
+    //         System.out.println("Cancelling trajopt");
+    //         SERVICE.cancel();
+    //     } else {
+    //         System.out.println("Restarting trajopt");
+    //         generateTrajectory();
+    //     }
+    // }
+    // public void cancelTrajectoryGeneration() {
+    //     if (SERVICE.isRunning()) {
+    //         SERVICE.cancel();
+    //     }
+    // }
 
     private static final Rotate ROTATE_90_CLOCKWISE = new Rotate(-90);
     private static final Rotate ROTATE_90_COUNTERCLOCKWISE = new Rotate(90);
