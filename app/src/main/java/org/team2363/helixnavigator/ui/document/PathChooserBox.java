@@ -45,7 +45,7 @@ public class PathChooserBox extends HBox {
         pathChooser.setCellFactory(PathListCell.PATH_CELL_FACTORY);
         // seems weird to me that this doesn't happen automatically:
         pathChooser.setButtonCell(new PathListCell());
-        pathChooser.setMaxWidth(200);
+        pathChooser.setMaxWidth(Double.POSITIVE_INFINITY);
         HBox.setHgrow(pathChooser, Priority.ALWAYS);
         plusButton.setOnAction(this::plusButtonPressed);
         minusButton.setOnAction(this::minusButtonPressed);
