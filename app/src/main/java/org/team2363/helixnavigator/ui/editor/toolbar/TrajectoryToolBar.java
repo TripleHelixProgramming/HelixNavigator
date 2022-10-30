@@ -7,7 +7,6 @@ import java.io.IOException;
 
 import javax.measure.quantity.Time;
 
-import org.team2363.helixnavigator.document.DocumentActions;
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
@@ -55,7 +54,7 @@ public class TrajectoryToolBar extends ToolBar {
         timestampSlider.setMinWidth(400.0);
         getItems().addAll(importTraj, exportTraj, generateTraj, timestampSlider, animateButton);
 
-        DocumentActions.IS_GENERATION_RUNNING.addListener((obsVal, isIdle, isGenerating) -> {
+        this.documentManager.actions().generationRunningProperty().addListener((obsVal, isIdle, isGenerating) -> {
             System.out.println("Generation status changed to: " + isGenerating);
             if (isIdle) {
                 generateTraj.setText("Generate");
