@@ -35,10 +35,8 @@ import com.jlbabilino.json.JSONSerializer;
 import com.jlbabilino.json.JSONSerializerException;
 
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -397,8 +395,6 @@ public class DocumentActions {
 
     private static class TrajectoryGenerationService extends Service<HolonomicTrajectory> {
 
-        // private final ObjectProperty<SwerveDrivetrain> drive = new SimpleObjectProperty<>(this, "drive", null);
-        // private final ObjectProperty<HolonomicPath> path = new SimpleObjectProperty<>(this, "path", null);
         private SwerveDrivetrain drive = null;
         private HolonomicPath path = null;
 
@@ -410,28 +406,24 @@ public class DocumentActions {
             Task<HolonomicTrajectory> optimizeTask = new Task<HolonomicTrajectory>() {
                 @Override
                 protected HolonomicTrajectory call() throws PluginLoadException, InvalidPathException, TrajectoryGenerationException {
-                    // Thread generationThread = Thread.currentThread();
                     System.out.println("Path optimizing: " + path.toString());
                     if (drive != null && path != null) {
-                        // new Thread(() -> {
-                        //     while (!isCancelled()) {}
-                        //     generationThread.stop();
-                        // }).start();
                         HolonomicTrajectory traj = OptimalTrajectoryGenerator.generate(drive, path);
                         System.out.println("Generation complete, closing task...");
                         return traj;
                     } else {
                         throw new TrajectoryGenerationException("No path specified for optimization service.");
                     }
-                    // System.out.println("Error generating path: " + e.getMessage() + System.lineSeparator());
                 }
             };
             return optimizeTask;
         }
     }
 
-    private static final TrajectoryGenerationService SERVICE = new TrajectoryGenerationService();
-    public static final ReadOnlyBooleanProperty IS_GENERATION_RUNNING = SERVICE.runningProperty();
+    private final TrajectoryGenerationService service = new TrajectoryGenerationService();
+    public final ReadOnlyBooleanProperty generationRunningProperty() {
+        return service.runningProperty();
+    }
     public void generateTrajectory() {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
             HDocument hDocument = documentManager.getDocument();
@@ -442,31 +434,17 @@ public class DocumentActions {
                 obstacles.add(hPath.getObstacles().get(i).toObstacle());
             }
             HolonomicPath path = hPath.toPath(obstacles);
-            SERVICE.drive = drive;
-            SERVICE.path = path;
-            SERVICE.setOnSucceeded(workerState -> {
+            service.drive = drive;
+            service.path = path;
+            service.setOnSucceeded(workerState -> {
                 HolonomicTrajectory traj = (HolonomicTrajectory) workerState.getSource().getValue();
                 hPath.setTrajectory(HTrajectory.fromTrajectory(traj));
             });
-            if (!SERVICE.isRunning()) {
-                SERVICE.restart();
+            if (!service.isRunning()) {
+                service.restart();
             }
         }
     }
-    // public void toggleTrajectoryGeneration() {
-    //     if (SERVICE.isRunning()) {
-    //         System.out.println("Cancelling trajopt");
-    //         SERVICE.cancel();
-    //     } else {
-    //         System.out.println("Restarting trajopt");
-    //         generateTrajectory();
-    //     }
-    // }
-    // public void cancelTrajectoryGeneration() {
-    //     if (SERVICE.isRunning()) {
-    //         SERVICE.cancel();
-    //     }
-    // }
 
     private static final Rotate ROTATE_90_CLOCKWISE = new Rotate(-90);
     private static final Rotate ROTATE_90_COUNTERCLOCKWISE = new Rotate(90);
