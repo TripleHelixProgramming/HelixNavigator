@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.measure.quantity.Speed;
 
-import org.team2363.helixnavigator.document.waypoint.HCustomWaypoint;
+import org.team2363.helixnavigator.document.timeline.HCustomWaypoint;
 import org.team2363.helixnavigator.global.Standards.SupportedUnits.SupportedAngularSpeed;
 import org.team2363.helixnavigator.global.Standards.SupportedUnits.SupportedSpeed;
 import org.team2363.lib.ui.validation.IntegerTextField;

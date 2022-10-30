@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
+import org.team2363.helixnavigator.document.timeline.HHardWaypoint;
 import org.team2363.helixtrajectory.HolonomicTrajectory;
 import org.team2363.helixtrajectory.HolonomicTrajectorySample;
 import org.team2363.helixtrajectory.HolonomicTrajectorySegment;

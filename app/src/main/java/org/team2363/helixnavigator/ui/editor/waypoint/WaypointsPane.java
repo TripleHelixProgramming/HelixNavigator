@@ -5,11 +5,11 @@ import java.util.List;
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
-import org.team2363.helixnavigator.document.waypoint.HCustomWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HInitialGuessWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+import org.team2363.helixnavigator.document.timeline.HCustomWaypoint;
+import org.team2363.helixnavigator.document.timeline.HHardWaypoint;
+import org.team2363.helixnavigator.document.timeline.HInitialGuessWaypoint;
+import org.team2363.helixnavigator.document.timeline.HSoftWaypoint;
+import org.team2363.helixnavigator.document.timeline.HWaypoint;
 import org.team2363.lib.ui.MouseEventWrapper;
 
 import javafx.beans.value.ChangeListener;

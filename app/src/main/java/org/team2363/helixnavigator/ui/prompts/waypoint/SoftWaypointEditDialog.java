@@ -1,6 +1,6 @@
 package org.team2363.helixnavigator.ui.prompts.waypoint;
 
-import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
+import org.team2363.helixnavigator.document.timeline.HSoftWaypoint;
 
 public class SoftWaypointEditDialog extends WaypointEditDialog {
 

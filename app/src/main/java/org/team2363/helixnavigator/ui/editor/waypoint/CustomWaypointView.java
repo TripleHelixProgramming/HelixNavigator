@@ -1,6 +1,6 @@
 package org.team2363.helixnavigator.ui.editor.waypoint;
 
-import org.team2363.helixnavigator.document.waypoint.HCustomWaypoint;
+import org.team2363.helixnavigator.document.timeline.HCustomWaypoint;
 
 import javafx.scene.paint.Color;
 

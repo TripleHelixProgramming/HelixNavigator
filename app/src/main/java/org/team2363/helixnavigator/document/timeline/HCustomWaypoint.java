@@ -1,4 +1,4 @@
-package org.team2363.helixnavigator.document.waypoint;
+package org.team2363.helixnavigator.document.timeline;
 
 import java.util.List;
 

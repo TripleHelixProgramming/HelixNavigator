@@ -3,12 +3,12 @@ package org.team2363.helixnavigator.ui.document;
 import java.util.Arrays;
 import java.util.List;
 
-import org.team2363.helixnavigator.document.waypoint.HCustomWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HInitialGuessWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HSoftWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HWaypoint.WaypointType;
+import org.team2363.helixnavigator.document.timeline.HCustomWaypoint;
+import org.team2363.helixnavigator.document.timeline.HHardWaypoint;
+import org.team2363.helixnavigator.document.timeline.HInitialGuessWaypoint;
+import org.team2363.helixnavigator.document.timeline.HSoftWaypoint;
+import org.team2363.helixnavigator.document.timeline.HWaypoint;
+import org.team2363.helixnavigator.document.timeline.HWaypoint.WaypointType;
 import org.team2363.helixnavigator.global.Standards;
 import org.team2363.helixnavigator.ui.editor.waypoint.CustomWaypointView;
 import org.team2363.helixnavigator.ui.editor.waypoint.HardWaypointView;

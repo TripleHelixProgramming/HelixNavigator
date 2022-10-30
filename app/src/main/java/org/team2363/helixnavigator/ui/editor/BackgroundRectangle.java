@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.team2363.helixnavigator.document.DocumentManager;
 import org.team2363.helixnavigator.document.HPath;
-import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+import org.team2363.helixnavigator.document.timeline.HHardWaypoint;
+import org.team2363.helixnavigator.document.timeline.HWaypoint;
 import org.team2363.helixnavigator.global.Standards;
 import org.team2363.lib.ui.MouseEventWrapper;
 

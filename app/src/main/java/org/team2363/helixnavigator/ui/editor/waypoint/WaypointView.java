@@ -1,6 +1,6 @@
 package org.team2363.helixnavigator.ui.editor.waypoint;
 
-import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+import org.team2363.helixnavigator.document.timeline.HWaypoint;
 import org.team2363.helixnavigator.global.Standards;
 import org.team2363.helixnavigator.ui.prompts.waypoint.WaypointEditDialog;
 

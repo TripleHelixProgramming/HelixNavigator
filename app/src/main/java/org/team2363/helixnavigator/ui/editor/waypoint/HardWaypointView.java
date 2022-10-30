@@ -1,6 +1,6 @@
 package org.team2363.helixnavigator.ui.editor.waypoint;
 
-import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
+import org.team2363.helixnavigator.document.timeline.HHardWaypoint;
 import org.team2363.helixnavigator.global.Standards;
 
 import javafx.beans.property.BooleanProperty;

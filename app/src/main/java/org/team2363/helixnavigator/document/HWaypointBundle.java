@@ -8,8 +8,8 @@ import com.jlbabilino.json.JSONDeserializable;
 import com.jlbabilino.json.JSONSerializable;
 import com.jlbabilino.json.SerializedJSONEntry;
 
-import org.team2363.helixnavigator.document.waypoint.HHardWaypoint;
-import org.team2363.helixnavigator.document.waypoint.HWaypoint;
+import org.team2363.helixnavigator.document.timeline.HHardWaypoint;
+import org.team2363.helixnavigator.document.timeline.HWaypoint;
 
 @JSONSerializable(JSONType.ARRAY)
 @JSONDeserializable({JSONType.ARRAY})
