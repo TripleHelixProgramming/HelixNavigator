@@ -37,20 +37,13 @@ public abstract class HObstacle extends HTimelineElement {
     protected HObstacle() {
     }
 
-    public abstract Obstacle toObstacle();
-
-    public final DoubleProperty safetyDistanceProperty() {
-        return safetyDistance;
+    @Override
+    public TimelineElementType getTimelineElementType() {
+        return TimelineElementType.OBSTACLE;
     }
-
-    @DeserializedJSONTarget
-    public final void setSafetyDistance(@DeserializedJSONObjectValue(key = "safety_distance") double value) {
-        safetyDistance.set(value);
-    }
-
-    @SerializedJSONObjectValue(key = "safety_distance")
-    public final double getSafetyDistance() {
-        return safetyDistance.get();
+    @Override
+    public boolean isObstacle() {
+        return true;
     }
 
     @SerializedJSONObjectValue(key = "obstacle_type")
@@ -67,6 +60,23 @@ public abstract class HObstacle extends HTimelineElement {
     public boolean isRectangle() {
         return false;
     }
+
+    public abstract Obstacle toObstacle();
+
+    public final DoubleProperty safetyDistanceProperty() {
+        return safetyDistance;
+    }
+
+    @DeserializedJSONTarget
+    public final void setSafetyDistance(@DeserializedJSONObjectValue(key = "safety_distance") double value) {
+        safetyDistance.set(value);
+    }
+
+    @SerializedJSONObjectValue(key = "safety_distance")
+    public final double getSafetyDistance() {
+        return safetyDistance.get();
+    }
+
 
     @DeserializedJSONDeterminer
     public static final Class<? extends HObstacle> determiner(@DeserializedJSONEntry JSONObject jsonEntry) throws JSONDeserializerException {

@@ -43,7 +43,7 @@ public class HSelectionModel<E extends HSelectableElement> extends MultipleSelec
 
     /**
      * Constructs an {@code HSelectionModel} with an observable list of items.
-     * This list cannot be set later; {@code HSelectionModel} is an immutable type.
+     * This list cannot be set later.
      * 
      * @param items the list of items
      */

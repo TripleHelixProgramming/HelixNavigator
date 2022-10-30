@@ -6,10 +6,8 @@ import java.util.List;
 import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
-import org.team2363.helixnavigator.document.timeline.HCustomWaypoint;
-import org.team2363.helixnavigator.document.timeline.HHardWaypoint;
 import org.team2363.helixnavigator.document.timeline.HInitialGuessPoint;
-import org.team2363.helixnavigator.document.timeline.HSoftWaypoint;
+import org.team2363.helixnavigator.document.timeline.HTimelineElement;
 import org.team2363.helixnavigator.document.timeline.HWaypoint;
 import org.team2363.helixtrajectory.HolonomicPath;
 import org.team2363.helixtrajectory.HolonomicWaypoint;
@@ -43,10 +41,8 @@ import javafx.scene.transform.Transform;
 public class HPath {
 
     private final StringProperty name = new SimpleStringProperty(this, "name", "");
-    private final ObservableList<HWaypoint> timeline = FXCollections.<HWaypoint>observableArrayList();
-    private final HSelectionModel<HWaypoint> timelineSelectionModel;
-    private final ObservableList<HObstacle> obstacles = FXCollections.<HObstacle>observableArrayList();
-    private final HSelectionModel<HObstacle> obstaclesSelectionModel;
+    private final ObservableList<HTimelineElement> timeline = FXCollections.observableArrayList();
+    private final HSelectionModel<HTimelineElement> timelineSelectionModel;
     private final ReadOnlyBooleanWrapper inPolygonPointMode = new ReadOnlyBooleanWrapper(this, "inPolygonPointMode", false);
     private final ReadOnlyObjectWrapper<HSelectionModel<HPolygonPoint>> polygonPointsSelectionModel = new ReadOnlyObjectWrapper<>(this, "polygonPointsSelectionModel", null);
     private final ReadOnlyObjectWrapper<HTrajectory> trajectory = new ReadOnlyObjectWrapper<HTrajectory>(this, "trajectory", null);
@@ -54,26 +50,27 @@ public class HPath {
     @DeserializedJSONConstructor
     public HPath() {
         timelineSelectionModel = new HSelectionModel<>(timeline);
-        obstaclesSelectionModel = new HSelectionModel<>(obstacles);
-        timelineSelectionModel.getSelectedItems().addListener((ListChangeListener.Change<? extends HWaypoint> change) -> {
-            updateInPolygonPointMode();
-            updatePolygonPointsSelectionModel();
-        });
-        obstaclesSelectionModel.getSelectedItems().addListener((ListChangeListener.Change<? extends HObstacle> change) -> {
+        timelineSelectionModel.getSelectedItems().addListener((ListChangeListener.Change<? extends HTimelineElement> change) -> {
             updateInPolygonPointMode();
             updatePolygonPointsSelectionModel();
         });
     }
 
     private void updateInPolygonPointMode() {
+        boolean isPolygonSelected = false;
+        for (HTimelineElement element : timelineSelectionModel.getSelectedItems()) {
+            if (element.isObstacle() && ((HObstacle) element).isPolygon()) {
+                isPolygonSelected = true;
+            }
+        }
         setInPolygonPointMode(
-                timelineSelectionModel.getSelectedIndices().isEmpty()
-                && obstaclesSelectionModel.getSelectedItems().size() == 1
-                && obstaclesSelectionModel.getSelectedItems().get(0).isPolygon());
+                timelineSelectionModel.getSelectedIndices().size() == 1
+                && isPolygonSelected);
     }
+
     private void updatePolygonPointsSelectionModel() {
         if (getInPolygonPointMode()) {
-            setPolygonPointsSelectionModel(new HSelectionModel<HPolygonPoint>(((HPolygonObstacle) obstaclesSelectionModel.getSelectedItems().get(0)).getPoints()));
+            setPolygonPointsSelectionModel(new HSelectionModel<HPolygonPoint>(((HPolygonObstacle) timelineSelectionModel.getSelectedItems().get(0)).getPoints()));
         } else {
             setPolygonPointsSelectionModel(null);
         }
@@ -81,21 +78,14 @@ public class HPath {
 
     public void transformSelectedElementsRelative(Transform transform) {
         getTimelineSelectionModel().getSelectedItems().forEach(element -> element.transformRelative(transform));
-        getObstaclesSelectionModel().getSelectedItems().forEach(element -> element.transformRelative(transform));
     }
 
     public void moveSelectedElementsRelative(double deltaX, double deltaY) {
         getTimelineSelectionModel().getSelectedItems().forEach(element -> element.translateRelative(deltaX, deltaY));
-        getObstaclesSelectionModel().getSelectedItems().forEach(element -> element.translateRelative(deltaX, deltaY));
     }
 
     public void moveSelectedElementsRelative(double deltaX, double deltaY, HPathElement excludedElement) {
         getTimelineSelectionModel().getSelectedItems().forEach(element -> {
-            if (element != excludedElement) {
-                element.translateRelative(deltaX, deltaY);
-            }
-        });
-        getObstaclesSelectionModel().getSelectedItems().forEach(element -> {
             if (element != excludedElement) {
                 element.translateRelative(deltaX, deltaY);
             }
@@ -110,17 +100,6 @@ public class HPath {
         });
     }
 
-    public void clearWaypointsSelection() {
-        timelineSelectionModel.clearSelection();
-    }
-    public void clearObstaclesSelection() {
-        obstaclesSelectionModel.clearSelection();
-    }
-    public void clearSelection() {
-        clearWaypointsSelection();
-        clearObstaclesSelection();
-    }
-
     public void clearPolygonPointSelection() {
         if (getInPolygonPointMode()) {
             getPolygonPointsSelectionModel().clearSelection();
@@ -130,12 +109,10 @@ public class HPath {
     public final StringProperty nameProperty() {
         return name;
     }
-
     // @DeserializedJSONTarget
     public final void setName(@DeserializedJSONObjectValue(key = "name") String value) {
         name.set(value);
     }
-
     // @SerializedJSONObjectValue(key = "name")
     public final String getName() {
         return name.get();
@@ -145,38 +122,20 @@ public class HPath {
     public final void setTimeline(@DeserializedJSONObjectValue(key = "timeline") List<? extends HWaypoint> newTimeline) {
         timeline.setAll(newTimeline);
     }
-
     @SerializedJSONObjectValue(key = "timeline")
-    public final ObservableList<HWaypoint> getTimeline() {
+    public final ObservableList<HTimelineElement> getTimeline() {
         return timeline;
     }
-
-    public final HSelectionModel<HWaypoint> getTimelineSelectionModel() {
+    public final HSelectionModel<HTimelineElement> getTimelineSelectionModel() {
         return timelineSelectionModel;
-    }
-
-    @DeserializedJSONTarget
-    public final void setObstacles(@DeserializedJSONObjectValue(key = "obstacles") List<? extends HObstacle> newObstacles) {
-        obstacles.setAll(newObstacles);
-    }
-
-    @SerializedJSONObjectValue(key = "obstacles")
-    public final ObservableList<HObstacle> getObstacles() {
-        return obstacles;
-    }
-
-    public final HSelectionModel<HObstacle> getObstaclesSelectionModel() {
-        return obstaclesSelectionModel;
     }
 
     public final ReadOnlyBooleanProperty inPolygonPointModeProperty() {
         return inPolygonPointMode.getReadOnlyProperty();
     }
-
     private final void setInPolygonPointMode(boolean value) {
         inPolygonPointMode.set(value);
     }
-
     public final boolean getInPolygonPointMode() {
         return inPolygonPointMode.get();
     }
@@ -184,11 +143,9 @@ public class HPath {
     public final ReadOnlyObjectProperty<HSelectionModel<HPolygonPoint>> polygonPointsSelectionModelProperty() {
         return polygonPointsSelectionModel.getReadOnlyProperty();
     }
-
     private final void setPolygonPointsSelectionModel(HSelectionModel<HPolygonPoint> value) {
         polygonPointsSelectionModel.set(value);
     }
-
     public final HSelectionModel<HPolygonPoint> getPolygonPointsSelectionModel() {
         return polygonPointsSelectionModel.get();
     }
@@ -196,50 +153,53 @@ public class HPath {
     public final ReadOnlyObjectProperty<HTrajectory> trajectoryProperty() {
         return trajectory.getReadOnlyProperty();
     }
-
     // TODO: Make this private eventually
     public final void setTrajectory(HTrajectory value) {
         trajectory.set(value);
     }
-
     public final HTrajectory getTrajectory() {
         return trajectory.get();
     }
 
-    public HolonomicPath toPath(List<Obstacle> obstacles) {
-        List<HolonomicWaypoint> htWaypoints = new ArrayList<>();
-        int i = 0;
-        boolean foundFirstWaypoint = false;
-        while (timeline.get(i).isInitialGuess()) {
-            i++;
+    private static class PathCompiler {
+
+        private List<HTimelineElement> timeline;
+        private int index = 0;
+
+        private PathCompiler(List<HTimelineElement> timeline) {
+            this.timeline = timeline;
         }
-        while (i < timeline.size()) {
+
+        /**
+         * This method should start when the index is 0 or it is 1 place
+         * past a waypont.
+         */
+        private HolonomicWaypoint eatWaypoint() {
             List<InitialGuessPoint> initialGuessPoints = new ArrayList<>();
-            while (i < timeline.size() && timeline.get(i).isInitialGuess()) {
-                initialGuessPoints.add(((HInitialGuessPoint) timeline.get(i)).toInitialGuessPoint());
-                i++;
+            List<Obstacle> obstacles = new ArrayList<>();
+            while (!timeline.get(index).isWaypoint()) {
+                if (timeline.get(index).isInitialGuessPoint()) {
+                    initialGuessPoints.add(((HInitialGuessPoint) timeline.get(index)).toInitialGuessPoint());
+                } else if (timeline.get(index).isObstacle()) {
+                    obstacles.add(((HObstacle) timeline.get(index)).toObstacle());
+                }
+                index++;
             }
-            int waypointIndex = i;
-            switch (timeline.get(waypointIndex).getWaypointType()) {
-                case SOFT:
-                    htWaypoints.add(((HSoftWaypoint) timeline.get(waypointIndex)).toWaypoint(initialGuessPoints, obstacles));
-                    break;
-                case HARD:
-                    htWaypoints.add(((HHardWaypoint) timeline.get(waypointIndex)).toWaypoint(initialGuessPoints, obstacles));
-                    break;
-                case CUSTOM:
-                    htWaypoints.add(((HCustomWaypoint) timeline.get(waypointIndex)).toWaypoint(initialGuessPoints, obstacles));
-                    break;
-                default:
-                break;
-            }
-            if (!foundFirstWaypoint) {
-                obstacles = List.of();
-                foundFirstWaypoint = true;
-            }
-            i++;
+            HWaypoint waypoint = (HWaypoint) timeline.get(index);
+            index++;
+            return waypoint.toWaypoint(initialGuessPoints, obstacles);
         }
-        return new HolonomicPath(htWaypoints);
+
+        private HolonomicPath compile() {
+            List<HolonomicWaypoint> waypoints = new ArrayList<>();
+            while (index < timeline.size()) {
+                waypoints.add(eatWaypoint());
+            }
+            return new HolonomicPath(waypoints);
+        }
+    }
+    public HolonomicPath toPath() {
+        return new PathCompiler(timeline).compile();
     }
 
     @Override

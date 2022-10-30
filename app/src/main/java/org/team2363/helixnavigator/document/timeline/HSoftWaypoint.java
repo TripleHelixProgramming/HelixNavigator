@@ -24,6 +24,7 @@ public class HSoftWaypoint extends HWaypoint {
         return true;
     }
 
+    @Override
     public HolonomicWaypoint toWaypoint(List<InitialGuessPoint> initialGuessPoints, List<Obstacle> obstacles) {
         return new HolonomicWaypoint(getX(), getY(), 0.0, 0.0, 0.0, 0.0, true, true, false, false, false, false, false, 100, initialGuessPoints, obstacles);
     }

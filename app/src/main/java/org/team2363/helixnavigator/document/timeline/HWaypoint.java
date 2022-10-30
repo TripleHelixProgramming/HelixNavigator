@@ -1,5 +1,11 @@
 package org.team2363.helixnavigator.document.timeline;
 
+import java.util.List;
+
+import org.team2363.helixtrajectory.HolonomicWaypoint;
+import org.team2363.helixtrajectory.InitialGuessPoint;
+import org.team2363.helixtrajectory.Obstacle;
+
 import com.jlbabilino.json.DeserializedJSONDeterminer;
 import com.jlbabilino.json.DeserializedJSONEntry;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
@@ -46,6 +52,15 @@ public abstract class HWaypoint extends HTimelineElement {
     @Override
     public void translateRelativeY(double dy) {
         setY(getY() + dy);
+    }
+
+    @Override
+    public TimelineElementType getTimelineElementType() {
+        return TimelineElementType.WAYPOINT;
+    }
+    @Override
+    public boolean isWaypoint() {
+        return true;
     }
 
     @SerializedJSONObjectValue(key = "waypoint_type")
@@ -95,6 +110,8 @@ public abstract class HWaypoint extends HTimelineElement {
         return y.get();
     }
 
+    public abstract HolonomicWaypoint toWaypoint(List<InitialGuessPoint> initialGuessPoints, List<Obstacle> obstacles);
+
     @DeserializedJSONDeterminer
     public static Class<? extends HWaypoint> determiner(@DeserializedJSONEntry JSONObject jsonObject) throws JSONDeserializerException {
         if (!jsonObject.containsKey("waypoint_type")) {
@@ -108,8 +125,6 @@ public abstract class HWaypoint extends HTimelineElement {
                 return HHardWaypoint.class;
             case "custom":
                 return HCustomWaypoint.class;
-            case "initial_guess":
-                return HInitialGuessPoint.class;
             default:
                 throw new JSONDeserializerException("Unrecognized waypoint type: \"" + typeString + "\"");
         }

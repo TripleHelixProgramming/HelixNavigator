@@ -324,35 +324,35 @@ public class DocumentManager {
         }
     }
 
-    public final boolean requestExportWaypointBundle() {
-        logger.info("Export waypoint bundle requested.");
-        if (getIsDocumentOpen() && getDocument().isPathSelected()) {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters().add(WAYPOINT_BUNDLE_FILE_TYPE);
-            File saveLocation = fileChooser.showSaveDialog(stage);
-            if (saveLocation != null) {
-                HPath selectedPath = getDocument().getSelectedPath();
-                HWaypointBundle waypointBundle = new HWaypointBundle(selectedPath);
-                try {
-                    JSONSerializer.serializeFile(waypointBundle, saveLocation);
-                    return true;
-                } catch (InvalidJSONTranslationConfiguration e) {
-                    logger.severe("Internal JSON translation configuration error: " + e.getMessage());
-                    return false;
-                } catch (JSONSerializerException e) {
-                    logger.severe("Internal JSON serialization error: " + e.getMessage());
-                    return false;
-                } catch (IOException e) {
-                    logger.finer("Error while saving waypoint bundle");
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
+    // public final boolean requestExportWaypointBundle() {
+    //     logger.info("Export waypoint bundle requested.");
+    //     if (getIsDocumentOpen() && getDocument().isPathSelected()) {
+    //         FileChooser fileChooser = new FileChooser();
+    //         fileChooser.getExtensionFilters().add(WAYPOINT_BUNDLE_FILE_TYPE);
+    //         File saveLocation = fileChooser.showSaveDialog(stage);
+    //         if (saveLocation != null) {
+    //             HPath selectedPath = getDocument().getSelectedPath();
+    //             HWaypointBundle waypointBundle = new HWaypointBundle(selectedPath);
+    //             try {
+    //                 JSONSerializer.serializeFile(waypointBundle, saveLocation);
+    //                 return true;
+    //             } catch (InvalidJSONTranslationConfiguration e) {
+    //                 logger.severe("Internal JSON translation configuration error: " + e.getMessage());
+    //                 return false;
+    //             } catch (JSONSerializerException e) {
+    //                 logger.severe("Internal JSON serialization error: " + e.getMessage());
+    //                 return false;
+    //             } catch (IOException e) {
+    //                 logger.finer("Error while saving waypoint bundle");
+    //                 return false;
+    //             }
+    //         } else {
+    //             return false;
+    //         }
+    //     } else {
+    //         return false;
+    //     }
+    // }
 
     public DocumentActions actions() {
         return actions;

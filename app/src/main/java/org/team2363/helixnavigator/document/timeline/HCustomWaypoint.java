@@ -201,6 +201,7 @@ public class HCustomWaypoint extends HWaypoint {
         return controlIntervalCount.get();
     }
 
+    @Override
     public HolonomicWaypoint toWaypoint(List<InitialGuessPoint> initialGuessPoints, List<Obstacle> obstacles) {
         return new HolonomicWaypoint(getX(), getY(), getHeading(), getVelocityX(), getVelocityY(), getAngularVelocity(),
                             isXConstrained(), isYConstrained(), isHeadingConstrained(), isVelocityXConstrained(),

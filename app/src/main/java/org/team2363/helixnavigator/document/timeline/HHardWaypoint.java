@@ -54,6 +54,7 @@ public class HHardWaypoint extends HWaypoint {
         return heading.get();
     }
 
+    @Override
     public HolonomicWaypoint toWaypoint(List<InitialGuessPoint> initialGuessPoints, List<Obstacle> obstacles) {
         return new HolonomicWaypoint(getX(), getY(), getHeading(), 0.0, 0.0, 0.0, true, true, true, false, false, false, false, 100, initialGuessPoints, obstacles);
     }
