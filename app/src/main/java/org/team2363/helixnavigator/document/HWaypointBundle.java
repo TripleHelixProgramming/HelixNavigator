@@ -18,7 +18,7 @@ public class HWaypointBundle {
     private List<double[]> bundleWaypoints = new ArrayList<>();
 
     public HWaypointBundle(HPath path) {
-        for (HWaypoint waypoint : path.getWaypoints()) {
+        for (HWaypoint waypoint : path.getTimeline()) {
             if (waypoint.isHard()) {
                 HHardWaypoint hardWaypoint = (HHardWaypoint) waypoint;
                 double convertedX = hardWaypoint.getX() * 0.0254;

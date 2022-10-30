@@ -100,8 +100,8 @@ public class WaypointListView extends ListView<HWaypoint> {
     }
     private void loadSelectedPath(HPath newPath) {
         if (newPath != null) {
-            setItems(newPath.getWaypoints());
-            setSelectionModel(newPath.getWaypointsSelectionModel());
+            setItems(newPath.getTimeline());
+            setSelectionModel(newPath.getTimelineSelectionModel());
             setContextMenu(noneSelectedContextMenu);
         }
     }

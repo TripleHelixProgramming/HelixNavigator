@@ -78,14 +78,14 @@ public class WaypointsPane extends Pane {
         if (oldPath != null) {
             waypointsPane.getChildren().clear();
             robotsPane.getChildren().clear();
-            oldPath.getWaypoints().removeListener(onWaypointsChanged);
+            oldPath.getTimeline().removeListener(onWaypointsChanged);
         }
     }
 
     private void loadSelectedPath(HPath newPath) {
         if (newPath != null) {
-            updateWaypoints(newPath.getWaypoints());
-            newPath.getWaypoints().addListener(onWaypointsChanged);
+            updateWaypoints(newPath.getTimeline());
+            newPath.getTimeline().addListener(onWaypointsChanged);
         }
     }
 
@@ -139,10 +139,10 @@ public class WaypointsPane extends Pane {
         };
         EventHandler<MouseEvent> onMouseDragBegin = event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                if (!event.isShortcutDown() && !documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().isSelected(index)) {
+                if (!event.isShortcutDown() && !documentManager.getDocument().getSelectedPath().getTimelineSelectionModel().isSelected(index)) {
                     documentManager.getDocument().getSelectedPath().clearSelection();
                 }
-                documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().select(index);
+                documentManager.getDocument().getSelectedPath().getTimelineSelectionModel().select(index);
             }
         };
         EventHandler<MouseEvent> onMouseDragged = event -> {
@@ -155,11 +155,11 @@ public class WaypointsPane extends Pane {
         EventHandler<MouseEvent> onMouseReleased = event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 if (!event.isShortcutDown()) {
-                    boolean selected = documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().isSelected(index);
+                    boolean selected = documentManager.getDocument().getSelectedPath().getTimelineSelectionModel().isSelected(index);
                     documentManager.getDocument().getSelectedPath().clearSelection();
-                    documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().setSelected(index, selected);
+                    documentManager.getDocument().getSelectedPath().getTimelineSelectionModel().setSelected(index, selected);
                 }
-                documentManager.getDocument().getSelectedPath().getWaypointsSelectionModel().toggle(index);
+                documentManager.getDocument().getSelectedPath().getTimelineSelectionModel().toggle(index);
             }
         };
 

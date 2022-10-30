@@ -58,14 +58,14 @@ public class LinesPane extends Pane {
         if (oldPath != null) {
             // lineViews.clear();
             getChildren().clear();
-            oldPath.getWaypoints().removeListener(onWaypointsChanged);
+            oldPath.getTimeline().removeListener(onWaypointsChanged);
         }
     }
 
     private void loadSelectedPath(HPath newPath) {
         if (newPath != null) {
-            updateWaypoints(newPath.getWaypoints());
-            newPath.getWaypoints().addListener(onWaypointsChanged);
+            updateWaypoints(newPath.getTimeline());
+            newPath.getTimeline().addListener(onWaypointsChanged);
         }
     }
 

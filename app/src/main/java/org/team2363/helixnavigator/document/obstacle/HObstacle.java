@@ -2,7 +2,7 @@ package org.team2363.helixnavigator.document.obstacle;
 
 import java.util.List;
 
-import org.team2363.helixnavigator.document.HPathElement;
+import org.team2363.helixnavigator.document.timeline.HTimelineElement;
 import org.team2363.helixnavigator.global.Standards.DefaultRobotConfiguration;
 import org.team2363.helixtrajectory.Obstacle;
 import org.team2363.helixtrajectory.ObstaclePoint;
@@ -19,7 +19,7 @@ import com.jlbabilino.json.SerializedJSONObjectValue;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
-public abstract class HObstacle extends HPathElement {
+public abstract class HObstacle extends HTimelineElement {
 
     public static enum ObstacleType {
         CIRCLE,

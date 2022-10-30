@@ -1,7 +1,5 @@
 package org.team2363.helixnavigator.document.timeline;
 
-import org.team2363.helixnavigator.document.HPathElement;
-
 import com.jlbabilino.json.DeserializedJSONDeterminer;
 import com.jlbabilino.json.DeserializedJSONEntry;
 import com.jlbabilino.json.DeserializedJSONObjectValue;
@@ -16,7 +14,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.transform.Transform;
 
-public abstract class HWaypoint extends HPathElement {
+public abstract class HWaypoint extends HTimelineElement {
 
     public static enum WaypointType {
         SOFT, HARD, CUSTOM, INITIAL_GUESS;
