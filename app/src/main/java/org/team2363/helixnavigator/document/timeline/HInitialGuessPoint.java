@@ -4,10 +4,10 @@ import org.team2363.helixtrajectory.InitialGuessPoint;
 
 import com.jlbabilino.json.DeserializedJSONConstructor;
 
-public class HInitialGuessWaypoint extends HWaypoint {
+public class HInitialGuessPoint extends HWaypoint {
     
     @DeserializedJSONConstructor
-    public HInitialGuessWaypoint() {
+    public HInitialGuessPoint() {
     }
 
     @Override

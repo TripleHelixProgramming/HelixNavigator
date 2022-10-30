@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.team2363.helixnavigator.document.timeline.HCustomWaypoint;
 import org.team2363.helixnavigator.document.timeline.HHardWaypoint;
-import org.team2363.helixnavigator.document.timeline.HInitialGuessWaypoint;
+import org.team2363.helixnavigator.document.timeline.HInitialGuessPoint;
 import org.team2363.helixnavigator.document.timeline.HSoftWaypoint;
 import org.team2363.helixnavigator.document.timeline.HWaypoint;
 import org.team2363.helixnavigator.document.timeline.HWaypoint.WaypointType;
@@ -55,7 +55,7 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
     private final SoftWaypointView softView = new SoftWaypointView(new HSoftWaypoint());
     private final HardWaypointView hardView = new HardWaypointView(new HHardWaypoint());
     private final CustomWaypointView customView = new CustomWaypointView(new HCustomWaypoint());
-    private final InitialGuessWaypointView initialGuessView = new InitialGuessWaypointView(new HInitialGuessWaypoint());
+    private final InitialGuessWaypointView initialGuessView = new InitialGuessWaypointView(new HInitialGuessPoint());
     private final TextField textField = new FilteredTextField(Standards.MAX_NAME_LENGTH, Standards.VALID_NAME);
     private final HBox graphicBox = new HBox();
 
@@ -268,7 +268,7 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
         getListView().getItems().add(newWaypoint);
     }
     private void newInitialGuessWaypoint(ActionEvent event) {
-        HWaypoint newWaypoint = new HInitialGuessWaypoint();
+        HWaypoint newWaypoint = new HInitialGuessPoint();
         newWaypoint.setName("Initial Guess Waypoint " + getListView().getItems().size());
         getListView().getItems().add(newWaypoint);
     }
@@ -292,7 +292,7 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
     }
     private void insertNewInitialGuessWaypointBefore(ActionEvent event) {
         int insertIndex = getListView().getSelectionModel().getSelectedIndex();
-        HWaypoint newWaypoint = new HInitialGuessWaypoint();
+        HWaypoint newWaypoint = new HInitialGuessPoint();
         newWaypoint.setName("Initial Guess Waypoint " + getListView().getItems().size());
         getListView().getItems().add(insertIndex, newWaypoint);
     }
@@ -316,7 +316,7 @@ public class WaypointListCell extends OrderableListCell<HWaypoint> {
     }
     private void insertNewInitialGuessWaypointAfter(ActionEvent event) {
         int insertIndex = getListView().getSelectionModel().getSelectedIndex() + 1;
-        HWaypoint newWaypoint = new HInitialGuessWaypoint();
+        HWaypoint newWaypoint = new HInitialGuessPoint();
         newWaypoint.setName("Initial Guess Waypoint " + getListView().getItems().size());
         getListView().getItems().add(insertIndex, newWaypoint);
     }

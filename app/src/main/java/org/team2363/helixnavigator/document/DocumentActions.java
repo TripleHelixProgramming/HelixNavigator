@@ -9,7 +9,7 @@ import org.team2363.helixnavigator.document.obstacle.HObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
 import org.team2363.helixnavigator.document.timeline.HCustomWaypoint;
 import org.team2363.helixnavigator.document.timeline.HHardWaypoint;
-import org.team2363.helixnavigator.document.timeline.HInitialGuessWaypoint;
+import org.team2363.helixnavigator.document.timeline.HInitialGuessPoint;
 import org.team2363.helixnavigator.document.timeline.HSoftWaypoint;
 import org.team2363.helixnavigator.document.timeline.HWaypoint;
 import org.team2363.helixnavigator.ui.prompts.RobotConfigDialog;
@@ -491,7 +491,7 @@ public class DocumentActions {
     }
     public void newInitialGuessWaypoint(int index) {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
-            HWaypoint newWaypoint = new HInitialGuessWaypoint();
+            HWaypoint newWaypoint = new HInitialGuessPoint();
             newWaypoint.setName("Initial Guess Waypoint " + index);
             insertWaypoint(index, newWaypoint);
         }

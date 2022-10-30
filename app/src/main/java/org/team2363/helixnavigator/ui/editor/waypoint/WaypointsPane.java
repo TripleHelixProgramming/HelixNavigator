@@ -7,7 +7,7 @@ import org.team2363.helixnavigator.document.HDocument;
 import org.team2363.helixnavigator.document.HPath;
 import org.team2363.helixnavigator.document.timeline.HCustomWaypoint;
 import org.team2363.helixnavigator.document.timeline.HHardWaypoint;
-import org.team2363.helixnavigator.document.timeline.HInitialGuessWaypoint;
+import org.team2363.helixnavigator.document.timeline.HInitialGuessPoint;
 import org.team2363.helixnavigator.document.timeline.HSoftWaypoint;
 import org.team2363.helixnavigator.document.timeline.HWaypoint;
 import org.team2363.lib.ui.MouseEventWrapper;
@@ -119,7 +119,7 @@ public class WaypointsPane extends Pane {
                     waypointView = customWaypointView;
                     break;
                 case INITIAL_GUESS:
-                    HInitialGuessWaypoint initialGuessWaypoint = (HInitialGuessWaypoint) waypoint;
+                    HInitialGuessPoint initialGuessWaypoint = (HInitialGuessPoint) waypoint;
                     InitialGuessWaypointView initialGuessWaypointView = new InitialGuessWaypointView(initialGuessWaypoint);
                     waypointView = initialGuessWaypointView;
                     break;

@@ -8,7 +8,7 @@ import org.team2363.helixnavigator.document.obstacle.HPolygonObstacle;
 import org.team2363.helixnavigator.document.obstacle.HPolygonPoint;
 import org.team2363.helixnavigator.document.timeline.HCustomWaypoint;
 import org.team2363.helixnavigator.document.timeline.HHardWaypoint;
-import org.team2363.helixnavigator.document.timeline.HInitialGuessWaypoint;
+import org.team2363.helixnavigator.document.timeline.HInitialGuessPoint;
 import org.team2363.helixnavigator.document.timeline.HSoftWaypoint;
 import org.team2363.helixnavigator.document.timeline.HWaypoint;
 import org.team2363.helixtrajectory.HolonomicPath;
@@ -216,7 +216,7 @@ public class HPath {
         while (i < timeline.size()) {
             List<InitialGuessPoint> initialGuessPoints = new ArrayList<>();
             while (i < timeline.size() && timeline.get(i).isInitialGuess()) {
-                initialGuessPoints.add(((HInitialGuessWaypoint) timeline.get(i)).toInitialGuessPoint());
+                initialGuessPoints.add(((HInitialGuessPoint) timeline.get(i)).toInitialGuessPoint());
                 i++;
             }
             int waypointIndex = i;

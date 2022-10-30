@@ -109,7 +109,7 @@ public abstract class HWaypoint extends HTimelineElement {
             case "custom":
                 return HCustomWaypoint.class;
             case "initial_guess":
-                return HInitialGuessWaypoint.class;
+                return HInitialGuessPoint.class;
             default:
                 throw new JSONDeserializerException("Unrecognized waypoint type: \"" + typeString + "\"");
         }
