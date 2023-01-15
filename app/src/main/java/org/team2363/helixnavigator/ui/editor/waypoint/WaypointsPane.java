@@ -116,6 +116,9 @@ public class WaypointsPane extends Pane {
                 case CUSTOM:
                     HCustomWaypoint customWaypoint = (HCustomWaypoint) waypoint;
                     CustomWaypointView customWaypointView = new CustomWaypointView(customWaypoint);
+                    customWaypointView.bumperLengthProperty().bind(this.documentManager.getDocument().getRobotConfiguration().bumperLengthProperty());
+                    customWaypointView.bumperWidthProperty().bind(this.documentManager.getDocument().getRobotConfiguration().bumperWidthProperty());
+                    robotsPane.getChildren().add(customWaypointView.getRobotView().getView());
                     waypointView = customWaypointView;
                     break;
                 case INITIAL_GUESS:

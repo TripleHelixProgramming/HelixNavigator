@@ -53,7 +53,7 @@ public class Standards {
      * Up to 50 characters
      */
     public static final int MAX_NAME_LENGTH = 50;
-    public static final String DEFAULT_FIELD_IMAGE = "2022: Rapid React";
+    public static final String DEFAULT_FIELD_IMAGE = "2023: Charged Up";
     public static final double DEFAULT_OBSTACLE_SAFETY_DISTANCE = 5.0;
     public static final Color BACKGROUND_COLOR = Color.gray(0.85);
     public static final Color[] COLOR_PALETTE = {
