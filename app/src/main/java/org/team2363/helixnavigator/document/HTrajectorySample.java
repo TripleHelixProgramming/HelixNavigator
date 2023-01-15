@@ -13,7 +13,7 @@ import com.jlbabilino.json.SerializedJSONObjectValue;
 @JSONDeserializable({JSONType.OBJECT})
 public class HTrajectorySample {
 
-    @SerializedJSONObjectValue(key = "ts")
+    @SerializedJSONObjectValue(key = "timestamp")
     public final double ts;
     @SerializedJSONObjectValue(key = "x")
     public final double x;
@@ -21,22 +21,22 @@ public class HTrajectorySample {
     public final double y;
     @SerializedJSONObjectValue(key = "heading")
     public final double heading;
-    @SerializedJSONObjectValue(key = "vx")
+    @SerializedJSONObjectValue(key = "velocityX")
     public final double vx;
-    @SerializedJSONObjectValue(key = "vy")
+    @SerializedJSONObjectValue(key = "velocityY")
     public final double vy;
-    @SerializedJSONObjectValue(key = "omega")
+    @SerializedJSONObjectValue(key = "angularVelocity")
     public final double omega;
 
     @DeserializedJSONConstructor
     public HTrajectorySample(
-            @DeserializedJSONObjectValue(key = "ts") double ts,
+            @DeserializedJSONObjectValue(key = "timestamp") double ts,
             @DeserializedJSONObjectValue(key = "x") double x,
             @DeserializedJSONObjectValue(key = "y") double y,
             @DeserializedJSONObjectValue(key = "heading") double heading,
-            @DeserializedJSONObjectValue(key = "vx") double vx,
-            @DeserializedJSONObjectValue(key = "vy") double vy,
-            @DeserializedJSONObjectValue(key = "omega") double omega) {
+            @DeserializedJSONObjectValue(key = "velocityX") double vx,
+            @DeserializedJSONObjectValue(key = "velocityY") double vy,
+            @DeserializedJSONObjectValue(key = "angularVelocity") double omega) {
         this.ts = ts;
         this.x = x;
         this.y = y;
