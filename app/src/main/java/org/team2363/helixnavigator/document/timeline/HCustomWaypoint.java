@@ -192,11 +192,11 @@ public class HCustomWaypoint extends HWaypoint {
     public final IntegerProperty controlIntervalCountProperty() {
         return controlIntervalCount;
     }
-
-    public final void setControlIntervalCount(int value) {
+    @DeserializedJSONTarget
+    public final void setControlIntervalCount(@DeserializedJSONObjectValue(key = "control_interval_count") int value) {
         controlIntervalCount.set(value);
     }
-
+    @SerializedJSONObjectValue(key = "control_interval_count")
     public final int getControlIntervalCount() {
         return controlIntervalCount.get();
     }
