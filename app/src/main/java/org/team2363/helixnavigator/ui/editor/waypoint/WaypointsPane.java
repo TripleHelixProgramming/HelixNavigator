@@ -124,6 +124,9 @@ public class WaypointsPane extends Pane {
                 case INITIAL_GUESS:
                     HInitialGuessWaypoint initialGuessWaypoint = (HInitialGuessWaypoint) waypoint;
                     InitialGuessWaypointView initialGuessWaypointView = new InitialGuessWaypointView(initialGuessWaypoint);
+                    initialGuessWaypointView.bumperLengthProperty().bind(this.documentManager.getDocument().getRobotConfiguration().bumperLengthProperty());
+                    initialGuessWaypointView.bumperWidthProperty().bind(this.documentManager.getDocument().getRobotConfiguration().bumperWidthProperty());
+                    robotsPane.getChildren().add(initialGuessWaypointView.getRobotView().getView());
                     waypointView = initialGuessWaypointView;
                     break;
                 default:
