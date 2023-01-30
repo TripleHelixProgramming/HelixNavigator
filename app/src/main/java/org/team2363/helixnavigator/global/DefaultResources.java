@@ -6,6 +6,5 @@ public final class DefaultResources {
 
     public static void loadAllResources() {
         DefaultFieldImages.loadDefaultFieldImages();
-        DefaultFieldConfigurations.loadDefaultFieldConfigurations();
     }
 }
