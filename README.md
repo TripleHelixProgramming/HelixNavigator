@@ -3,20 +3,26 @@ HelixNavigator is a trajectory optimization-based path planning app. You can cur
 
 HelixNavigator provides the graphical interface to build autonomous paths, the trajectory optimizer, HelixTrajectory, takes these paths and converts them to trajectories that your robot can follow.
 
-## MacOS Installation
+## Linux and MacOS from source
 
-Download this repository to a working directory on your Mac.
+There are currently no binary distributions, so the app must be built from source to run.
 
-### Installing HelixNavigator
+Unfortunately, GitHub Actions does not support publishing Maven artifacts without authentication, so you will need a GitHub access token to build with these commands. You will have to build [TrajoptLib](https://github.com/SleipnirGroup/TrajoptLib) from source.
 
-First download a [distribution](https://github.com/jlbabilino/HelixTrajectoryJ/releases/) of HelixTrajectory for MacOS. Place `helixtrajectoryj.jar` in the `libs/jar` directory of the HelixNavigator project.
-
-A MacOS app can be built using `jpackage`. The Gradle script (`app/build.gradle.kts`) includes a task called `jpackage` to do this:
+First, clone the repo in your working directory:
 ```
-./gradlew app:jpackage
+git clone https://github.com/TripleHelixProgramming/HelixNavigator.git
 ```
-will generate generate a file called `HelixNavigator-$VERSION.dmg`. Install the app by opening the `dmg` and dragging the application into `/Applications`.
 
-### Installing HelixTrajectory
+Run the following to build the code and run it:
+```
+./gradlew run
+```
 
-If you try to run the app you've just built, it will crash when trying to generate trajectories. This is because the Java interface will fail to locate the native optimization code. In your distribution of HelixTrajectory, there is a zip file containing `libhelixtrajectory.dylib` and dependencies in a `lib` folder. After installing the app as `/Applications/HelixNavigator.app`, place `libhelixtrajectorycpp.dylib` in `/Applications/HelixNavigator.app/Contents/app`. Then place the dependencies in the `lib` directory into `/Applications/HelixNavigator.app/Contents/runtime/Contents/Home/lib/server`. Now the `HelixTrajectory` Java interface should be able to locate the native code.
+## Build packaged distribution:
+
+Run the following to build a `.dmg` or equivalent Linux package:
+
+```
+./gradlew jpackage
+```
