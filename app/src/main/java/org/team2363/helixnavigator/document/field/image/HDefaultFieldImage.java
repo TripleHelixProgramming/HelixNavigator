@@ -51,7 +51,10 @@ public class HDefaultFieldImage implements HFieldImage {
         this.fieldSize = fieldSize;
         this.fieldUnit = fieldUnit;
 
-        InputStream imageStream = DefaultFieldImages.class.getResourceAsStream(this.fieldImage);
+        InputStream imageStream = DefaultFieldImages.class.getResourceAsStream("wpifieldimages/" + this.fieldImage);
+        if (imageStream == null) {
+            imageStream = DefaultFieldImages.class.getResourceAsStream("extrafieldimages/" + this.fieldImage);
+        }
         this.image = new Image(imageStream);
         
         // Assume the image scales proportionally on both axes
