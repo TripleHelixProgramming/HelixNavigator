@@ -1,19 +1,19 @@
 {
-  "game": "Infinite Recharge At Home",
-  "field-image": "2021-infiniterechargeathome.png",
+  "game": "Blank Field",
+  "field-image": "blankfield.png",
   "field-corners": {
     "top-left": [
       0,
       0
     ],
     "bottom-right": [
-      1000,
-      500
+      649,
+      319
     ]
   },
   "field-size": [
-    30,
-    15
+    54,
+    27
   ],
   "field-unit": "feet"
 }
