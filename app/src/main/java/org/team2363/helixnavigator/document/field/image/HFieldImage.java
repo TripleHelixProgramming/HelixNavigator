@@ -12,10 +12,26 @@ import javafx.scene.image.Image;
 @JSONDeserializable({JSONType.OBJECT})
 public interface HFieldImage {
 
+    /**
+     * @return the name of the field image
+     */
     public String getName();
+
+    /**
+     * @return the resolution of image, in meters per pixel
+     */
     public double getImageRes();
+    /**
+     * @return the center x-coordinate of the image, in meters
+     */
     public double getImageCenterX();
+    /**
+     * @return the center y-coordinate of
+     */
     public double getImageCenterY();
+    /**
+     * @return the processed javafx image of the field
+     */
     public Image getImage();
 
     @DeserializedJSONDeterminer

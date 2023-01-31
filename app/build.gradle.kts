@@ -20,10 +20,10 @@ repositories {
         url = uri("https://jitpack.io")
     }
     maven {
-        url = uri("https://maven.pkg.github.com/jlbabilino/HelixTrajectory")
+        url = uri("https://maven.pkg.github.com/SleipnirGroup/TrajoptLib")
         credentials {
             username = "jlbabilino"
-            password = "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"
+            password = "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"
         }
     }
 }

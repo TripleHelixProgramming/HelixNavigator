@@ -1,0 +1,19 @@
+{
+  "game": "Blank Field",
+  "field-image": "blankfield.png",
+  "field-corners": {
+    "top-left": [
+      0,
+      0
+    ],
+    "bottom-right": [
+      649,
+      319
+    ]
+  },
+  "field-size": [
+    54,
+    27
+  ],
+  "field-unit": "feet"
+}
