@@ -22,6 +22,22 @@ public class DefaultFieldImages {
     //TODO: make sure all loggers use this same naming convention and are all private static final (low dev priority)
     private static final Logger LOGGER = Logger.getLogger("org.team2363.helixnavigator.global");
 
+    private static final String[] FIELD_IMAGE_FILES = {
+        "wpifieldimages/2018-powerup.json",
+        "wpifieldimages/2019-deepspace.json",
+        "wpifieldimages/2020-infiniterecharge.json",
+        "wpifieldimages/2021-barrelracing.path.json",
+        "wpifieldimages/2021-bouncepath.json",
+        "wpifieldimages/2021-galacticsearcha.json",
+        "wpifieldimages/2021-galacticsearchb.json",
+        "wpifieldimages/2021-infiniterecharge.json",
+        "wpifieldimages/2021-slalompath.json",
+        "wpifieldimages/2022-rapidreact.json",
+        "wpifieldimages/2023-chargedup.json",
+        "extrafieldimages/blankfield.json",
+        "extrafieldimages/2021-infiniterechargeathome.json"
+    };
+
     private static final Map<String, HDefaultFieldImage> fieldImageMap = new HashMap<>();
     private static final ObservableList<String> names = FXCollections.observableArrayList();
     private static final ObservableList<String> namesUnmodifiable = FXCollections.unmodifiableObservableList(names);
@@ -30,26 +46,25 @@ public class DefaultFieldImages {
 
     public static void loadDefaultFieldImages() { // TODO: make sure this is only able to be run once
         LOGGER.info("Loading default images...");
-        int index = 0;
-        InputStream currentStream;
-        while ((currentStream = DefaultFieldImages.class.getResourceAsStream("field_image_" + index + ".json")) != null) {
+        for (int fileIndex = 0; fileIndex < FIELD_IMAGE_FILES.length; fileIndex++) {
+            InputStream stream = DefaultFieldImages.class.getResourceAsStream(FIELD_IMAGE_FILES[fileIndex]);
+            if (stream == null) {
+                LOGGER.finer("Failed to load field image file \"" + FIELD_IMAGE_FILES[fileIndex] + "\"");
+                continue;
+            }
             try {
-                HDefaultFieldImage fieldImage = JSONDeserializer.deserialize(new String(currentStream.readAllBytes()), HDefaultFieldImage.class);
-                currentStream.close(); // This does nothing but I need it to avoid the warning
+                HDefaultFieldImage fieldImage = JSONDeserializer.deserialize(new String(stream.readAllBytes()), HDefaultFieldImage.class);
+                stream.close();
                 fieldImageMap.put(fieldImage.getName(), fieldImage);
                 LOGGER.info("Loaded image: \"" + fieldImage.getName() + "\"");
-            } catch (NullPointerException e) {
-                LOGGER.finer("Failed to load a file: null");
-            } catch (IOException e) {
-                LOGGER.finer("Failed to load a file: " + e.getMessage());
+            } catch (NullPointerException | IOException e) {
+                LOGGER.finer("Failed to load field image file \"" + FIELD_IMAGE_FILES[fileIndex] + "\":" + e.getMessage());
             } catch (JSONParserException e) {
-                LOGGER.finer("Failed to parse a file: " + e.getMessage());
+                LOGGER.finer("Failed to parse field image json in file\"" + FIELD_IMAGE_FILES[fileIndex] + "\":" + e.getMessage());
             } catch (InvalidJSONTranslationConfiguration e) {
-                LOGGER.severe("Internal JSON translation configuration error: " + e.getMessage());
+                LOGGER.severe("Internal JSON translation configuration error, contact developer: " + e.getMessage());
             } catch (JSONDeserializerException e) {
-                LOGGER.finer("Failed to deserialize a file: " + e.getMessage());
-            } finally {
-                index++;
+                LOGGER.finer("Failed to deserialize field image json in file \"" + FIELD_IMAGE_FILES[fileIndex] + "\":" + e.getMessage());
             }
         }
         names.addAll(fieldImageMap.keySet());
