@@ -47,6 +47,9 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Scale;
+import javafx.scene.transform.Transform;
+import javafx.scene.transform.Translate;
 
 public class DocumentActions {
 
@@ -462,6 +465,17 @@ public class DocumentActions {
     public void rotateSelection180() {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
             documentManager.getDocument().getSelectedPath().transformSelectedElementsRelative(ROTATE_180);
+        }
+    }
+
+    public void flipObjectsToOppositeSide() {
+        if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
+            HDocument document = documentManager.getDocument();
+            HFieldImage fieldImage = document.getFieldImage();
+            Scale mirrorTrans = new Scale(-1, 1);
+            Translate flipTrans = new Translate(fieldImage.getFieldAreaWidth(), 0.0);
+            Transform totalTrans = flipTrans.createConcatenation(mirrorTrans);
+            documentManager.getDocument().getSelectedPath().transformSelectedElementsRelative(totalTrans);
         }
     }
 

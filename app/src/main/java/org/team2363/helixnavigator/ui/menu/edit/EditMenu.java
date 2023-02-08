@@ -24,6 +24,7 @@ public class EditMenu extends Menu {
     private final Rotate90ClockwiseMenuItem rotate90ClockwiseMenuItem;
     private final Rotate90CounterclockwiseMenuItem rotate90CounterclockwiseMenuItem;
     private final Rotate180MenuItem rotate180MenuItem;
+    private final FlipToOppositeSideMenuItem flipToOppositeSideMenuItem;
 
     public EditMenu(DocumentManager documentManager) {
         this.documentManager = documentManager;
@@ -41,6 +42,7 @@ public class EditMenu extends Menu {
         rotate90ClockwiseMenuItem = new Rotate90ClockwiseMenuItem(this.documentManager);
         rotate90CounterclockwiseMenuItem = new Rotate90CounterclockwiseMenuItem(this.documentManager);
         rotate180MenuItem = new Rotate180MenuItem(this.documentManager);
+        flipToOppositeSideMenuItem = new FlipToOppositeSideMenuItem(this.documentManager);
 
         getItems().add(undoMenuItem);
         getItems().add(redoMenuItem);
@@ -57,5 +59,6 @@ public class EditMenu extends Menu {
         getItems().add(rotate90ClockwiseMenuItem);
         getItems().add(rotate90CounterclockwiseMenuItem);
         getItems().add(rotate180MenuItem);
+        getItems().add(flipToOppositeSideMenuItem);
     }
 }
