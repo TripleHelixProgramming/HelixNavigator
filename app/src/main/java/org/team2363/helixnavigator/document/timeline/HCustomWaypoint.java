@@ -17,6 +17,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.geometry.Point2D;
 import javafx.scene.transform.Transform;
 
 public class HCustomWaypoint extends HWaypoint {
@@ -43,7 +44,22 @@ public class HCustomWaypoint extends HWaypoint {
     @Override
     public void transformRelative(Transform transform) {
         super.transformRelative(transform);
-        double deltaAngle = Math.atan2(transform.getMyx(), transform.getMxx());
+
+        Point2D curBase = new Point2D(getX(), getY());
+        Point2D curHeadTip = curBase.add(new Point2D(Math.cos(getHeading()), Math.sin(getHeading())));
+        Point2D curVelocityTip = curBase.add(new Point2D(getVelocityX(), getVelocityY()));
+
+        Point2D newBase = transform.transform(curBase);
+        Point2D newVelTip = transform.transform(curVelocityTip);
+        Point2D newVelocity = newVelTip.subtract(newBase);
+
+        Point2D newHeadTip = transform.transform(curHeadTip);
+        Point2D newHead = newHeadTip.subtract(newBase);
+
+        setVelocityX(newVelocity.getX());
+        setVelocityY(newVelocity.getY());
+
+        double deltaAngle = Math.atan2(newHead.getY(), newHead.getX()) - getHeading();
         setHeading(getHeading() + deltaAngle);
     }
 
