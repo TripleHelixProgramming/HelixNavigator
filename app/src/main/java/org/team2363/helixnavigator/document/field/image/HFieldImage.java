@@ -17,6 +17,9 @@ public interface HFieldImage {
      */
     public String getName();
 
+    public double getFieldAreaWidth();
+    public double getFieldAreaHeight();
+
     /**
      * @return the resolution of image, in meters per pixel
      */

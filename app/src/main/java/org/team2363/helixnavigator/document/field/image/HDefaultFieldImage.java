@@ -72,6 +72,19 @@ public class HDefaultFieldImage implements HFieldImage {
     }
 
     @Override
+    public double getFieldAreaWidth() {
+        Quantity<Length> widthQuan = Quantities.getQuantity(fieldSize.width, fieldUnit.unit);
+        Quantity<Length> widthQuanConv = widthQuan.to(SI.METRE);
+        return widthQuanConv.getValue().doubleValue();
+    }
+    @Override
+    public double getFieldAreaHeight() {
+        Quantity<Length> heightQuan = Quantities.getQuantity(fieldSize.height, fieldUnit.unit);
+        Quantity<Length> heightQuanConv = heightQuan.to(SI.METRE);
+        return heightQuanConv.getValue().doubleValue();
+    }
+
+    @Override
     public double getImageRes() {
         return imageRes;
     }

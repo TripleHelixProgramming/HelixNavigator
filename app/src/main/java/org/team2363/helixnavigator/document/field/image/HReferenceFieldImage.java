@@ -31,6 +31,16 @@ public class HReferenceFieldImage implements HFieldImage {
     }
 
     @Override
+    public double getFieldAreaWidth() {
+        return fieldImage.getFieldAreaWidth();
+    }
+
+    @Override
+    public double getFieldAreaHeight() {
+        return fieldImage.getFieldAreaHeight();
+    }
+
+    @Override
     public double getImageRes() {
         return fieldImage.getImageRes();
     }
