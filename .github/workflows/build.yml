@@ -11,7 +11,7 @@ jobs:
           - artifact-name: Build - Ubuntu
             os: ubuntu-latest
           - artifact-name: Build - macOS
-            os: macOS-latest
+            os: macOS-12
     
     name: ${{ matrix.artifact-name }}
     runs-on: ${{ matrix.os }}
@@ -41,4 +41,4 @@ jobs:
         uses: actions/upload-artifact@v3.1.1
         with:
           name: ${{ matrix.artifact-name }}
-          path: build/package
+          path: app/build/package
