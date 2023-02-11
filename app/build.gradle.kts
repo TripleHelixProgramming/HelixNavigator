@@ -10,7 +10,7 @@ plugins {
     id("edu.sc.seis.launch4j") version "2.5.1"
 }
 
-version = "0.0.2"
+version = "1.0.0"
 
 val packageName = "${name}-${version}"
 
@@ -22,8 +22,8 @@ repositories {
     maven {
         url = uri("https://maven.pkg.github.com/SleipnirGroup/TrajoptLib")
         credentials {
-            username = "jlbabilino"
-            password = "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"
+            username = project.properties["mvnUsername"].toString()
+            password = project.properties["mvnPassword"].toString()
         }
     }
 }
@@ -51,41 +51,32 @@ javafx {
     modules = listOf("javafx.controls")
 }
 
-// shadowJar {
-//     // minimize()
-
-//     // archiveClassifier.set("")
-// }
-
-// launch4j {
-//     mainClassName = project.mainClassName
-//     version = project.version
-//     outfile = "${packageName}.exe"
-//     bundledJrePath = "C:\\Program Files\\Java\\jdk-17.0.2\\bin"
-//     jarTask = project.tasks.shadowJar
-// }
-
 tasks.register("jpackage") {
     dependsOn("shadowJar")
 
+    val os = System.getProperty("os.name").toLowerCase();
+
+    var packType = "";
+
+    if (os.startsWith("linux")) {
+        packType = "deb";
+    } else if (os.startsWith("mac")) {
+        packType = "dmg"
+    } else { // windows
+        packType = "msi"
+    }
+
     doLast {
-        val jarDir = "${buildDir}/libs"
-        val jarName = "${packageName}-all.jar"
-        val jarFile = "${buildDir}/libs/${jarName}"
-        val javaOptions = "-Djava.library.path=\$APPDIR"
-        val javaMainClass = "java"
-        val dest = "${buildDir}/package"
-        val iconFile = "${buildDir}/resources/main/icon.icns"
         project.exec {
             commandLine("jpackage",
-                    "--input", jarDir,
-                    "--java-options", javaOptions,
-                    "--main-jar", jarName,
+                    "--input", "${buildDir}/libs",
+                    "--main-jar", "${packageName}-all.jar",
                     "--main-class", "org.team2363.helixnavigator.Main",
-                    "--dest", dest,
-                    "--name", project.name,
-                    "--type", "dmg",
-                    "--icon", iconFile,
+                    "--type", packType,
+                    "--dest", "${buildDir}/package",
+                    "--name", rootProject.name,
+                    "--app-version", version,
+                    "--icon", "${buildDir}/resources/main/icon.icns",
             )
         }
     }

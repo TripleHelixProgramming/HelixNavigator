@@ -38,7 +38,7 @@ public class Standards {
     /**
      * The current version of this application
      */
-    public static final String APPLICATION_VERSION = "0.0.1";
+    public static final String APPLICATION_VERSION = "1.0.0";
     /**
      * The location of the "Documents" folder for the user
      */
