@@ -8,14 +8,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - artifact-name: Build - Ubuntu
+          - job-name: Build - Ubuntu x64
             os: ubuntu-22.04
-          - artifact-name: Build - macOS
+            artifact-name: linux-x64
+          - job-name: Build - macOS x64
             os: macOS-12
-          - artifact-name: Build - Windows
+            artifact-name: macOS-x64
+          - job-name: Build - Windows x64
             os: windows-2022
-    
-    name: ${{ matrix.artifact-name }}
+            artifact-name: windows-x64
+
+    name: ${{ matrix.job-name }}
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -42,5 +45,20 @@ jobs:
       - name: Upload jpackage
         uses: actions/upload-artifact@v3.1.1
         with:
-          name: ${{ matrix.artifact-name }}
+          name: HelixNavigator-1.0.0-${{ matrix.artifact-name }}
           path: app/build/package
+
+      # - name: version
+      #   run: ./gradlew printVersion | egrep -o "([0-9]{1,}\.)+[0-9]{1,}"
+      #   id: version
+
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: true
+          prerelease: true
+          release_name: 'Latest Build'
+          tag_name: ${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
