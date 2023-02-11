@@ -30,3 +30,14 @@ jobs:
             build
             -PmvnUsername=${{ secrets.TRAJOPT_MAVEN_USERNAME }}
             -PmvnPassword=${{ secrets.TRAJOPT_MAVEN_PASSWORD }}
+
+      - name: Generate jpackage
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: jpackage
+
+      - name: Upload jpackage
+        uses: actions/upload-artifact@v3.1.1
+        with:
+          name: ${{ matrix.artifact-name }}
+          path: build/package
