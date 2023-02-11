@@ -73,7 +73,6 @@ tasks.register("jpackage") {
         val jarName = "${packageName}-all.jar"
         val jarFile = "${buildDir}/libs/${jarName}"
         val javaOptions = "-Djava.library.path=\$APPDIR"
-        val javaMainClass = "java"
         val dest = "${buildDir}/package"
         val iconFile = "${buildDir}/resources/main/icon.icns"
         project.exec {
@@ -84,7 +83,6 @@ tasks.register("jpackage") {
                     "--main-class", "org.team2363.helixnavigator.Main",
                     "--dest", dest,
                     "--name", project.name,
-                    "--type", "dmg",
                     "--icon", iconFile,
             )
         }
