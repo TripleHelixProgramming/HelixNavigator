@@ -9,9 +9,11 @@ jobs:
       matrix:
         include:
           - artifact-name: Build - Ubuntu
-            os: ubuntu-latest
+            os: ubuntu-22.04
           - artifact-name: Build - macOS
             os: macOS-12
+          - artifact-name: Build - Windows
+            os: windows-2022
     
     name: ${{ matrix.artifact-name }}
     runs-on: ${{ matrix.os }}
