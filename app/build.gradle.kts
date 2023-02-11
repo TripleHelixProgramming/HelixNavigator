@@ -22,8 +22,8 @@ repositories {
     maven {
         url = uri("https://maven.pkg.github.com/SleipnirGroup/TrajoptLib")
         credentials {
-            username = "jlbabilino"
-            password = "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"
+            username = project.properties["mvnUsername"].toString()
+            password = project.properties["mvnPassword"].toString()
         }
     }
 }
