@@ -8,9 +8,10 @@ on:
         required: true
         default: '1.0.0'
         type: string
-      commit:
-        description: "Commit Ref"
+      tag:
+        description: "Tag"
         required: true
+        default: 'v1.0.0'
         type: string
 
 jobs:
@@ -34,6 +35,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.tag }}
 
       - uses: actions/setup-java@v3
         with:
@@ -74,7 +77,7 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           name: v${{ inputs.version }}
-          commit: ${{ inputs.commit }}
+          tag: ${{ inputs.tag }}
           artifacts: "pkgs/HelixNavigator-${{ inputs.version }}.*"
           draft: true
           prerelease: true
