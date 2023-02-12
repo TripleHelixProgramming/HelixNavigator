@@ -81,3 +81,7 @@ tasks.register("jpackage") {
         }
     }
 }
+
+tasks.register("printVersion") {
+  println(project.version)
+}

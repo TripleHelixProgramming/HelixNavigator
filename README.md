@@ -1,27 +1,58 @@
 # HelixNavigator
-HelixNavigator is a trajectory optimization-based path planning app. You can currently use it to generate trajectories for FRC swerve robots to follow.
 
-HelixNavigator provides the graphical interface to build autonomous paths, the trajectory optimizer, HelixTrajectory, takes these paths and converts them to trajectories that your robot can follow.
+A trajectory optimization-based path planning app for FRC.
 
-## Linux and MacOS from source
+![Build](https://github.com/TripleHelixProgramming/HelixNavigator/actions/workflows/build.yml/badge.svg)
+[![Discord](https://img.shields.io/discord/975739302933856277?color=%23738ADB&label=Join%20our%20Discord&logo=discord&logoColor=white)](https://discord.gg/ad2EEZZwsS)
 
-There are currently no binary distributions, so the app must be built from source to run.
+## Compatibility
 
-Unfortunately, GitHub Actions does not support publishing Maven artifacts without authentication, so you will need a GitHub access token to build with these commands. You will have to build [TrajoptLib](https://github.com/SleipnirGroup/TrajoptLib) from source.
+HelixNavigator is compatible with FRC swerve drive robots only. The app generates json trajectories which can be followed by the a trajectory follower in the robot code.
+
+## TrajoptLib
+
+HelixNavigator is backed by the [TrajoptLib](https://github.com/SleipnirGroup/TrajoptLib), a C++ library for generating time-optimal trajectories.
+
+## Binary Installation
+
+You can download the latest binaries on [Releases](https://github.com/TripleHelixProgramming/HelixNavigator/releases).
+
+### Linux
+
+Use your system's package manager to install the `HelixNavigator-X.X.X-linux-x64.deb` artifact.
+
+### macOS
+
+Download the `HelixNavigator-X.X.X-macOS-x64.zip` artifact. Extract it and place in the `/Applications` directory.
+
+### Windows
+
+**DISCLAIMER:** The Windows distribution does not support generation of trajectories. This is an ongoing issue which will be fixed in the future.
+
+Download the `HelixNavigator-X.X.X-windows-x64.msi` artifact and install it.
+
+## Building from source
 
 First, clone the repo in your working directory:
 ```
 git clone https://github.com/TripleHelixProgramming/HelixNavigator.git
 ```
 
-Run the following to build the code and run it:
+If on Windows, replace `./gradlew` with `.\gradlew.bat`.
+
+To build:
+```
+./gradlew build -PmvnUsername=YOUR_USERNAME -PmvnPassword=YOUR_GITHUB_TOKEN
+```
+
+To run:
 ```
 ./gradlew run
 ```
 
-## Build packaged distribution:
+## Build packaged distribution
 
-Run the following to build a `.dmg` or equivalent Linux package:
+Run the following to build a `.deb`, `.dmg`, or `.msi` package:
 
 ```
 ./gradlew jpackage
