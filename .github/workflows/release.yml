@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version: `X.X.X`"
+        required: true
+        default: '1.0.0'
+        type: string
+      tag:
+        description: "Tag"
+        required: true
+        type: string
+
+jobs:
+  release:
+    strategy:
+      fail-fast: false
+      matrix:
+        artifact-file: [linux-x64.deb, macOS-x64.dmg, windows-x64.msi]
+
+    name: Release
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: dsaltares/fetch-gh-release-asset@master
+        with:
+          version: 'tags/$TAG'
+          file: 'HelixNavigator-$VERSION-${{ matrix.artifact-file }}'
+          target: 'pkgs/'
+          token: '${{ secrets.GITHUB_TOKEN }}'
+        env:
+          VERSION: ${{ inputs.version }}
+          TAG: ${{ inputs.tag }}
