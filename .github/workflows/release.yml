@@ -60,7 +60,7 @@ jobs:
         uses: actions/upload-artifact@v3.1.1
         with:
           name: HelixNavigator-${{ inputs.version }}-${{ matrix.artifact-name }}
-          path: app/build/package
+          path: app/build/package/*
 
   release:
     needs: build
@@ -78,6 +78,6 @@ jobs:
         with:
           name: v${{ inputs.version }}
           tag: ${{ inputs.tag }}
-          artifacts: "pkgs/*/HelixNavigator-${{ inputs.version }}-*"
+          artifacts: "pkgs/*"
           draft: true
           prerelease: true
