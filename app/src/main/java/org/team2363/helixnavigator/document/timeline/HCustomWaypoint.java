@@ -35,7 +35,7 @@ public class HCustomWaypoint extends HWaypoint {
     private final BooleanProperty velocityMagnitudeConstrained = new SimpleBooleanProperty(this, "velocityMagnitudeConstrained", false);
     private final BooleanProperty angularVelocityConstrained = new SimpleBooleanProperty(this, "angularVelocityConstrained", false);
     
-    private final IntegerProperty controlIntervalCount = new SimpleIntegerProperty(this, "controlIntervalCount", 100);
+    private final IntegerProperty controlIntervalCount = new SimpleIntegerProperty(this, "controlIntervalCount", 30);
 
     @DeserializedJSONConstructor
     public HCustomWaypoint() {

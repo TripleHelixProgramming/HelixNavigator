@@ -2,6 +2,7 @@ package org.team2363.helixnavigator.document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.team2363.helixnavigator.document.field.image.HFieldImage;
 import org.team2363.helixnavigator.document.obstacle.HCircleObstacle;
@@ -41,6 +42,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
@@ -50,6 +53,7 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
+import javafx.stage.Modality;
 
 public class DocumentActions {
 
@@ -431,6 +435,34 @@ public class DocumentActions {
         if (documentManager.getIsDocumentOpen() && documentManager.getDocument().isPathSelected()) {
             HDocument hDocument = documentManager.getDocument();
             HPath hPath = documentManager.getDocument().getSelectedPath();
+            if (hPath.getWaypoints().size() < 2) {
+                Alert notEnoughWaypointsAlert = new Alert(AlertType.ERROR, "Must have at least 2 waypoints!");
+                notEnoughWaypointsAlert.initModality(Modality.APPLICATION_MODAL);
+                notEnoughWaypointsAlert.show();
+                return;
+            }
+            List<HWaypoint> onlyCustom = hPath.getWaypoints().filtered(waypoint -> waypoint.isCustom());
+            if (onlyCustom.size() != hPath.getWaypoints().size()) {
+                Alert onlyCustomAllowed = new Alert(AlertType.ERROR, "Only custom waypoints are allowed!");
+                onlyCustomAllowed.initModality(Modality.APPLICATION_MODAL);
+                onlyCustomAllowed.show();
+                return;
+            }
+            ((HCustomWaypoint) hPath.getWaypoints().get(0)).setControlIntervalCount(0);
+
+            Consumer<HCustomWaypoint> applyVelocityConstraint = waypoint -> {
+                waypoint.setVelocityX(0.0);
+                waypoint.setVelocityY(0.0);
+                waypoint.setAngularVelocity(0.0);
+                waypoint.setVelocityXConstrained(true);
+                waypoint.setVelocityYConstrained(true);
+                waypoint.setVelocityMagnitudeConstrained(true);
+                waypoint.setAngularVelocityConstrained(true);
+            };
+
+            applyVelocityConstraint.accept(((HCustomWaypoint) hPath.getWaypoints().get(0)));
+            applyVelocityConstraint.accept(((HCustomWaypoint) hPath.getWaypoints().get(hPath.getWaypoints().size() - 1)));
+
             SwerveDrivetrain drive = hDocument.getRobotConfiguration().toDrive();
             List<Obstacle> obstacles = new ArrayList<>(hPath.getObstacles().size());
             for (int i = 0; i < hPath.getObstacles().size(); i++) {
