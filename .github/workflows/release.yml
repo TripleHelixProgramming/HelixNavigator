@@ -74,6 +74,9 @@ jobs:
         with:
           path: 'pkgs/'
 
+      - name: Display structure of downloaded files
+        run: ls -R
+
       - uses: ncipollo/release-action@v1
         with:
           name: v${{ inputs.version }}
