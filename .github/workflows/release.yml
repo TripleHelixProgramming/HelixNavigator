@@ -33,3 +33,14 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
           TAG: ${{ inputs.tag }}
+
+      - uses: actions/create-release@latest
+        with:
+          tag_name: $TAG
+          release_name: v$VERSION
+          draft: true
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ inputs.version }}
+          TAG: ${{ inputs.tag }}
