@@ -15,32 +15,21 @@ on:
 
 jobs:
   release:
-    strategy:
-      fail-fast: false
-      matrix:
-        artifact-file: [linux-x64.deb, macOS-x64.dmg, windows-x64.msi]
-
     name: Release
     runs-on: ubuntu-22.04
 
     steps:
+      - uses: actions/checkout@v2
       - uses: dsaltares/fetch-gh-release-asset@master
         with:
-          version: 'tags/$TAG'
-          file: 'HelixNavigator-$VERSION-${{ matrix.artifact-file }}'
+          version: 'tags/${{ inputs.tag }}'
+          file: 'HelixNavigator-${{ inputs.version }}.*'
           target: 'pkgs/'
           token: '${{ secrets.GITHUB_TOKEN }}'
-        env:
-          VERSION: ${{ inputs.version }}
-          TAG: ${{ inputs.tag }}
 
-      - uses: actions/create-release@latest
+      - uses: ncipollo/release-action@v1
         with:
-          tag_name: $TAG
-          release_name: v$VERSION
+          name: v${{ inputs.version }}
+          artifacts: "pkgs/HelixNavigator-${{ inputs.version }}.*"
           draft: true
           prerelease: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ inputs.version }}
-          TAG: ${{ inputs.tag }}
