@@ -78,6 +78,6 @@ jobs:
         with:
           name: v${{ inputs.version }}
           tag: ${{ inputs.tag }}
-          artifacts: "pkgs/HelixNavigator-${{ inputs.version }}-*"
+          artifacts: "pkgs/*/HelixNavigator-${{ inputs.version }}-*"
           draft: true
           prerelease: true
