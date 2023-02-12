@@ -10,13 +10,13 @@ jobs:
         include:
           - job-name: Build - Ubuntu x64
             os: ubuntu-22.04
-            artifact-name: linux-x64
+            artifact-name: linux-x64.deb
           - job-name: Build - macOS x64
             os: macOS-12
-            artifact-name: macOS-x64
+            artifact-name: macOS-x64.dmg
           - job-name: Build - Windows x64
             os: windows-2022
-            artifact-name: windows-x64
+            artifact-name: windows-x64.msi
 
     name: ${{ matrix.job-name }}
     runs-on: ${{ matrix.os }}
