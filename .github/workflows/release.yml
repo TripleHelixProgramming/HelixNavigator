@@ -8,24 +8,63 @@ on:
         required: true
         default: '1.0.0'
         type: string
-      tag:
-        description: "Tag"
-        required: true
-        type: string
 
 jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - job-name: Build - Ubuntu x64
+            os: ubuntu-22.04
+            artifact-name: linux-x64.deb
+          - job-name: Build - macOS x64
+            os: macOS-12
+            artifact-name: macOS-x64.dmg
+          - job-name: Build - Windows x64
+            os: windows-2022
+            artifact-name: windows-x64.msi
+
+    name: ${{ matrix.job-name }}
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: |
+            build
+            -PmvnUsername=${{ secrets.TRAJOPT_MAVEN_USERNAME }}
+            -PmvnPassword=${{ secrets.TRAJOPT_MAVEN_PASSWORD }}
+
+      - name: Generate jpackage
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: jpackage
+
+      - name: Upload jpackage
+        uses: actions/upload-artifact@v3.1.1
+        with:
+          name: HelixNavigator-${{ inputs.version }}-${{ matrix.artifact-name }}
+          path: app/build/package
+
   release:
     name: Release
     runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v2
-      - uses: dsaltares/fetch-gh-release-asset@master
+
+      - uses: actions/download-artifact@v3
         with:
-          version: 'tags/${{ inputs.tag }}'
-          file: 'HelixNavigator-${{ inputs.version }}.*'
-          target: 'pkgs/'
-          token: '${{ secrets.GITHUB_TOKEN }}'
+          path: 'pkgs/'
 
       - uses: ncipollo/release-action@v1
         with:
