@@ -81,6 +81,9 @@ jobs:
         with:
           name: v${{ inputs.version }}
           tag: ${{ inputs.tag }}
-          artifacts: "pkgs/*"
+          artifacts: |
+            pkgs/HelixNavigator-1.0.0-linux-x64.deb/helixnavigator_1.0.0-1_amd64.deb,
+            pkgs/HelixNavigator-1.0.0-macOS-x64.dmg/HelixNavigator-1.0.0.dmg,
+            pkgs/HelixNavigator-1.0.0-windows-x64.msi/HelixNavigator-1.0.0.msi
           draft: true
           prerelease: true
