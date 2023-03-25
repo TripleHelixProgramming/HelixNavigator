@@ -10,7 +10,7 @@ plugins {
     id("edu.sc.seis.launch4j") version "2.5.1"
 }
 
-version = "1.0.0"
+version = "1.0.1"
 
 val packageName = "${name}-${version}"
 
