@@ -85,7 +85,9 @@ public class TrajectoryToolBar extends ToolBar {
                 HTrajectory traj = this.documentManager.getDocument().getSelectedPath().getTrajectory();
                 FileChooser chooser = new FileChooser();
                 chooser.getExtensionFilters().add(Standards.TRAJECTORY_FILE_TYPE);
-                chooser.setInitialFileName(this.documentManager.getDocument().getSaveLocation().getName());
+                if (this.documentManager.getDocument().getSaveLocation() != null) {
+                    chooser.setInitialFileName(this.documentManager.getDocument().getSaveLocation().getName());
+                }
                 File result = chooser.showSaveDialog(this.documentManager.getStage());
                 if (result != null) {
                     try {
