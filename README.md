@@ -25,9 +25,28 @@ Use your system's package manager to install the `HelixNavigator-X.X.X-linux-x64
 
 Download the `HelixNavigator-X.X.X-macOS-x64.zip` artifact. Extract it and place in the `/Applications` directory.
 
-### Windows
+### Windows WSL
 
-**DISCLAIMER:** The Windows distribution does not support generation of trajectories. This is an ongoing issue which will be fixed in the future.
+Since the app doesn't allow trajectory generation in windows, you should run it in WSL instead.
+
+[Install Ubuntu WSL](https://ubuntu.com/tutorials/install-ubuntu-on-wsl2-on-windows-10) on your Windows machine.
+
+Next, ensure you have GUI support enabled, following [this tutorial](https://learn.microsoft.com/en-us/windows/wsl/tutorials/gui-apps).
+
+Open an Ubuntu WSL terminal and install HelixNavigator (this is using `v1.0.1`, but you can replace with any version):
+
+```
+wget https://github.com/TripleHelixProgramming/HelixNavigator/releases/download/v1.0.1/helixnavigator_1.0.1-1_amd64.deb
+sudo dpkg -i helixnavigator_1.0.1-1_amd64.deb
+```
+
+After it installs, you can run `/opt/helixnavigator/bin/HelixNavigator` to open the app.
+
+------
+
+### Windows (native, not working)
+
+**DISCLAIMER:** The Windows distribution does not support generation of trajectories. This is an ongoing issue which will be fixed in the future. For now, you can run the app in WSL, see above.
 
 Download the `HelixNavigator-X.X.X-windows-x64.msi` artifact and install it.
 
