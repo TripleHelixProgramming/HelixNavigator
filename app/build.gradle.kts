@@ -57,11 +57,9 @@ tasks.register("jpackage") {
     val os = System.getProperty("os.name").toLowerCase();
 
     var packType = "";
-    var linuxShortcut = "";
 
     if (os.startsWith("linux")) {
         packType = "deb";
-        linuxShortcut = "--linux-shortcut";
     } else if (os.startsWith("mac")) {
         packType = "dmg"
     } else { // windows
@@ -70,7 +68,9 @@ tasks.register("jpackage") {
 
     doLast {
         project.exec {
-            commandLine("jpackage",
+
+            if (os.startsWith("linux")) {
+                commandLine("jpackage",
                     "--input", "${buildDir}/libs",
                     "--main-jar", "${packageName}-all.jar",
                     "--main-class", "org.team2363.helixnavigator.Main",
@@ -80,7 +80,19 @@ tasks.register("jpackage") {
                     "--app-version", version,
                     "--icon", "${buildDir}/resources/main/icon.icns",
                     linuxShortcut,
-            )
+                )
+            } else {
+                commandLine("jpackage",
+                        "--input", "${buildDir}/libs",
+                        "--main-jar", "${packageName}-all.jar",
+                        "--main-class", "org.team2363.helixnavigator.Main",
+                        "--type", packType,
+                        "--dest", "${buildDir}/package",
+                        "--name", rootProject.name,
+                        "--app-version", version,
+                        "--icon", "${buildDir}/resources/main/icon.icns",
+                )
+            }
         }
     }
 }
