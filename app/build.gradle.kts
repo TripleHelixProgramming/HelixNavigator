@@ -91,7 +91,6 @@ tasks.register("jpackage") {
                         "--name", rootProject.name,
                         "--app-version", version,
                         "--icon", "${buildDir}/resources/main/icon.icns",
-                        null
                 )
             }
         }
