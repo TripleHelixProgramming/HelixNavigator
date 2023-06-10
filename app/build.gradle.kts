@@ -68,7 +68,9 @@ tasks.register("jpackage") {
 
     doLast {
         project.exec {
-            commandLine("jpackage",
+
+            if (os.startsWith("linux")) {
+                commandLine("jpackage",
                     "--input", "${buildDir}/libs",
                     "--main-jar", "${packageName}-all.jar",
                     "--main-class", "org.team2363.helixnavigator.Main",
@@ -77,7 +79,20 @@ tasks.register("jpackage") {
                     "--name", rootProject.name,
                     "--app-version", version,
                     "--icon", "${buildDir}/resources/main/icon.icns",
-            )
+                    "--linux-shortcut",
+                )
+            } else {
+                commandLine("jpackage",
+                        "--input", "${buildDir}/libs",
+                        "--main-jar", "${packageName}-all.jar",
+                        "--main-class", "org.team2363.helixnavigator.Main",
+                        "--type", packType,
+                        "--dest", "${buildDir}/package",
+                        "--name", rootProject.name,
+                        "--app-version", version,
+                        "--icon", "${buildDir}/resources/main/icon.icns",
+                )
+            }
         }
     }
 }
