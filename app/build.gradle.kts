@@ -57,11 +57,11 @@ tasks.register("jpackage") {
     val os = System.getProperty("os.name").toLowerCase();
 
     var packType = "";
-    var linuxShortcut = "";
+    // var linuxShortcut = "";
 
     if (os.startsWith("linux")) {
         packType = "deb";
-        linuxShortcut = "--linux-shortcut";
+        // linuxShortcut = "--linux-shortcut";
     } else if (os.startsWith("mac")) {
         packType = "dmg"
     } else { // windows
