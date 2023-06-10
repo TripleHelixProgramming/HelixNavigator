@@ -79,7 +79,7 @@ tasks.register("jpackage") {
                     "--name", rootProject.name,
                     "--app-version", version,
                     "--icon", "${buildDir}/resources/main/icon.icns",
-                    linuxShortcut,
+                    "--linux-shortcut",
             )
         }
     }
